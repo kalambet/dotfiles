@@ -2,7 +2,7 @@
 export ZSH=~/.oh-my-zsh
 
 # Load some secrets
-if [ -f '~/.tools/secrets.sh' ]; then source ~/.tools/secrets.sh; fi
+if [ -f ~/.tools/secrets.sh ]; then source ~/.tools/secrets.sh; fi
 
 # Attach os detector, now OS var constains either "macos" or "linux"
 source ~/.tools/os_detector.sh
@@ -45,6 +45,7 @@ export ARCHFLAGS="-arch x86_64"
 # ssh
 export SSH_KEY_PATH="~/.ssh/rsa_id"
 export DEVPATH=$HOME/Developer
+export PATH=/usr/local/sbin:$PATH
 
 # Aliases
 alias zshconfig="vim ~/.zshrc"
@@ -59,11 +60,12 @@ if [[ "$OS" == "macos" ]]; then
 
   alias l="exa -al"
 
+	# GNU utilities
+	export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
+	export MANPATH="/usr/local/opt/coreutils/libexec/gnuman:$MANPATH"
+
   # AWS Region
   export AWS_REGION=us-east-1
-
-  # Python configuration
-  export PYTHONPATH="~/.venv/"
 
   # Google configuration
   export GOOGLE_APPLICATION_CREDENTIALS=~/.config/gcloud/application_default_credentials.json
@@ -71,23 +73,10 @@ if [[ "$OS" == "macos" ]]; then
   # export GOROOT=/usr/local/Library/google-cloud-sdk/platform/google_appengine/goroot
   # export GOROOT=~/Developer/bin/google-cloud-sdk/platform/google_appengine/goroot-1.8
   # export APPENGINE_DEV_APPSERVER=~/Developer/bin/google-cloud-sdk/platform/google_appengine/
-
-  # 1.6.4
-  # export GOROOT=/usr/local/Library/go.1.6.4/bin
-
-  # 1.7.5
-  # export GOROOT=/usr/local/Library/go.1.7.5
-
   # The next line updates PATH for the Google Cloud SDK.
-  if [ -f '/Users/peter/Developer/bin/google-cloud-sdk/path.zsh.inc' ]; then source '/Users/peter/Developer/bin/google-cloud-sdk/path.zsh.inc'; fi
-
+  if [ -f ~/Developer/bin/google-cloud-sdk/path.zsh.inc ]; then source ~/Developer/bin/google-cloud-sdk/path.zsh.inc; fi
   # The next line enables shell command completion for gcloud.
-  if [ -f '/Users/peter/Developer/bin/google-cloud-sdk/completion.zsh.inc' ]; then source '/Users/peter/Developer/bin/google-cloud-sdk/completion.zsh.inc'; fi
-
-  # Go configuration
-  # Update PATH with GOROOT
-  export GOPATH=$HOME/Developer
-  export GOBIN=$GOPATH/bin
+  if [ -f ~/Developer/bin/google-cloud-sdk/completion.zsh.inc ]; then source ~/Developer/bin/google-cloud-sdk/completion.zsh.inc; fi
 
   # Special stuff for the visual man page improvement
   function gman {
@@ -98,12 +87,23 @@ if [[ "$OS" == "macos" ]]; then
     fi
   }
 
+  # Go configuration
+	# 1.8
+  # export GOROOT=/usr/local/Library/go.1.7.5
+  export GOROOT="/usr/local/lib/go1.9.3"
+  export GOPATH=$HOME/Developer
+  export GOBIN=$GOPATH/bin
+	export PATH=$GOBIN:$GOROOT/bin:$PATH
+
   # Java configuration
   export JAVA_HOME=$(/usr/libexec/java_home)
   export MAVEN_OPTS="-Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -Dmaven.wagon.http.ssl.ignore.validity.dates=true -DskipTests=true"
 
+  # Python configuration
+  export PYTHONPATH="~/.venv/"
+
   # TravisCI configuration
-  [ -f /Users/peter/.travis/travis.sh ] && source /Users/peter/.travis/travis.sh
+  [ -f ~/.travis/travis.sh ] && source ~/.travis/travis.sh
   
   # vagrant settings
   export NOKOGIRI_USE_SYSTEM_LIBRARIES=true
@@ -115,5 +115,3 @@ if [[ "$OS" == "macos" ]]; then
   ### MacOS end ###
 fi
 
-# Ending part
-export PATH=/usr/local/sbin:$PATH
