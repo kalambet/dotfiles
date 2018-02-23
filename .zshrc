@@ -69,10 +69,6 @@ if [[ "$OS" == "macos" ]]; then
 
   # Google configuration
   export GOOGLE_APPLICATION_CREDENTIALS=~/.config/gcloud/application_default_credentials.json
-  # appengine
-  # export GOROOT=/usr/local/Library/google-cloud-sdk/platform/google_appengine/goroot
-  # export GOROOT=~/Developer/bin/google-cloud-sdk/platform/google_appengine/goroot-1.8
-  # export APPENGINE_DEV_APPSERVER=~/Developer/bin/google-cloud-sdk/platform/google_appengine/
   # The next line updates PATH for the Google Cloud SDK.
   if [ -f ~/Developer/bin/google-cloud-sdk/path.zsh.inc ]; then source ~/Developer/bin/google-cloud-sdk/path.zsh.inc; fi
   # The next line enables shell command completion for gcloud.
@@ -88,12 +84,9 @@ if [[ "$OS" == "macos" ]]; then
   }
 
   # Go configuration
-	# 1.8
-  # export GOROOT=/usr/local/Library/go.1.7.5
-  export GOROOT="/usr/local/lib/go1.9.3"
   export GOPATH=$HOME/Developer
   export GOBIN=$GOPATH/bin
-	export PATH=$GOBIN:$GOROOT/bin:$PATH
+	export PATH=$GOBIN:$PATH
 
   # Java configuration
   export JAVA_HOME=$(/usr/libexec/java_home)
