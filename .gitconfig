@@ -1,0 +1,15 @@
+[push]
+	default = simple
+[user]
+	nsme = Peter Kalambet
+	email = peter@technogeek.io
+	name = Peter Kalambet
+	signingkey = 3FF12E7D
+[filter "lfs"]
+	clean = git-lfs clean %f
+	smudge = git-lfs smudge %f
+	required = true
+[gpg]
+	program = gpg
+[commit]
+	gpgsign = true
