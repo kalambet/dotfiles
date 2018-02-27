@@ -13,7 +13,7 @@ if [[ "$OS" == "macos" ]]; then
   export VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python3
 
   plugins=(git ssh-agent docker docker-compose osx vagrant iterm2 virtualenvwrapper virtualenv)
-elif [[ "$OS" == "macos" ]]; then
+elif [[ "$OS" == "linux" ]]; then
   plugins=(git ssh-agent docker docker-compose virtualenvwrapper virtualenv)
 fi
 
