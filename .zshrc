@@ -70,9 +70,9 @@ if [[ "$OS" == "macos" ]]; then
   # Google configuration
   export GOOGLE_APPLICATION_CREDENTIALS=~/.config/gcloud/application_default_credentials.json
   # The next line updates PATH for the Google Cloud SDK.
-  if [ -f ~/Developer/bin/google-cloud-sdk/path.zsh.inc ]; then source ~/Developer/bin/google-cloud-sdk/path.zsh.inc; fi
+  if [ -f ~/Developer/usr/local/google-cloud-sdk/path.zsh.inc ]; then source ~/Developer/usr/local/google-cloud-sdk/path.zsh.inc; fi
   # The next line enables shell command completion for gcloud.
-  if [ -f ~/Developer/bin/google-cloud-sdk/completion.zsh.inc ]; then source ~/Developer/bin/google-cloud-sdk/completion.zsh.inc; fi
+  if [ -f ~/Developer/usr/local/google-cloud-sdk/completion.zsh.inc ]; then source ~/Developer/usr/local/google-cloud-sdk/completion.zsh.inc; fi
 
   # Special stuff for the visual man page improvement
   function gman {
