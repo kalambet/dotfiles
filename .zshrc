@@ -12,13 +12,17 @@ if [[ "$OS" == "macos" ]]; then
   # Need to do it here prior loading "virtualenv" plugins
   export VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python3
 
-  plugins=(git ssh-agent docker docker-compose osx vagrant iterm2 virtualenvwrapper virtualenv)
+  plugins=(git ssh-agent docker docker-compose osx vagrant iterm2)
 elif [[ "$OS" == "linux" ]]; then
   plugins=(git ssh-agent docker docker-compose virtualenvwrapper virtualenv)
 fi
 
 # Set visual theme
-ZSH_THEME="dracula"
+POWERLEVEL9K_MODE='awesome-fontconfig'
+ZSH_THEME="powerlevel9k/powerlevel9k"
+POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(context dir vcs)
+POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status load time)
+POWERLEVEL9K_PROMPT_ON_NEWLINE=true
 
 # Loading 
 source $ZSH/oh-my-zsh.sh
@@ -48,17 +52,18 @@ export DEVPATH=$HOME/Developer
 export PATH=/usr/local/sbin:$PATH
 
 # Aliases
-alias zshconfig="vim ~/.zshrc"
-alias ohmyzsh="vim ~/.oh-my-zsh"
 alias t="tree -a -L 1"
 alias d="cd $DEVPATH"
 
 # Beggining of OS dependednt sections
 
-if [[ "$OS" == "macos" ]]; then
+if [[ "$OS" == "OSX" ]]; then
   ### MacOS start ###
 
   alias l="exa -al"
+  alias zshconfig="code -n ~/.zshrc"
+  alias ohmyzsh="code -n ~/.oh-my-zsh"
+
 
 	# GNU utilities
 	export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
@@ -70,9 +75,14 @@ if [[ "$OS" == "macos" ]]; then
   # Google configuration
   export GOOGLE_APPLICATION_CREDENTIALS=~/.config/gcloud/application_default_credentials.json
   # The next line updates PATH for the Google Cloud SDK.
-  if [ -f ~/Developer/usr/local/google-cloud-sdk/path.zsh.inc ]; then source ~/Developer/usr/local/google-cloud-sdk/path.zsh.inc; fi
+  if [ -f ~/Developer/usr/local/google-cloud-sdk/path.zsh.inc ]; 
+    then source ~/Developer/usr/local/google-cloud-sdk/path.zsh.inc; 
+  fi
+  
   # The next line enables shell command completion for gcloud.
-  if [ -f ~/Developer/usr/local/google-cloud-sdk/completion.zsh.inc ]; then source ~/Developer/usr/local/google-cloud-sdk/completion.zsh.inc; fi
+  if [ -f ~/Developer/usr/local/google-cloud-sdk/completion.zsh.inc ]; then 
+    source ~/Developer/usr/local/google-cloud-sdk/completion.zsh.inc; 
+  fi
 
   # Special stuff for the visual man page improvement
   function gman {
@@ -90,7 +100,6 @@ if [[ "$OS" == "macos" ]]; then
 
   # Java configuration
   export JAVA_HOME=$(/usr/libexec/java_home)
-  export MAVEN_OPTS="-Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -Dmaven.wagon.http.ssl.ignore.validity.dates=true -DskipTests=true"
 
   # Python configuration
   export PYTHONPATH="~/.venv/"
@@ -102,9 +111,12 @@ if [[ "$OS" == "macos" ]]; then
   export NOKOGIRI_USE_SYSTEM_LIBRARIES=true
   export VAGRANT_DEFAULT_PROVIDER="parallels"
 
-  # Sodium configuration
-  export SODIUM_LIB_DIR=/usr/local/Cellar/libsodium/1.0.13/lib
+	# OpenSSL setup
+	export PATH=/usr/local/opt/openssl/bin:$PATH
+	export LDFLAGS="-L/usr/local/opt/openssl/lib"
+  export CPPFLAGS="-I/usr/local/opt/openssl/include"
+	export PKG_CONFIG_PATH="/usr/local/opt/openssl/lib/pkgconfig"
 
-  ### MacOS end ###
+	### MacOS end ###
 fi
 
