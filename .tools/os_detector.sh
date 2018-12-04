@@ -1,7 +1,7 @@
 #!/bin/zsh
 
 if [[ $OSTYPE == *"darwin"* ]]; then
-    OS="macos"
+    export OS_TYPE="macos"
 elif [[ $OSTYPE == *"linux"* ]]; then
-    OS="linux"
+    export OS_TYPE="linux"
 fi
