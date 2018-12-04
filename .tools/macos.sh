@@ -1,6 +1,5 @@
 ### MacOS start ###
 
-alias l="exa -al"
 
 # GNU utilities
 export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"

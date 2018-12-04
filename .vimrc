@@ -38,10 +38,10 @@ set tm=500
 " Enable syntax highlighting
 syntax on
 
-try
-   color dracula 
-catch
-endtry
+"try
+"   color dracula 
+"catch
+"endtry
 
 
 " Set utf8 as standard encoding and en_US as the standard language
@@ -99,6 +99,10 @@ let g:go_metalinter_autosave = 1
 let g:go_metalinter_autosave_enabled = ['vet', 'golint']
 
 let g:go_auto_sameids = 1
+
+" Racer plugin
+let g:racer_experimental_completer = 1
+
 
 map <C-n> :cnext<CR>
 map <C-m> :cprevious<CR>
