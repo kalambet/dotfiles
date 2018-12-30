@@ -1,7 +1,46 @@
+if &compatible
+  set nocompatible " Be iMproved
+endif
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Pathogen 
+" => Required (Dein)
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-execute pathogen#infect()
+set runtimepath+=~/.vim/bundles/repos/github.com/Shougo/dein.vim
+
+" Required:
+if dein#load_state('~/.vim/bundles')
+  call dein#begin('~/.vim/bundles')
+
+  " Let dein manage dein
+  " Required:
+  call dein#add('~/.vim/bundles/repos/github.com/Shougo/dein.vim')
+
+  call dein#add('mileszs/ack.vim')
+  call dein#add('editorconfig/editorconfig-vim')
+  call dein#add('vim-airline/vim-airline')
+  call dein#add('tpope/vim-vinegar')
+
+  call dein#add('Shougo/deoplete.nvim')
+  let g:deoplete#enable_at_startup = 1
+
+  call dein#add('rust-lang/rust.vim')
+  call dein#add('racer-rust/vim-racer')
+  call dein#add('timonv/vim-cargo')
+  call dein#add('sebastianmarkow/deoplete-rust') 
+
+  call dein#add('fatih/vim-go') 
+  call dein#add('zchee/deoplete-go')
+
+  " Required:
+  call dein#end()
+  call dein#save_state()
+endif
+
+" If you want to install not installed plugins on startup.
+if dein#check_install()
+  call dein#install()
+endif
+
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => General 
@@ -32,17 +71,13 @@ set novisualbell
 set t_vb=
 set tm=500
 
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Colors and Fonts
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Enable syntax highlighting
-syntax on
-
-"try
-"   color dracula 
-"catch
-"endtry
-
+filetype plugin indent on
+syntax enable
 
 " Set utf8 as standard encoding and en_US as the standard language
 set encoding=utf8
@@ -70,11 +105,6 @@ set tw=500
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Plugin settings 
 " """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-filetype plugin indent on
-
-" CrelP plugin
-set runtimepath^=~/.vim/bundle/ctrlp.vim
-
 " Ack setup for ag
 let g:ackprg = 'ag --vimgrep --smart-case'
 
@@ -107,4 +137,3 @@ let g:racer_experimental_completer = 1
 map <C-n> :cnext<CR>
 map <C-m> :cprevious<CR>
 nnoremap <leader>a :cclose<CR>
-
