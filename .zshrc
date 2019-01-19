@@ -1,6 +1,7 @@
 export TERM="xterm-256color"
 # Setting ZSH
 export ZSH=~/.oh-my-zsh
+export TERM="xterm-256color"
 
 # Load some secrets
 if [ -f ~/.tools/secrets.sh ]; then source ~/.tools/secrets.sh; fi
@@ -49,7 +50,7 @@ export ARCHFLAGS="-arch x86_64"
 # ssh
 export SSH_KEY_PATH="~/.ssh/rsa_id"
 export DEVPATH=$HOME/Developer
-export PATH=/usr/local/sbin:$PATH
+export PATH=$DEVPATH/bin:/usr/local/sbin:$PATH
 
 # Rust setup
 source $HOME/.cargo/env

@@ -22,6 +22,10 @@ if dein#load_state('~/.vim/bundles')
 
   call dein#add('Shougo/deoplete.nvim')
   let g:deoplete#enable_at_startup = 1
+	if !has('nvim')
+		call dein#add('roxma/nvim-yarp')
+		call dein#add('roxma/vim-hug-neovim-rpc')
+	endif
 
   call dein#add('rust-lang/rust.vim')
   call dein#add('racer-rust/vim-racer')
