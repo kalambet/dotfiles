@@ -30,7 +30,7 @@ function gman {
 }
 
 # Go configuration
-export GOPATH=$HOME/Developer
+export GOPATH=$HOME/go
 export GOBIN=$GOPATH/bin
 export PATH=$GOBIN:$PATH
 
