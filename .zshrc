@@ -14,9 +14,9 @@ if [[ "$OS_TYPE" == "macos" ]]; then
   # Need to do it here prior loading "virtualenv" plugins
   export VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python3
 
-  plugins=(git ssh-agent docker docker-compose osx vagrant iterm2)
+  plugins=(git ssh-agentgpg-agent  docker docker-compose osx vagrant iterm2)
 elif [[ "$OS_TYPE" == "linux" ]]; then
-  plugins=(git ssh-agent docker docker-compose)
+  plugins=(git ssh-agent gpg-agent docker docker-compose)
 fi
 
 # Set visual theme

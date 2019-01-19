@@ -4,7 +4,7 @@
 	nsme = Peter Kalambet
 	email = peter@technogeek.io
 	name = Peter Kalambet
-	signingkey = 3FF12E7D
+	signingkey = C5E55BCE3FF12E7D
 [filter "lfs"]
 	clean = git-lfs clean %f
 	smudge = git-lfs smudge %f
