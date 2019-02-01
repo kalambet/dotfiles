@@ -36,6 +36,7 @@ export PATH=$GOBIN:$PATH
 
 # Java configuration
 export JAVA_HOME=$(/usr/libexec/java_home)
+export PATH=$DEVPATH/bin/web3j/bin:$PATH
 
 # Python configuration
 export PYTHONPATH="~/.venv/"
@@ -52,5 +53,8 @@ export PATH=/usr/local/opt/openssl/bin:$PATH
 export LDFLAGS="-L/usr/local/opt/openssl/lib"
 export CPPFLAGS="-I/usr/local/opt/openssl/include"
 export PKG_CONFIG_PATH="/usr/local/opt/openssl/lib/pkgconfig"
+
+# Node.js configuration
+export PATH="/usr/local/opt/node@8/bin:$PATH"
 
 ### MacOS end ###
