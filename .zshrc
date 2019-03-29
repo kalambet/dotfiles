@@ -14,7 +14,7 @@ if [[ "$OS_TYPE" == "macos" ]]; then
   # Need to do it here prior loading "virtualenv" plugins
   export VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python3
 
-  plugins=(git ssh-agentgpg-agent  docker docker-compose osx vagrant iterm2)
+  plugins=(git ssh-agent gpg-agent  docker docker-compose osx vagrant iterm2)
 elif [[ "$OS_TYPE" == "linux" ]]; then
   plugins=(git ssh-agent gpg-agent docker docker-compose)
 fi
@@ -28,16 +28,6 @@ POWERLEVEL9K_PROMPT_ON_NEWLINE=true
 
 # Loading 
 source $ZSH/oh-my-zsh.sh
-
-# PGP configuration
-#if test -f ~/.gnupg/.gpg-agent-info -a -n "$(pgrep gpg-agent)"; then
-#  source ~/.gnupg/.gpg-agent-info
-#  export GPG_AGENT_INFO
-#  GPG_TTY=$(tty)
-#  export GPG_TTY
-#else
-#  eval $(gpg-agent --daemon --write-env-file ~/.gnupg/.gpg-agent-info)
-#fi
 
 # You may need to manually set your language environment
 export LC_ALL=en_US.UTF-8
@@ -63,6 +53,17 @@ alias zshconfig="vim -n ~/.zshrc"
 alias ohmyzsh="vim -n ~/.oh-my-zsh"
 
 alias l="exa -al"
+alias rm="trash"
+
+# fasd
+alias a='fasd -a'        # any
+alias s='fasd -si'       # show / search / select
+alias d='fasd -d'        # directory
+alias f='fasd -f'        # file
+alias sd='fasd -sid'     # interactive directory selection
+alias sf='fasd -sif'     # interactive file selection
+alias z='fasd_cd -d'     # cd, same functionality as j in autojump
+alias zz='fasd_cd -d -i' # cd with interactive selection
 
 # Beggining of OS dependednt sections
 

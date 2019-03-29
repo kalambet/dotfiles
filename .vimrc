@@ -27,6 +27,8 @@ if dein#load_state('~/.vim/bundles')
 		call dein#add('roxma/vim-hug-neovim-rpc')
 	endif
 
+	call dein#add('scrooloose/nerdtree')
+	call dein#add('ctrlpvim/ctrlp.vim')
   call dein#add('rust-lang/rust.vim')
   call dein#add('racer-rust/vim-racer')
   call dein#add('timonv/vim-cargo')
@@ -110,7 +112,9 @@ set tw=500
 " => Plugin settings 
 " """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Ack setup for ag
-let g:ackprg = 'ag --vimgrep --smart-case'
+if executable('ag')
+  let g:ackprg = 'ag --vimgrep --smart-case'
+endif
 
 " Airline
 set laststatus=2
@@ -137,7 +141,5 @@ let g:go_auto_sameids = 1
 " Racer plugin
 let g:racer_experimental_completer = 1
 
+map <C-n> :NERDTreeToggle<CR>
 
-map <C-n> :cnext<CR>
-map <C-m> :cprevious<CR>
-nnoremap <leader>a :cclose<CR>
