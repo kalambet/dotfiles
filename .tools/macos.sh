@@ -1,6 +1,5 @@
 ### MacOS start ###
 
-
 # GNU utilities
 export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
 export MANPATH="/usr/local/opt/coreutils/libexec/gnuman:$MANPATH"
@@ -11,14 +10,17 @@ export AWS_REGION=us-east-1
 # Google configuration
 export GOOGLE_APPLICATION_CREDENTIALS=~/.config/gcloud/application_default_credentials.json
 # The next line updates PATH for the Google Cloud SDK.
-if [ -f ~/Developer/usr/local/google-cloud-sdk/path.zsh.inc ]; then 
-    source ~/Developer/usr/local/google-cloud-sdk/path.zsh.inc; 
+if [ -f ~/Developer/usr/local/bin/google-cloud-sdk/path.zsh.inc ]; then 
+    source ~/Developer/usr/local/bin/google-cloud-sdk/path.zsh.inc; 
 fi
 
 # The next line enables shell command completion for gcloud.
-if [ -f ~/Developer/usr/local/google-cloud-sdk/completion.zsh.inc ]; then 
-    source ~/Developer/usr/local/google-cloud-sdk/completion.zsh.inc; 
+if [ -f ~/Developer/usr/local/bin/google-cloud-sdk/completion.zsh.inc ]; then 
+    source ~/Developer/usr/local/bin/google-cloud-sdk/completion.zsh.inc; 
 fi
+
+## Android SDK
+export PATH=$PATH:$DEVPATH/usr/local/bin/android/tools/bin:$DEVPATH/usr/local/bin/android/platform-tools
 
 # Special stuff for the visual man page improvement
 function gman {

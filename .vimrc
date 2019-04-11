@@ -14,7 +14,8 @@ if dein#load_state('~/.vim/bundles')
   " Let dein manage dein
   " Required:
   call dein#add('~/.vim/bundles/repos/github.com/Shougo/dein.vim')
-
+  
+	call dein#add('aonemd/kuroi.vim')
   call dein#add('mileszs/ack.vim')
   call dein#add('editorconfig/editorconfig-vim')
   call dein#add('vim-airline/vim-airline')
@@ -81,6 +82,11 @@ set tm=500
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Colors and Fonts
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Color scheme
+set termguicolors
+set background=dark
+colorscheme kuroi
+
 " Enable syntax highlighting
 filetype plugin indent on
 syntax enable
