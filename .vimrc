@@ -146,6 +146,6 @@ let g:go_auto_sameids = 1
 
 " Racer plugin
 let g:racer_experimental_completer = 1
-
+let g:deoplete#sources#rust#rust_source_path='$HOME/.rustup/toolchains/stable-x86_64-apple-darwin/lib/rustlib/src/rust/src'
 map <C-n> :NERDTreeToggle<CR>
 
