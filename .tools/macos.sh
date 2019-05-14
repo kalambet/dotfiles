@@ -1,5 +1,8 @@
 ### MacOS start ###
 
+# macOS specific aliases
+alias rm="trash"
+
 # GNU utilities
 # export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
 # export MANPATH="/usr/local/opt/coreutils/libexec/gnuman:$MANPATH"

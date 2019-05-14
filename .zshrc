@@ -53,7 +53,7 @@ alias zshconfig="vim -n ~/.zshrc"
 alias ohmyzsh="vim -n ~/.oh-my-zsh"
 
 alias l="exa -al"
-alias rm="trash"
+alias vim="nvim"
 
 # fasd
 alias a='fasd -a'        # any
