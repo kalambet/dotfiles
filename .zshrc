@@ -2,6 +2,8 @@ export TERM="xterm-256color"
 # Setting ZSH
 export ZSH=~/.oh-my-zsh
 export TERM="xterm-256color"
+export LC_ALL=en_US.UTF-8  
+export LANG=en_US.UTF-8
 
 # Load some secrets
 if [ -f ~/.tools/secrets.sh ]; then source ~/.tools/secrets.sh; fi
@@ -13,10 +15,9 @@ source ~/.tools/os_detector.sh
 if [[ "$OS_TYPE" == "macos" ]]; then
   # Need to do it here prior loading "virtualenv" plugins
   export VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python3
-
-  plugins=(git ssh-agent gpg-agent  docker docker-compose osx vagrant iterm2)
+  plugins=(git ssh-agent docker iterm2 gpg-agent) 
 elif [[ "$OS_TYPE" == "linux" ]]; then
-  plugins=(git ssh-agent gpg-agent docker docker-compose)
+  plugins=(git ssh-agent gpg-agent docker)
 fi
 
 # Set visual theme
@@ -30,9 +31,19 @@ POWERLEVEL9K_PROMPT_ON_NEWLINE=true
 source $ZSH/oh-my-zsh.sh
 
 # You may need to manually set your language environment
-export LC_ALL=en_US.UTF-8
-export LANG=en_US.UTF-8
-export EDITOR='vim'
+# export LANGUAGE=en_US.UTF-8
+# export LNG=C
+# export LC_CTYPE=UTF-8
+# export LC_NUMERIC=C
+# export LC_TIME=C
+# export LC_COLLATE=C
+# export LC_MONETARY=C
+# export LC_MESSAGES=C
+# export LC_ALL=en_US.UTF-8
+# export LANG=en_US.UTF-8
+
+# Editor
+# export EDITOR='nvim'
 
 # Compilation flags
 export ARCHFLAGS="-arch x86_64"
@@ -68,7 +79,7 @@ alias zz='fasd_cd -d -i' # cd with interactive selection
 # Beggining of OS dependednt sections
 
 if [[ "$OS_TYPE" == "macos" ]]; then
-  source ~/.tools/macos.sh
+   source ~/.tools/macos.sh
 elif [[ "$OS_TYPE" == "linux" ]]; then
   source ~/.tools/linux.sh
 fi

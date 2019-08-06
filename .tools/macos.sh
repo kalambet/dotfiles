@@ -1,5 +1,7 @@
 ### MacOS start ###
 
+export PATH="$HOME/.cargo/bin:$PATH"
+
 # GNU utilities
 # export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
 # export MANPATH="/usr/local/opt/coreutils/libexec/gnuman:$MANPATH"
@@ -20,7 +22,7 @@ if [ -f ~/Developer/usr/local/bin/google-cloud-sdk/completion.zsh.inc ]; then
 fi
 
 ## Android SDK
-export PATH=$PATH:$DEVPATH/usr/local/bin/android/tools/bin:$DEVPATH/usr/local/bin/android/platform-tools
+# export PATH=$PATH:$DEVPATH/usr/local/bin/android/tools/bin:$DEVPATH/usr/local/bin/android/platform-tools
 
 # Special stuff for the visual man page improvement
 function gman {
