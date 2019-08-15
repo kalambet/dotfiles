@@ -21,8 +21,9 @@ elif [[ "$OS_TYPE" == "linux" ]]; then
 fi
 
 # Set visual theme
-POWERLEVEL9K_MODE='awesome-fontconfig'
 ZSH_THEME="powerlevel9k/powerlevel9k"
+POWERLEVEL9K_MODE='nerdfont-complete'
+POWERLEVEL9K_TIME_FORMAT='%D{%H:%M}'
 POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(context dir vcs)
 POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status load time)
 POWERLEVEL9K_PROMPT_ON_NEWLINE=true
@@ -31,16 +32,16 @@ POWERLEVEL9K_PROMPT_ON_NEWLINE=true
 source $ZSH/oh-my-zsh.sh
 
 # You may need to manually set your language environment
-# export LANGUAGE=en_US.UTF-8
-# export LNG=C
-# export LC_CTYPE=UTF-8
+export LANGUAGE=en_US.UTF-8
+export LNG=C
+export LC_CTYPE=UTF-8
 # export LC_NUMERIC=C
 # export LC_TIME=C
 # export LC_COLLATE=C
 # export LC_MONETARY=C
 # export LC_MESSAGES=C
-# export LC_ALL=en_US.UTF-8
-# export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+export LANG=en_US.UTF-8
 
 # Editor
 # export EDITOR='nvim'
