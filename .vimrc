@@ -15,7 +15,7 @@ if dein#load_state('~/.vim/bundles')
   " Required:
   call dein#add('~/.vim/bundles/repos/github.com/Shougo/dein.vim')
   
-	call dein#add('aonemd/kuroi.vim')
+  call dein#add('aonemd/kuroi.vim')
   call dein#add('mileszs/ack.vim')
   call dein#add('editorconfig/editorconfig-vim')
   call dein#add('vim-airline/vim-airline')
@@ -24,8 +24,8 @@ if dein#load_state('~/.vim/bundles')
   call dein#add('Shougo/deoplete.nvim')
   let g:deoplete#enable_at_startup = 1
 	if !has('nvim')
-		call dein#add('roxma/nvim-yarp')
-		call dein#add('roxma/vim-hug-neovim-rpc')
+	  call dein#add('roxma/nvim-yarp')
+	  call dein#add('roxma/vim-hug-neovim-rpc')
 	endif
 
 	call dein#add('scrooloose/nerdtree')
@@ -84,13 +84,14 @@ set tm=500
 " => Colors and Fonts
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Color scheme
-set termguicolors
+" set termguicolors
+" set background=light
 " set background=dark
-colorscheme kuroi
+" colorscheme kuroi
 
 " Enable syntax highlighting
 filetype plugin indent on
-syntax enable
+syntax on
 
 " Set utf8 as standard encoding and en_US as the standard language
 set encoding=utf8

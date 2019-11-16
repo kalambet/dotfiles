@@ -1,4 +1,5 @@
 export TERM="xterm-256color"
+
 # Setting ZSH
 export ZSH=~/.oh-my-zsh
 export TERM="xterm-256color"
@@ -13,37 +14,30 @@ source ~/.tools/os_detector.sh
 
 # Depending on OS type set ZSH plugins
 if [[ "$OS_TYPE" == "macos" ]]; then
-  # Need to do it here prior loading "virtualenv" plugins
-  export VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python3
-  plugins=(git ssh-agent docker iterm2 gpg-agent) 
+  plugins=(git docker iterm2 gpg-agent) 
 elif [[ "$OS_TYPE" == "linux" ]]; then
-  plugins=(git ssh-agent gpg-agent docker)
+  plugins=(git gpg-agent docker)
+fi
+
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block, everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
 # Set visual theme
-POWERLEVEL9K_MODE='awesome-fontconfig'
-ZSH_THEME="powerlevel9k/powerlevel9k"
-POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(context dir vcs)
-POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status load time)
-POWERLEVEL9K_PROMPT_ON_NEWLINE=true
+# POWERLEVEL9K_MODE='awesome-fontconfig'
+ZSH_THEME="powerlevel10k/powerlevel10k"
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 # Loading 
 source $ZSH/oh-my-zsh.sh
 
-# You may need to manually set your language environment
-# export LANGUAGE=en_US.UTF-8
-# export LNG=C
-# export LC_CTYPE=UTF-8
-# export LC_NUMERIC=C
-# export LC_TIME=C
-# export LC_COLLATE=C
-# export LC_MONETARY=C
-# export LC_MESSAGES=C
-# export LC_ALL=en_US.UTF-8
-# export LANG=en_US.UTF-8
-
 # Editor
-# export EDITOR='nvim'
+export EDITOR='code'
 
 # Compilation flags
 export ARCHFLAGS="-arch x86_64"
@@ -60,27 +54,15 @@ export RUST_SRC_PATH="$(rustc --print sysroot)/lib/rustlib/src/rust/src"
 # Aliases
 alias t="tree -a -L 1"
 alias d="cd $DEVPATH"
-alias zshconfig="vim -n ~/.zshrc"
-alias ohmyzsh="vim -n ~/.oh-my-zsh"
+alias zshconfig="code -n ~/.zshrc"
+alias ohmyzsh="code -n ~/.oh-my-zsh"
 
-alias l="exa -al"
+alias l="exa -alh"
 alias vim="nvim"
 
-# fasd
-alias a='fasd -a'        # any
-alias s='fasd -si'       # show / search / select
-alias d='fasd -d'        # directory
-alias f='fasd -f'        # file
-alias sd='fasd -sid'     # interactive directory selection
-alias sf='fasd -sif'     # interactive file selection
-alias z='fasd_cd -d'     # cd, same functionality as j in autojump
-alias zz='fasd_cd -d -i' # cd with interactive selection
-
 # Beggining of OS dependednt sections
-
 if [[ "$OS_TYPE" == "macos" ]]; then
    source ~/.tools/macos.sh
 elif [[ "$OS_TYPE" == "linux" ]]; then
   source ~/.tools/linux.sh
 fi
-
