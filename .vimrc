@@ -28,8 +28,8 @@ if dein#load_state('~/.vim/bundles')
 	  call dein#add('roxma/vim-hug-neovim-rpc')
 	endif
 
-	call dein#add('scrooloose/nerdtree')
-	call dein#add('ctrlpvim/ctrlp.vim')
+  call dein#add('scrooloose/nerdtree')
+  call dein#add('ctrlpvim/ctrlp.vim')
   call dein#add('rust-lang/rust.vim')
   call dein#add('racer-rust/vim-racer')
   call dein#add('timonv/vim-cargo')
