@@ -6,10 +6,13 @@
 	name = Peter Kalambet
 	signingkey = C5E55BCE3FF12E7D
 [filter "lfs"]
-	clean = git-lfs clean %f
-	smudge = git-lfs smudge %f
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
 	required = true
+	process = git-lfs filter-process
 [gpg]
 	program = gpg
 [commit]
 	gpgsign = true
+[core]
+	ignorecase = false
