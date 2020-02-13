@@ -1,6 +1,4 @@
 ### MacOS start ###
-source $HOME/.tools/secrets.sh
-
 export PATH="$HOME/.cargo/bin:$PATH"
 
 # macOS specific aliases
@@ -14,7 +12,7 @@ alias rm="trash"
 export AWS_REGION=us-east-1
 
 # Google configuration
-export GOOGLE_APPLICATION_CREDENTIALS=~/.config/gcloud/application_default_credentials.json
+# export GOOGLE_APPLICATION_CREDENTIALS=$HOME/.config/gcloud/application_default_credentials.json
 # The next line updates PATH for the Google Cloud SDK.
 if [ -f ~/Developer/usr/local/bin/google-cloud-sdk/path.zsh.inc ]; then 
     source ~/Developer/usr/local/bin/google-cloud-sdk/path.zsh.inc; 
@@ -27,6 +25,16 @@ fi
 
 ## Android SDK
 # export PATH=$PATH:$DEVPATH/usr/local/bin/android/tools/bin:$DEVPATH/usr/local/bin/android/platform-tools
+
+# nvm setup
+export NVM_DIR="$HOME/.nvm";
+if [ -s "/usr/local/opt/nvm/nvm.sh" ]; then
+	source /usr/local/opt/nvm/nvm.sh;
+fi
+
+if [ -f /usr/local/etc/bash_completion.d ]; then
+	source /usr/local/etc/bash_completion.d;
+fi
 
 # Special stuff for the visual man page improvement
 function gman {
@@ -43,14 +51,11 @@ export GOBIN=$GOPATH/bin
 export PATH=$GOBIN:$PATH
 
 # Java configuration
-export JAVA_HOME=$(/usr/libexec/java_home)
+# export JAVA_HOME=$(/usr/libexec/java_home)
 
 # Python configuration
 # export PYTHONPATH="~/.venv/"
 export VIRTUAL_ENV_DISABLE_PROMPT=1
-
-# TravisCI configuration
-# [ -f ~/.travis/travis.sh ] && source ~/.travis/travis.sh
 
 # vagrant settings
 # export NOKOGIRI_USE_SYSTEM_LIBRARIES=true
