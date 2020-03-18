@@ -6,23 +6,12 @@ export TERM="xterm-256color"
 export LC_ALL=en_US.UTF-8  
 export LANG=en_US.UTF-8
 
+
 # Set visual theme
 ZSH_THEME="powerlevel10k/powerlevel10k"
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-
-# Loading Oh My Zsh settings
-source $ZSH/oh-my-zsh.sh
-
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block, everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
-
-# Theme init finish. Let's load OS dependednt code 
 
 # Load some secrets
 if [ -f ~/.tools/secrets.sh ]; then source ~/.tools/secrets.sh; fi
@@ -36,6 +25,18 @@ if [[ "$OS_TYPE" == "macos" ]]; then
 elif [[ "$OS_TYPE" == "linux" ]]; then
   plugins=(git gpg-agent docker)
 fi
+
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block, everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
+# Loading Oh My Zsh settings
+source $ZSH/oh-my-zsh.sh
+
+# Theme init finish. Let's load OS dependednt code 
 
 # Editor
 export EDITOR='vim'
