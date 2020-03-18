@@ -46,6 +46,7 @@ function gman {
 }
 
 # Go configuration
+export PATH="/usr/local/opt/go@1.13/bin:$PATH"	
 export GOPATH=$HOME/go
 export GOBIN=$GOPATH/bin
 export PATH=$GOBIN:$PATH
