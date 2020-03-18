@@ -49,7 +49,7 @@ export DEVPATH=$HOME/Developer
 export PATH=$DEVPATH/bin:/usr/local/sbin:$PATH
 
 # Rust setup
-# source $HOME/.cargo/env
+source $HOME/.cargo/env
 export RUST_SRC_PATH="$(rustc --print sysroot)/lib/rustlib/src/rust/src"
 
 # Aliases
