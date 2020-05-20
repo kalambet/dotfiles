@@ -21,9 +21,9 @@ source ~/.tools/os_detector.sh
 
 # Depending on OS type set ZSH plugins
 if [[ "$OS_TYPE" == "macos" ]]; then
-  plugins=(git docker iterm2 gpg-agent) 
+  plugins=(git docker iterm2 gpg-agent tmux) 
 elif [[ "$OS_TYPE" == "linux" ]]; then
-  plugins=(git gpg-agent docker)
+  plugins=(git gpg-agent docker tmux)
 fi
 
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
@@ -48,10 +48,6 @@ export ARCHFLAGS="-arch x86_64"
 export SSH_KEY_PATH="~/.ssh/rsa_id"
 export DEVPATH=$HOME/Developer
 export PATH=$DEVPATH/bin:/usr/local/sbin:$PATH
-
-# Rust setup
-source $HOME/.cargo/env
-export RUST_SRC_PATH="$(rustc --print sysroot)/lib/rustlib/src/rust/src"
 
 # Aliases
 alias t="tree -a -L 1"

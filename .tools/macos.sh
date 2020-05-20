@@ -4,6 +4,10 @@ export PATH="$HOME/.cargo/bin:$PATH"
 # macOS specific aliases
 alias rm="trash"
 
+# Rust setup
+source $HOME/.cargo/env
+export RUST_SRC_PATH="$(rustc --print sysroot)/lib/rustlib/src/rust/src"
+
 # GitHub CLI settings
 if [ -f ~/.gh.inc ]; then 
     source ~/.gh.inc; 

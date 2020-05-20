@@ -8,6 +8,10 @@ fi
 # Initialize brew for linux
 export PATH="/home/linuxbrew/.linuxbrew/bin":$PATH
 
+# Rust setup
+export PATH=$HOME/.cargo/bin:$PATH
+export RUST_SRC_PATH="$(rustc --print sysroot)/lib/rustlib/src/rust/src"
+
 export NVM_DIR="$HOME/.nvm"
 # This loads nvm
 if [ -s "/home/linuxbrew/.linuxbrew/opt/nvm/nvm.sh" ]; then
