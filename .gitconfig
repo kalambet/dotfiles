@@ -1,7 +1,6 @@
 [push]
 	default = simple
 [user]
-	nsme = Peter Kalambet
 	email = peter@kalambet.dev
 	name = Peter Kalambet
 	signingkey = C5E55BCE3FF12E7D

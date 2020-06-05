@@ -33,7 +33,7 @@ if [ -f ~/Developer/usr/local/bin/google-cloud-sdk/completion.zsh.inc ]; then
 fi
 
 ## Android SDK
-export PATH=$PATH:$DEVPATH/bin/android-platform-tools
+export PATH=$PATH:$DEVPATH/bin/platform-tools
 
 # nvm setup
 export NVM_DIR="$HOME/.nvm";
