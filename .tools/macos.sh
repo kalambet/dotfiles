@@ -13,23 +13,19 @@ if [ -f ~/.gh.inc ]; then
     source ~/.gh.inc; 
 fi
 
-# GNU utilities
-# export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
-# export MANPATH="/usr/local/opt/coreutils/libexec/gnuman:$MANPATH"
-
 # AWS Region
 export AWS_REGION=us-east-1
 
 # Google configuration
 # export GOOGLE_APPLICATION_CREDENTIALS=$HOME/.config/gcloud/application_default_credentials.json
 # The next line updates PATH for the Google Cloud SDK.
-if [ -f ~/Developer/usr/local/bin/google-cloud-sdk/path.zsh.inc ]; then 
-    source ~/Developer/usr/local/bin/google-cloud-sdk/path.zsh.inc; 
+if [ -f $DEVPATH/bin/google-cloud-sdk/path.zsh.inc ]; then 
+    source $DEVPATH/bin/google-cloud-sdk/path.zsh.inc; 
 fi
 
 # # The next line enables shell command completion for gcloud.
-if [ -f ~/Developer/usr/local/bin/google-cloud-sdk/completion.zsh.inc ]; then 
-    source ~/Developer/usr/local/bin/google-cloud-sdk/completion.zsh.inc; 
+if [ -f $DEVPATH/bin/google-cloud-sdk/completion.zsh.inc ]; then 
+    source $DEVPATH/bin/google-cloud-sdk/completion.zsh.inc; 
 fi
 
 ## Android SDK
@@ -60,16 +56,9 @@ export GOPATH=$HOME/go
 export GOBIN=$GOPATH/bin
 export PATH=$GOBIN:$PATH
 
-# Java configuration
-# export JAVA_HOME=$(/usr/libexec/java_home)
-
 # Python configuration
 # export PYTHONPATH="~/.venv/"
 export VIRTUAL_ENV_DISABLE_PROMPT=1
-
-# vagrant settings
-# export NOKOGIRI_USE_SYSTEM_LIBRARIES=true
-# export VAGRANT_DEFAULT_PROVIDER="parallels"
 
 # OpenSSL setup
 export PATH=/usr/local/opt/openssl/bin:$PATH
@@ -77,11 +66,5 @@ export LDFLAGS="-L/usr/local/opt/openssl/lib -L/usr/local/lib -L/usr/local/opt/e
 export CFLAGS="-I/usr/local/opt/openssl/include -I/usr/local/include -I/usr/local/opt/expat/include"
 export CPPFLAGS="-I/usr/local/opt/openssl/include -I/usr/local/include -I/usr/local/opt/expat/include"
 export PKG_CONFIG_PATH="/usr/local/opt/openssl/lib/pkgconfig"
-
-
-# TON Settings
-#export TON_SRC=$DEVPATH/src/github.com/ton-blockchain/ton
-#export FIFTPATH=$TON_SRC/crypto/fift/lib:$TON_SRC/crypto/smartcont
-#source $HOME/.tools/ton.zsh
 
 ### MacOS end ###
