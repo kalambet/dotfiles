@@ -60,7 +60,16 @@ alias vim="nvim"
 
 # Beggining of OS dependednt sections
 if [[ "$OS_TYPE" == "macos" ]]; then
-   source ~/.tools/macos.sh
+   source $HOME/.tools/macos.sh
 elif [[ "$OS_TYPE" == "linux" ]]; then
-  source ~/.tools/linux.sh
+  source $HOME/.tools/linux.sh
 fi
+
+if [[ -f $HOME/.tools/projects.sh ]]; then
+	source $HOME/.tools/projects.sh
+fi
+
+if [[ -f $HOME/.tools/docker.sh ]]; then
+	source $HOME/.tools/docker.sh
+fi
+
