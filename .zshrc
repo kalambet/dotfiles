@@ -57,6 +57,7 @@ alias ohmyzsh="code -n ~/.oh-my-zsh"
 
 alias l="exa -alh"
 alias vim="nvim"
+alias firefly="mosh serenity.k6t.local"
 
 # Beggining of OS dependednt sections
 if [[ "$OS_TYPE" == "macos" ]]; then
