@@ -21,7 +21,7 @@ source ~/.tools/os_detector.sh
 
 # Depending on OS type set ZSH plugins
 if [[ "$OS_TYPE" == "macos" ]]; then
-  plugins=(git docker iterm2 gpg-agent tmux) 
+  plugins=(git docker iterm2 gpg-agent tmux)
 elif [[ "$OS_TYPE" == "linux" ]]; then
   plugins=(git gpg-agent docker tmux)
 fi
@@ -39,7 +39,7 @@ source $ZSH/oh-my-zsh.sh
 # Theme init finish. Let's load OS dependednt code 
 
 # Editor
-export EDITOR='vim'
+export EDITOR='nvim'
 
 # Compilation flags
 export ARCHFLAGS="-arch x86_64"
@@ -58,6 +58,9 @@ alias ohmyzsh="code -n ~/.oh-my-zsh"
 alias l="exa -alh"
 alias vim="nvim"
 alias firefly="mosh serenity.k6t.local"
+
+# Load all the zsh-completions
+autoload -U compinit && compinit
 
 # Beggining of OS dependednt sections
 if [[ "$OS_TYPE" == "macos" ]]; then
