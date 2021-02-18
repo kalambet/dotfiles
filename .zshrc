@@ -41,9 +41,6 @@ source $ZSH/oh-my-zsh.sh
 # Editor
 export EDITOR='nvim'
 
-# Compilation flags
-export ARCHFLAGS="-arch x86_64"
-
 # ssh
 export SSH_KEY_PATH="~/.ssh/rsa_id"
 export DEVPATH=$HOME/Developer
@@ -57,7 +54,7 @@ alias ohmyzsh="code -n ~/.oh-my-zsh"
 
 alias l="exa -alh"
 alias vim="nvim"
-alias firefly="mosh serenity.k6t.local"
+alias firefly="mosh serenity"
 
 # Load all the zsh-completions
 autoload -U compinit && compinit

@@ -3,9 +3,12 @@ export PATH="$HOME/.cargo/bin:$PATH"
 
 # macOS specific aliases
 alias rm="trash"
+alias code="code-insiders"
 
 # Rust setup
-source $HOME/.cargo/env
+if [ -f $HOME/.cargo/env ]; then 
+    source $HOME/.cargo/env; 
+fi
 export RUST_SRC_PATH="$(rustc --print sysroot)/lib/rustlib/src/rust/src"
 
 # GitHub CLI settings
