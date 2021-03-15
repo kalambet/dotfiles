@@ -3,7 +3,6 @@ export PATH="$HOME/.cargo/bin:$PATH"
 
 # macOS specific aliases
 alias rm="trash"
-alias code="code-insiders"
 
 # Rust setup
 if [ -f $HOME/.cargo/env ]; then 

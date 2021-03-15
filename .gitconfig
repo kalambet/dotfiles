@@ -17,5 +17,7 @@
 	ignorecase = false
 [url "git@github.com:"]
 	insteadOf = https://github.com/
+[url "git@git.fintechru.org:"]
+	insteadOf = https://git.fintechru.org/
 [pull]
 	ff = only

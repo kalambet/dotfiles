@@ -21,7 +21,7 @@ source ~/.tools/os_detector.sh
 
 # Depending on OS type set ZSH plugins
 if [[ "$OS_TYPE" == "macos" ]]; then
-  plugins=(git docker iterm2 gpg-agent tmux)
+  plugins=(git docker iterm2 gpg-agent tmux kubectl)
 elif [[ "$OS_TYPE" == "linux" ]]; then
   plugins=(git gpg-agent docker tmux)
 fi
