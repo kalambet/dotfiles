@@ -1,9 +1,9 @@
 ### Linux start ###
 
 # Initialize brew for linux
-export PATH="/home/linuxbrew/.linuxbrew/bin":$PATH
+export PATH="/home/linuxbrew/.linuxbrew/bin":"/home/linuxbrew/.linuxbrew/sbin":$PATH
 
-export PATH=${HOME}/go/bin:${PATH}:/usr/local/go/bin
+export PATH=${HOME}/go/bin:${PATH}:/usr/local/go/bin:${HOME}/.local/bin
 
 # Rust setup
 export PATH=$HOME/.cargo/bin:$PATH

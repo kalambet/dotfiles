@@ -10,9 +10,6 @@ export LANG=en_US.UTF-8
 # Set visual theme
 ZSH_THEME="powerlevel10k/powerlevel10k"
 
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-
 # Load some secrets
 if [ -f ~/.tools/secrets.sh ]; then source ~/.tools/secrets.sh; fi
 
@@ -23,8 +20,11 @@ source ~/.tools/os_detector.sh
 if [[ "$OS_TYPE" == "macos" ]]; then
   plugins=(git docker iterm2 gpg-agent tmux kubectl)
 elif [[ "$OS_TYPE" == "linux" ]]; then
-  plugins=(git gpg-agent docker tmux)
+  plugins=(git ssh-agent gpg-agent docker tmux)
 fi
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
