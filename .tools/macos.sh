@@ -3,6 +3,7 @@ export PATH="$HOME/.cargo/bin:$PATH"
 
 # macOS specific aliases
 alias rm="trash"
+alias ports="netstat -anvp tcp | awk 'NR<3 || /LISTEN/'"
 
 # Rust setup
 if [ -f $HOME/.cargo/env ]; then 
