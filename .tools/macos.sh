@@ -5,6 +5,12 @@ export PATH="$HOME/.cargo/bin:$PATH"
 alias rm="trash"
 alias ports="netstat -anvp tcp | awk 'NR<3 || /LISTEN/'"
 
+brew-app-upgrade () {
+  brew upgrade $(brew list --cask -1)
+}
+
+
+
 # Rust setup
 if [ -f $HOME/.cargo/env ]; then 
     source $HOME/.cargo/env; 
@@ -35,14 +41,10 @@ fi
 export PATH=$PATH:$DEVPATH/bin/platform-tools
 
 # nvm setup
-export NVM_DIR="$HOME/.nvm";
-if [ -s "/usr/local/opt/nvm/nvm.sh" ]; then
-	source /usr/local/opt/nvm/nvm.sh;
-fi
+export NVM_DIR="$HOME/.nvm"
+  [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && . "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
+  [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && . "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
 
-if [ -f /usr/local/etc/bash_completion.d ]; then
-	source /usr/local/etc/bash_completion.d;
-fi
 
 # Special stuff for the visual man page improvement
 function gman {
@@ -54,7 +56,6 @@ function gman {
 }
 
 # Go configuration
-export PATH="/usr/local/opt/go@1.13/bin:$PATH"	
 export GOPATH=$HOME/go
 export GOBIN=$GOPATH/bin
 export PATH=$GOBIN:$PATH
