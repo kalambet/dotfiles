@@ -54,7 +54,6 @@ alias ohmyzsh="code -n ~/.oh-my-zsh"
 
 alias l="exa -alh"
 alias vim="nvim"
-alias firefly="mosh serenity"
 
 # Load all the zsh-completions
 autoload -U compinit && compinit
@@ -73,4 +72,7 @@ fi
 if [[ -f $HOME/.tools/docker.sh ]]; then
 	source $HOME/.tools/docker.sh
 fi
+
+
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 

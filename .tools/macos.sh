@@ -1,17 +1,16 @@
 ### MacOS start ###
-export PATH="$HOME/.cargo/bin:$PATH"
 
 # macOS specific aliases
 alias rm="trash"
 alias ports="netstat -anvp tcp | awk 'NR<3 || /LISTEN/'"
+alias hal="mosh hal9000.k6t.dev"
 
 brew-app-upgrade () {
   brew upgrade $(brew list --cask -1)
 }
 
-
-
 # Rust setup
+# export PATH="$HOME/.cargo/bin:$PATH"
 if [ -f $HOME/.cargo/env ]; then 
     source $HOME/.cargo/env; 
 fi
@@ -36,9 +35,6 @@ fi
 if [ -f $DEVPATH/bin/google-cloud-sdk/completion.zsh.inc ]; then 
     source $DEVPATH/bin/google-cloud-sdk/completion.zsh.inc; 
 fi
-
-## Android SDK
-export PATH=$PATH:$DEVPATH/bin/platform-tools
 
 # nvm setup
 export NVM_DIR="$HOME/.nvm"
@@ -70,5 +66,10 @@ export LDFLAGS="-L/usr/local/opt/openssl/lib -L/usr/local/lib -L/usr/local/opt/e
 export CFLAGS="-I/usr/local/opt/openssl/include -I/usr/local/include -I/usr/local/opt/expat/include"
 export CPPFLAGS="-I/usr/local/opt/openssl/include -I/usr/local/include -I/usr/local/opt/expat/include"
 export PKG_CONFIG_PATH="/usr/local/opt/openssl/lib/pkgconfig"
+
+# LLVM setup
+export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
+export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
+export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
 
 ### MacOS end ###
