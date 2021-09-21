@@ -10,6 +10,16 @@ export LANG=en_US.UTF-8
 # Set visual theme
 ZSH_THEME="powerlevel10k/powerlevel10k"
 
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block, everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
 # Load some secrets
 if [ -f ~/.tools/secrets.sh ]; then source ~/.tools/secrets.sh; fi
 
@@ -23,16 +33,6 @@ elif [[ "$OS_TYPE" == "linux" ]]; then
   plugins=(git ssh-agent gpg-agent docker tmux)
 fi
 
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block, everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
-
 # Loading Oh My Zsh settings
 source $ZSH/oh-my-zsh.sh
 
@@ -42,7 +42,6 @@ source $ZSH/oh-my-zsh.sh
 export EDITOR='nvim'
 
 # ssh
-export SSH_KEY_PATH="~/.ssh/rsa_id"
 export DEVPATH=$HOME/Developer
 export PATH=$DEVPATH/bin:/usr/local/sbin:$PATH
 
@@ -72,7 +71,4 @@ fi
 if [[ -f $HOME/.tools/docker.sh ]]; then
 	source $HOME/.tools/docker.sh
 fi
-
-
-test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
