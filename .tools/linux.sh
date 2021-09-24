@@ -5,6 +5,7 @@ eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 
 # Update PATH
 # export PATH=${HOME}/go/bin:${PATH}:/usr/local/go/bin:${HOME}/.local/bin
+export PATH=$PATH:$HOME/Applications/JetBrains
 
 # Rust setup
 if [ -f $HOME/.cargo/env ]; then
