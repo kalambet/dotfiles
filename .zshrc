@@ -72,3 +72,7 @@ if [[ -f $HOME/.tools/docker.sh ]]; then
 	source $HOME/.tools/docker.sh
 fi
 
+if [[ -f $HOME/.tools/hosts.sh ]]; then
+	source $HOME/.tools/hosts.sh
+fi
+
