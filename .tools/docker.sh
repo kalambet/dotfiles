@@ -8,4 +8,5 @@ docker-prune () {
 
 docker-cleanup () {
 	docker rm $(docker ps -aq -f "status=exited")
+	docker rmi $(docker images -q --filter dangling=true)
 }
