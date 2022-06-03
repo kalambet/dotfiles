@@ -3,53 +3,16 @@ if &compatible
 endif
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Required (Dein)
+" => Required (vim-plug)
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-set runtimepath+=~/.vim/bundles/repos/github.com/Shougo/dein.vim
+call plug#begin('~/.vim/plugged')
 
-" Required:
-if dein#load_state('~/.vim/bundles')
-  call dein#begin('~/.vim/bundles')
+  Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+  Plug 'mileszs/ack.vim'
+  Plug 'vim-airline/vim-airline'
+  Plug 'preservim/nerdtree'
 
-  " Let dein manage dein
-  " Required:
-  call dein#add('~/.vim/bundles/repos/github.com/Shougo/dein.vim')
-  
-  call dein#add('aonemd/kuroi.vim')
-  call dein#add('mileszs/ack.vim')
-  call dein#add('editorconfig/editorconfig-vim')
-  call dein#add('vim-airline/vim-airline')
-  call dein#add('tpope/vim-vinegar')
-
-  call dein#add('Shougo/deoplete.nvim')
-  let g:deoplete#enable_at_startup = 1
-	if !has('nvim')
-	  call dein#add('roxma/nvim-yarp')
-	  call dein#add('roxma/vim-hug-neovim-rpc')
-	endif
-
-  call dein#add('scrooloose/nerdtree')
-  call dein#add('ctrlpvim/ctrlp.vim')
-  call dein#add('rust-lang/rust.vim')
-  call dein#add('racer-rust/vim-racer')
-  call dein#add('timonv/vim-cargo')
-  call dein#add('sebastianmarkow/deoplete-rust') 
-
-  call dein#add('fatih/vim-go') 
-  call dein#add('zchee/deoplete-go')
-  call dein#add('tomlion/vim-solidity')
-
-  " Required:
-  call dein#end()
-  call dein#save_state()
-endif
-
-" If you want to install not installed plugins on startup.
-if dein#check_install()
-  call dein#install()
-endif
-
-
+call plug#end()
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => General 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -146,8 +109,5 @@ let g:go_metalinter_autosave_enabled = ['vet', 'golint']
 
 let g:go_auto_sameids = 1
 
-" Racer plugin
-let g:racer_experimental_completer = 1
-let g:deoplete#sources#rust#rust_source_path='$HOME/.rustup/toolchains/stable-x86_64-apple-darwin/lib/rustlib/src/rust/src'
 map <C-n> :NERDTreeToggle<CR>
 

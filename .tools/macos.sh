@@ -1,9 +1,11 @@
 ### MacOS start ###
 
+# iTerm2 setup
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+
 # macOS specific aliases
 alias rm="trash"
 alias ports="netstat -anvp tcp | awk 'NR<3 || /LISTEN/'"
-alias hal="mosh hal9000.k6t.dev"
 
 brew-app-upgrade () {
   brew upgrade $(brew list --cask -1)
