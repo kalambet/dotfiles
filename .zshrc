@@ -21,7 +21,9 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
 fi
 
 # Load some secrets
-if [ -f ~/.tools/secrets.sh ]; then source ~/.tools/secrets.sh; fi
+if [ -f ~/.tools/secrets.sh ]; then 
+  source ~/.tools/secrets.sh; 
+fi
 
 # Attach os detector, now OS var constains either "macos" or "linux"
 source ~/.tools/os_detector.sh
@@ -30,7 +32,7 @@ source ~/.tools/os_detector.sh
 if [[ "$OS_TYPE" == "macos" ]]; then
   plugins=(git docker iterm2 gpg-agent tmux kubectl)
 elif [[ "$OS_TYPE" == "linux" ]]; then
-  plugins=(git ssh-agent gpg-agent docker tmux)
+  plugins=(git gpg-agent docker tmux)
 fi
 
 # Loading Oh My Zsh settings
@@ -48,10 +50,7 @@ export PATH=$DEVPATH/bin:/usr/local/sbin:$PATH
 # Aliases
 alias t="exa --tree -a -L 1"
 alias d="cd $DEVPATH"
-alias zshconfig="code -n ~/.zshrc"
-alias ohmyzsh="code -n ~/.oh-my-zsh"
-
-alias l="exa -alh"
+alias l="exa -alhg"
 alias vim="nvim"
 
 # Load all the zsh-completions
