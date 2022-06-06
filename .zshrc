@@ -46,7 +46,7 @@ export DEVPATH=$HOME/Developer
 export PATH=$DEVPATH/bin:/usr/local/sbin:$PATH
 
 # Aliases
-alias t="tree -a -L 1"
+alias t="exa --tree -a -L 1"
 alias d="cd $DEVPATH"
 alias zshconfig="code -n ~/.zshrc"
 alias ohmyzsh="code -n ~/.oh-my-zsh"
