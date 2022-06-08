@@ -1,5 +1,7 @@
 ### Linux start ###
 
+export PATH="$HOME/.local/bin":$PATH 
+
 alias cat="bat"
 
 # Rust setup
