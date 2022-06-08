@@ -112,4 +112,5 @@ let g:go_metalinter_autosave_enabled = ['vet', 'golint']
 let g:go_auto_sameids = 1
 
 map <C-n> :NERDTreeToggle<CR>
+nmap <F8> :TagbarToggle<CR>
 
