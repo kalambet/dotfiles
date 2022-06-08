@@ -11,6 +11,8 @@ call plug#begin('~/.vim/plugged')
   Plug 'mileszs/ack.vim'
   Plug 'vim-airline/vim-airline'
   Plug 'preservim/nerdtree'
+  Plug 'rust-lang/rust.vim'
+  Plug 'preservim/tagbar'
 
 call plug#end()
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -110,4 +112,5 @@ let g:go_metalinter_autosave_enabled = ['vet', 'golint']
 let g:go_auto_sameids = 1
 
 map <C-n> :NERDTreeToggle<CR>
+nmap <F8> :TagbarToggle<CR>
 
