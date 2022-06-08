@@ -11,6 +11,8 @@ call plug#begin('~/.vim/plugged')
   Plug 'mileszs/ack.vim'
   Plug 'vim-airline/vim-airline'
   Plug 'preservim/nerdtree'
+  Plug 'rust-lang/rust.vim'
+  Plug 'preservim/tagbar'
 
 call plug#end()
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
