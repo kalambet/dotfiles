@@ -15,10 +15,8 @@
 	gpgsign = true
 [core]
 	ignorecase = false
-[url "git@github.com:"]
-	insteadOf = https://github.com/
-[url "git@git.fintechru.org:"]
-	insteadOf = https://git.fintechru.org/
+# [url "git@github.com:"]
+# 	insteadOf = https://github.com/
 [pull]
 	ff = only
 [init]
