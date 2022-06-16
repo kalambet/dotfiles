@@ -12,7 +12,6 @@ brew-app-upgrade () {
 }
 
 # Rust setup
-# export PATH="$HOME/.cargo/bin:$PATH"
 if [ -f $HOME/.cargo/env ]; then 
     source $HOME/.cargo/env; 
 fi
