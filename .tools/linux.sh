@@ -12,6 +12,6 @@ fi
 export RUST_SRC_PATH="$(rustc --print sysroot)/lib/rustlib/src/rust/src"
 
 # nvm setup
-# export NVM_DIR="$HOME/.nvm"
+source /usr/share/nvm/init-nvm.sh
 
 ### Linux end ###
