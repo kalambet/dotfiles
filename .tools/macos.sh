@@ -1,5 +1,16 @@
 ### MacOS start ###
 
+# Homebrew setup
+export HOMEBREW_NO_ANALYTICS=1
+# export HOMEBREW_NO_INSTALL_FROM_API=1
+
+# .NET Setup
+export DOTNET_CLI_TELEMETRY_OPTOUT=1
+
+# 1Password Setup
+export OP_BIOMETRIC_UNLOCK_ENABLED=true
+source /Users/peter/.config/op/plugins.sh
+
 # iTerm2 setup
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
@@ -22,9 +33,6 @@ if [ -f ~/.gh.inc ]; then
     source ~/.gh.inc; 
 fi
 
-# AWS Region
-export AWS_REGION=us-east-1
-
 # Google configuration
 # export GOOGLE_APPLICATION_CREDENTIALS=$HOME/.config/gcloud/application_default_credentials.json
 # The next line updates PATH for the Google Cloud SDK.
@@ -41,7 +49,6 @@ fi
 export NVM_DIR="$HOME/.nvm"
   [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && . "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
   [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && . "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
-
 
 # Special stuff for the visual man page improvement
 function gman {
@@ -72,5 +79,13 @@ export PKG_CONFIG_PATH="/usr/local/opt/openssl/lib/pkgconfig"
 export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
 export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
 export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
+
+# Java setup
+export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
+
+# Android tools setup
+# if [ -d "$HOME/Developer/bin/android/platform-tools" ] ; then
+#  export PATH="$HOME/Developer/bin/android/platform-tools:$PATH"
+# fi
 
 ### MacOS end ###
