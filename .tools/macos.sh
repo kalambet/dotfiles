@@ -1,5 +1,10 @@
 ### MacOS start ###
 
+# Zsh Syntax Highlight
+if [ -f /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]; then
+	source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh;
+fi
+
 # Homebrew setup
 export HOMEBREW_NO_ANALYTICS=1
 # export HOMEBREW_NO_INSTALL_FROM_API=1
@@ -27,6 +32,9 @@ if [ -f $HOME/.cargo/env ]; then
     source $HOME/.cargo/env; 
 fi
 export RUST_SRC_PATH="$(rustc --print sysroot)/lib/rustlib/src/rust/src"
+
+# Foundry
+export PATH="$PATH:/Users/peter/.foundry/bin"
 
 # GitHub CLI settings
 if [ -f ~/.gh.inc ]; then 
