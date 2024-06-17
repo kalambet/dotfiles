@@ -1,2 +1,3 @@
-alias firefly="mosh serenity.k6t.dev"
-alias warp="mosh finic"
+alias raven="mosh raven"
+alias hiro="mosh hiro"
+alias finic="mosh finic"

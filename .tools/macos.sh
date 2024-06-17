@@ -2,7 +2,7 @@
 
 # Zsh Syntax Highlight
 if [ -f /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]; then
-	source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh;
+	source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 fi
 
 # Homebrew setup
@@ -23,13 +23,13 @@ test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell
 alias rm="trash"
 alias ports="netstat -anvp tcp | awk 'NR<3 || /LISTEN/'"
 
-brew-app-upgrade () {
-  brew upgrade $(brew list --cask -1)
+brew-app-upgrade() {
+	brew upgrade $(brew list --cask -1)
 }
 
 # Rust setup
-if [ -f $HOME/.cargo/env ]; then 
-    source $HOME/.cargo/env; 
+if [ -f $HOME/.cargo/env ]; then
+	source $HOME/.cargo/env
 fi
 export RUST_SRC_PATH="$(rustc --print sysroot)/lib/rustlib/src/rust/src"
 
@@ -37,34 +37,35 @@ export RUST_SRC_PATH="$(rustc --print sysroot)/lib/rustlib/src/rust/src"
 export PATH="$PATH:/Users/peter/.foundry/bin"
 
 # GitHub CLI settings
-if [ -f ~/.gh.inc ]; then 
-    source ~/.gh.inc; 
+if [ -f ~/.gh.inc ]; then
+	source ~/.gh.inc
 fi
 
 # Google configuration
 # export GOOGLE_APPLICATION_CREDENTIALS=$HOME/.config/gcloud/application_default_credentials.json
 # The next line updates PATH for the Google Cloud SDK.
-if [ -f $DEVPATH/bin/google-cloud-sdk/path.zsh.inc ]; then 
-    source $DEVPATH/bin/google-cloud-sdk/path.zsh.inc; 
+if [ -f $DEVPATH/bin/google-cloud-sdk/path.zsh.inc ]; then
+	source $DEVPATH/bin/google-cloud-sdk/path.zsh.inc
 fi
 
 # # The next line enables shell command completion for gcloud.
-if [ -f $DEVPATH/bin/google-cloud-sdk/completion.zsh.inc ]; then 
-    source $DEVPATH/bin/google-cloud-sdk/completion.zsh.inc; 
+if [ -f $DEVPATH/bin/google-cloud-sdk/completion.zsh.inc ]; then
+	source $DEVPATH/bin/google-cloud-sdk/completion.zsh.inc
 fi
 
-# nvm setup
 export NVM_DIR="$HOME/.nvm"
-  [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && . "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
-  [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && . "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                   # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
+
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
 # Special stuff for the visual man page improvement
 function gman {
-    if [ $# -eq 1 ] ;
-        then open x-man-page://$1 ;
-    elif [ $# -eq 2 ] ;
-        then open x-man-page://$1/$2 ;
-    fi
+	if [ $# -eq 1 ]; then
+		open x-man-page://$1
+	elif [ $# -eq 2 ]; then
+		open x-man-page://$1/$2
+	fi
 }
 
 # Go configuration

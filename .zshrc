@@ -1,8 +1,5 @@
-export TERM="xterm-256color"
-
 # Setting ZSH
 export ZSH=~/.oh-my-zsh
-export TERM="xterm-256color"
 export LC_ALL=en_US.UTF-8  
 export LANG=en_US.UTF-8
 
@@ -48,10 +45,13 @@ export DEVPATH=$HOME/Developer
 export PATH=$DEVPATH/bin:/usr/local/sbin:$PATH
 
 # Aliases
-alias t="exa --tree -a -L 1"
+alias t="eza --tree -a -L 1"
 alias d="cd $DEVPATH"
-alias l="exa -alhg"
+alias l="eza -lhg --group-directories-first --icons"
+alias la="l -a"
+alias lt='eza --tree --level=2 --long --icons --git'
 alias vim="nvim"
+alias rmix="remixd -s $PWD -u https://remix.ethereum.org"
 
 # Load all the zsh-completions
 autoload -U compinit && compinit
