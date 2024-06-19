@@ -75,6 +75,7 @@ return {
     },
     ---@param opts TSConfig
     config = function(_, opts)
+      opts.ignore_install = { "help" }
       if type(opts.ensure_installed) == "table" then
         opts.ensure_installed = LazyVim.dedup(opts.ensure_installed)
       end
