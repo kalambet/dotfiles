@@ -1,5 +1,8 @@
 ### Linux start ###
 
+# Global gitconfig setup
+export GIT_CONFIG_GLOBAL=$HOME/.tools/gitconfig-macos
+
 # zsh-autosuggestions activation
 source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 
