@@ -1,25 +1,25 @@
-[push]
-	default = simple
 [user]
 	email = peter@kalambet.dev
 	name = Peter Kalambet
-	signingkey = C5E55BCE3FF12E7D
+	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDBPEYRTS44B7dtejeNMsOqcwHXErKgcbhP+st/wDmMn
+[gpg]
+  format = ssh
+[gpg "ssh"]
+  program = "/opt/1Password/op-ssh-sign"
+[commit]
+  gpgsign = true
+[core]
+	ignorecase = false
+[init]
+	defaultBranch = dev
 [filter "lfs"]
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f
 	required = true
 	process = git-lfs filter-process
-[gpg]
-	program = gpg
-[commit]
-	gpgsign = true
-[core]
-	ignorecase = false
-# [url "git@github.com:"]
-# 	insteadOf = https://github.com/
+[push]
+	default = simple
 [pull]
 	ff = only
-[init]
-	defaultBranch = dev
 [diff]
     external = difft
