@@ -48,9 +48,6 @@ if [[ -f $HOME/.tools/hosts.sh ]]; then
 	source $HOME/.tools/hosts.sh
 fi
 
-# zsh autosuggestions
-source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-
 # Setup starship
 export STARSHIP_CACHE=~/.starship/cache
 eval "$(starship init zsh)"

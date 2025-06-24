@@ -1,6 +1,9 @@
 ### Linux start ###
 
-export PATH="$HOME/.local/bin":$PATH 
+# zsh-autosuggestions activation
+source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+
+export PATH="$HOME/.local/bin":$PATH
 
 alias cat="bat"
 
