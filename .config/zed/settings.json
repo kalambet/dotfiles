@@ -1,18 +1,9 @@
-// Zed settings
-//
-// For information on how to configure Zed, see the Zed
-// documentation: https://zed.dev/docs/configuring-zed
-//
-// To see all of Zed's default settings without changing your
-// custom settings, run the `zed: Open Default Settings` command
-// from the command palette
 {
   "agent": {
     "default_model": {
       "provider": "lmstudio",
       "model": "qwen2.5-coder-32b-instruct-mlx"
-    },
-    "version": "2"
+    }
   },
   "features": {
     "edit_prediction_provider": "zed"
