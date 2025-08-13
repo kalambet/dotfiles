@@ -2,13 +2,19 @@
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 
+# Zsh History
+HISTFILE=$HOME/.zsh_history
+HISTSIZE=10000
+SAVEHIST=10000
+setopt appendhistory
+
 # Load some secrets
 if [ -f ~/.tools/secrets.sh ]; then
   source ~/.tools/secrets.sh;
 fi
 
 # Editor
-export EDITOR='zed'
+export EDITOR='nvim'
 
 # ssh
 export DEVPATH=$HOME/Developer

@@ -1,12 +1,18 @@
 ### Linux start ###
 
+export SHELL=/usr/bin/zsh
+
 # Global gitconfig setup
 export GIT_CONFIG_GLOBAL=$HOME/.tools/gitconfig-linux
 
 # zsh-autosuggestions activation
 source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 
-export PATH="$HOME/.local/bin":$PATH
+if [ -f /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]; then
+  source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+fi
+
+export PATH="$HOME/.local/bin":$PATH:"$HOME/.foundry/bin"
 
 alias cat="bat"
 
