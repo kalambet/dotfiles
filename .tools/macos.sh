@@ -106,4 +106,8 @@ export PATH="$PATH:/Users/peter/.cache/lm-studio/bin"
 #  export PATH="$HOME/Developer/bin/android/platform-tools:$PATH"
 # fi
 
+if [ -d "$HOME/.cache/lm-studio" ]; then
+    export PATH="$PATH:/Users/peter/.cache/lm-studio/bin"
+fi
+
 ### MacOS end ###
