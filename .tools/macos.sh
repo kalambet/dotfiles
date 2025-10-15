@@ -98,16 +98,21 @@ export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
 # Java setup
 export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
 
-# Added by LM Studio CLI (lms)
-export PATH="$PATH:/Users/peter/.cache/lm-studio/bin"
-
 # Android tools setup
-# if [ -d "$HOME/Developer/bin/android/platform-tools" ] ; then
-#  export PATH="$HOME/Developer/bin/android/platform-tools:$PATH"
-# fi
+if [ -d "$HOME/Developer/bin/android/platform-tools" ] ; then
+  export PATH="$HOME/Developer/bin/android/platform-tools:$PATH"
+fi
 
-if [ -d "$HOME/.cache/lm-studio" ]; then
+# Added for LM Studio CLI support
+if [ -d "$HOME/.cache/lm-studio" ] ; then
     export PATH="$PATH:/Users/peter/.cache/lm-studio/bin"
 fi
+# End of LM Studio CLI section
+
+# The following lines have been added by Docker Desktop to enable Docker CLI completions.
+fpath=(/Users/peter/.docker/completions $fpath)
+autoload -Uz compinit
+compinit
+# End of Docker CLI completions
 
 ### MacOS end ###
