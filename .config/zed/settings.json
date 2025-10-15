@@ -15,5 +15,10 @@
     "mode": "system",
     "light": "Catppuccin Latte",
     "dark": "Catppuccin Mocha"
+  },
+  "icon_theme": {
+    "mode": "system",
+    "light": "Catppuccin Latte",
+    "dark": "Catppuccin Mocha"
   }
 }
