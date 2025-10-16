@@ -1,4 +1,5 @@
 ### MacOS start ###
+export PATH=$PATH:$HOME/.local/bin
 
 # Global gitconfig setup
 export GIT_CONFIG_GLOBAL=$HOME/.tools/gitconfig-macos
@@ -21,9 +22,6 @@ export DOTNET_CLI_TELEMETRY_OPTOUT=1
 export OP_BIOMETRIC_UNLOCK_ENABLED=true
 source /Users/peter/.config/op/plugins.sh
 
-# iTerm2 setup
-# test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
-
 # macOS specific aliases
 alias rm="trash"
 alias rrm="rm"
@@ -40,7 +38,9 @@ fi
 export RUST_SRC_PATH="$(rustc --print sysroot)/lib/rustlib/src/rust/src"
 
 # Foundry
-export PATH="$PATH:/Users/peter/.foundry/bin"
+if [ -d $HOME/.foundry ]; then
+    export PATH="$PATH:/Users/peter/.foundry/bin"
+fi
 
 # GitHub CLI settings
 if [ -f ~/.gh.inc ]; then
