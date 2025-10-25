@@ -1,4 +1,5 @@
 ### MacOS start ###
+export PATH=$PATH:$HOME/.local/bin
 
 # Global gitconfig setup
 export GIT_CONFIG_GLOBAL=$HOME/.tools/gitconfig-macos
@@ -21,9 +22,6 @@ export DOTNET_CLI_TELEMETRY_OPTOUT=1
 export OP_BIOMETRIC_UNLOCK_ENABLED=true
 source /Users/peter/.config/op/plugins.sh
 
-# iTerm2 setup
-# test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
-
 # macOS specific aliases
 alias rm="trash"
 alias rrm="rm"
@@ -40,7 +38,9 @@ fi
 export RUST_SRC_PATH="$(rustc --print sysroot)/lib/rustlib/src/rust/src"
 
 # Foundry
-export PATH="$PATH:/Users/peter/.foundry/bin"
+if [ -d $HOME/.foundry ]; then
+    export PATH="$PATH:/Users/peter/.foundry/bin"
+fi
 
 # GitHub CLI settings
 if [ -f ~/.gh.inc ]; then
@@ -98,16 +98,21 @@ export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
 # Java setup
 export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
 
-# Added by LM Studio CLI (lms)
-export PATH="$PATH:/Users/peter/.cache/lm-studio/bin"
-
 # Android tools setup
-# if [ -d "$HOME/Developer/bin/android/platform-tools" ] ; then
-#  export PATH="$HOME/Developer/bin/android/platform-tools:$PATH"
-# fi
+if [ -d "$HOME/Developer/bin/android/platform-tools" ] ; then
+  export PATH="$HOME/Developer/bin/android/platform-tools:$PATH"
+fi
 
-if [ -d "$HOME/.cache/lm-studio" ]; then
+# Added for LM Studio CLI support
+if [ -d "$HOME/.cache/lm-studio" ] ; then
     export PATH="$PATH:/Users/peter/.cache/lm-studio/bin"
 fi
+# End of LM Studio CLI section
+
+# The following lines have been added by Docker Desktop to enable Docker CLI completions.
+fpath=(/Users/peter/.docker/completions $fpath)
+autoload -Uz compinit
+compinit
+# End of Docker CLI completions
 
 ### MacOS end ###
