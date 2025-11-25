@@ -1,7 +1,7 @@
 shell-integration = zsh
 shell-integration-features = no-cursor
 
-theme = dark:Catppuccin Mocha,light:Catppuccin Latte
+theme = dark:Apple System Colors,light:Apple System Colors Light
 font-family = "TX02 Nerd Font"
 font-size = 16
 
