@@ -6,16 +6,13 @@ export EDITOR='nvim'
 ###
 # zsh configuration
 ###
-
 setopt COMPLETE_ALIASES
 setopt GLOB_COMPLETE
 
 # The following lines were added by compinstall
 zstyle :compinstall filename '/Users/peter/.zshrc'
-
 autoload -Uz compinit
 compinit
-
 source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 # End of lines added by compinstall
 
@@ -38,6 +35,7 @@ export PATH=$DEVPATH/bin:$HOME/.local/bin:/usr/local/sbin:$PATH
 # Load local variables
 source ~/.env
 
+# Aliases
 alias t="eza --tree -a -L 1"
 alias d="cd $DEVPATH"
 alias l="eza -lhg --group-directories-first --icons"
@@ -48,7 +46,6 @@ alias rm="trash"
 alias rrm="rm"
 alias cat="bat"
 alias ports="netstat -anvp tcp | awk 'NR<3 || /LISTEN/'"
-
 alias rmix="remixd -s $PWD -u https://remix.ethereum.org"
 
 # Special stuff for the visual man page improvement
