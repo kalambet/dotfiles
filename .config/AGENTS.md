@@ -30,16 +30,13 @@ See `.config/agents/` for phase-specific slash commands.
 
 ## Common Tech Stack
 
-### Go Projects (canton-middleware)
+### Go Projects
 ```bash
 # Build
 go build ./...
 
 # Test
 go test ./...
-
-# Generate bindings
-make generate-bindings
 ```
 
 ### Solidity/Foundry Projects
