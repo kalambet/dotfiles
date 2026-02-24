@@ -11,6 +11,7 @@ setopt GLOB_COMPLETE
 
 # The following lines were added by compinstall
 zstyle :compinstall filename '/Users/peter/.zshrc'
+fpath=(/Users/peter/.docker/completions $fpath)
 autoload -Uz compinit
 compinit
 source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
@@ -36,17 +37,7 @@ export PATH=$DEVPATH/bin:$HOME/.local/bin:/usr/local/sbin:$PATH
 source ~/.env
 
 # Aliases
-alias t="eza --tree -a -L 1"
-alias d="cd $DEVPATH"
-alias l="eza -lhg --group-directories-first --icons"
-alias la="l -a"
-alias lt='eza --tree --level=2 --long --icons --git'
-alias vim="nvim"
-alias rm="trash"
-alias rrm="rm"
-alias cat="bat"
-alias ports="netstat -anvp tcp | awk 'NR<3 || /LISTEN/'"
-alias rmix="remixd -s $PWD -u https://remix.ethereum.org"
+source ~/.zsh_aliases
 
 # Special stuff for the visual man page improvement
 function gman {
@@ -149,6 +140,8 @@ fi
 # End of LM Studio CLI section
 
 # Docker setup
+
+
 docker-prune () {
 	docker stop $(docker ps -aq)
 	docker rm $(docker ps -q --filter status=exited)
@@ -163,13 +156,16 @@ docker-cleanup () {
 }
 #
 
-# Daml setup
+# Canton setup
 if [ -d "$HOME/.daml" ]; then
-  export PATH="$PATH:$HOME/.daml/bin"
+  export PATH="$PATH:$HOME/.dpm/bin:$HOME/.daml/bin"
 fi
 
 # Added by Antigravity
 export PATH="/Users/peter/.antigravity/antigravity/bin:$PATH"
+
+# Set up fzf key bindings and fuzzy completion
+source <(fzf --zsh)
 
 # Setup starship
 export STARSHIP_CACHE=~/.starship/cache

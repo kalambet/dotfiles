@@ -1,0 +1,22 @@
+# General
+alias t="eza --tree -a -L 1"
+alias d="cd $DEVPATH"
+alias l="eza -lhg --group-directories-first --icons"
+alias la="l -a"
+alias lt='eza --tree --level=2 --long --icons --git'
+alias vim="nvim"
+alias rm="trash"
+alias rrm="rm"
+alias cat="bat"
+alias ports="netstat -anvp tcp | awk 'NR<3 || /LISTEN/'"
+alias rmix="remixd -s $PWD -u https://remix.ethereum.org"
+
+# git
+alias g='git'
+alias ga='git add'
+alias gcmsg='git commit --message'
+alias gd='git diff'
+alias gl='git pull'
+alias gst='git status'
+alias gp='git push'
+alias gco='git checkout'
