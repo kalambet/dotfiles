@@ -132,6 +132,13 @@ Systematic checklist for reviewing compliance with Apple Human Interface Guideli
 
 ## Platform Conventions
 
+### Native-first controls
+- [ ] Interactive controls use the native element (`Toggle`, `Picker`, `Stepper`, `Slider`, `Button`, `Menu`, `List`) rather than a custom reimplementation [HIGH if a custom control replaces a native one]
+- [ ] Menus are a real `Menu` / `MenuBarExtra(.menu)` / `.contextMenu`, not a custom panel imitating a menu; presentations use `.sheet` / `.popover` / `.alert` / `.confirmationDialog`, not a hand-built overlay
+- [ ] The native element was actually tried first — most "needs custom" cases are one modifier away (`.toggleStyle`, `.buttonStyle`, `.menuBarExtraStyle`, a `Section`, a submenu)
+- [ ] Any custom control is a deliberate, operator-approved deviation that is clearly stated in the code or PR — not slipped in silently [HIGH if undocumented]
+- [ ] A custom control fully reimplements what the native one gave away: accessibility label/value/traits/adjustable action, keyboard navigation and focus, Dynamic Type, Dark Mode [CRITICAL if accessibility is missing]
+
 ### iOS conventions
 - [ ] Large title in top-level views (`navigationBarTitleDisplayMode(.large)`)
 - [ ] Pull-to-refresh for updatable content (`.refreshable()`)

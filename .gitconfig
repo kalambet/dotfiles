@@ -18,7 +18,7 @@
 	required = true
 	process = git-lfs filter-process
 [url "git@github.com:"]
- 	insteadOf = https://github.com/
+ 	pushInsteadOf = https://github.com/
 [push]
 	default = simple
 [pull]

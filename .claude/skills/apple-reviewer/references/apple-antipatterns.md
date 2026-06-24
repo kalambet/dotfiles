@@ -186,6 +186,12 @@ A catalog of common anti-patterns and code smells in Apple platform UI/UX code. 
 
 ## Platform Anti-Patterns
 
+### Reinventing the Native Element
+**Severity:** HIGH (CRITICAL if the custom control drops accessibility)
+**Symptom:** A custom-built control or container where a native one exists and would fit — a `.window`-style panel hand-styled to look like a menu instead of `MenuBarExtra(.menu)` / `Menu`; a `VStack` of tap gestures instead of `List`; a bespoke overlay instead of `.sheet` / `.alert`; a drawn switch instead of `Toggle`. The native path wasn't tried, or was abandoned at the first modifier, and no one signed off on the deviation
+**Why it's harmful:** Every native element ships the system's metrics, highlight, focus ring, keyboard navigation, VoiceOver, Dynamic Type, and Dark Mode — and keeps them correct across OS updates. A custom replacement starts at zero on all of it and re-grows the bugs the system already solved (wrong padding, no keyboard navigation, broken VoiceOver), then carries that as permanent maintenance. Most custom controls are also subtly off-convention, which users feel even if they can't name it
+**Fix:** Default to the native element; reach for custom only when a native one genuinely can't express the requirement. When it can't, the deviation must be an explicit, operator-approved decision, clearly stated in the code or PR as a custom control that departs from the native path — and the custom implementation must fully restore the accessibility and keyboard behavior it gave up. Flag any silent custom reimplementation of a native element as a finding
+
 ### iOS-on-Mac
 **Severity:** HIGH
 **Symptom:** A Mac Catalyst or macOS native app that looks and behaves exactly like an iPhone app: full-screen single-column layout, no keyboard shortcuts, no menu bar items, no multiple windows, giant touch-sized buttons with a mouse cursor

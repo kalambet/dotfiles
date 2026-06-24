@@ -1,7 +1,48 @@
 {
+  "ssh_connections": [
+    {
+      "host": "neurolambda",
+      "args": [],
+      "projects": [
+        {
+          "paths": [
+            "/Users/peter/Developer"
+          ]
+        },
+        {
+          "paths": [
+            "/Users/peter/Developer/src/github.com/wadadawadada/blackbox_node"
+          ]
+        }
+      ]
+    }
+  ],
+  "agent_servers": {
+    "claude-acp": {
+      "type": "registry"
+    }
+  },
+  "cli_default_open_behavior": "existing_window",
+  "project_panel": {
+    "dock": "right"
+  },
+  "outline_panel": {
+    "dock": "right"
+  },
+  "collaboration_panel": {
+    "dock": "right"
+  },
+  "agent": {
+    "dock": "left",
+    "favorite_models": [],
+    "model_parameters": []
+  },
+  "git_panel": {
+    "dock": "right"
+  },
   "base_keymap": "JetBrains",
   "ui_font_size": 16,
-  "buffer_font_size": 16,
+  "buffer_font_size": 15.0,
   "buffer_font_family": "TX-02",
   "theme": {
     "mode": "system",
