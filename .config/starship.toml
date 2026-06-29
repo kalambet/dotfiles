@@ -5,9 +5,9 @@ continuation_prompt = '▶▶ '
 
 format = """
 [](red)\
-$hostname\
 $os\
 $username\
+$hostname\
 [](bg:peach fg:red)\
 $directory\
 [](bg:yellow fg:peach)\
@@ -36,6 +36,9 @@ palette = 'catppuccin_mocha'
 
 [hostname]
 ssh_only = true
+ssh_symbol = '@'
+style = "bg:red fg:crust"
+format = '[$ssh_symbol$hostname]($style)'
 
 [os]
 disabled = false
