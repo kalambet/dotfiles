@@ -1,4 +1,9 @@
 {
+  "telemetry": {
+    "diagnostics": true,
+    "metrics": false,
+    "anthropic_retention": false
+  },
   "ssh_connections": [
     {
       "host": "neurolambda",
@@ -40,7 +45,7 @@
   "git_panel": {
     "dock": "right"
   },
-  "base_keymap": "JetBrains",
+  "base_keymap": "VSCode",
   "ui_font_size": 16,
   "buffer_font_size": 15.0,
   "buffer_font_family": "TX-02",
