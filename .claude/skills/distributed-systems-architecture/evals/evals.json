@@ -1,0 +1,26 @@
+{
+  "skill_name": "distributed-systems-architecture",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "We're building a URL shortener. Expecting ~100M new short links per month and roughly 10x that in redirect traffic, growing. Redirects need to feel instant globally (aim for p99 under 50ms) and the service basically can't go down. How should I architect this end to end? I care about how you generate the short IDs, what database you'd pick and why, and how you handle the very read-heavy load and global latency.",
+      "expected_output": "A design doc: requirements/assumptions stated (QPS math for reads vs writes), a diagram, ID-generation options with tradeoffs (counter/base62 vs random vs hash), a read-heavy data + caching + CDN/edge strategy, DB choice justified against access patterns, multi-region approach, failure modes, and alternatives considered. Should choose an output format suited to a full system design.",
+      "files": [],
+      "expectations": []
+    },
+    {
+      "id": 2,
+      "prompt": "Can you review this order-processing design for problems before we build it? The API writes a new order row to Postgres, then publishes an 'order.created' event to Kafka. A payments service consumes that event and charges the customer's card. Separately, an email service consumes the same event and sends an order confirmation. We're on Kafka because we might add more consumers later. What are we missing?",
+      "expected_output": "A review-findings output ordered by severity. Should catch: the dual-write problem (DB commit + Kafka publish not atomic -> lost or phantom events) and recommend transactional outbox/CDC; at-least-once delivery meaning the payments consumer can double-charge -> needs idempotency keys; missing dead-letter queue / poison-message handling; ordering/partitioning considerations; and what happens on consumer failure/replay. Should also note what's reasonable about the design.",
+      "files": [],
+      "expectations": []
+    },
+    {
+      "id": 3,
+      "prompt": "We have a pool of worker processes that each poll a shared 'jobs' table in Postgres and grab the next pending job to run. Since we scaled to ~40 workers we're seeing two problems: occasionally the same job runs twice, and sometimes a worker grabs a job, dies mid-way, and the job just sits there marked 'in progress' forever and never retries. Should we move to a queue like SQS, or bolt on Redis locks? What would you actually recommend?",
+      "expected_output": "A recommendation/ADR-style answer that diagnoses the two root causes (non-atomic claim -> double-run; no lease/heartbeat or visibility timeout -> stuck jobs), weighs options honestly (fix the Postgres approach with SELECT ... FOR UPDATE SKIP LOCKED + a lease/heartbeat and idempotent jobs, vs move to SQS with visibility timeout + DLQ), warns that naive Redis locks without fencing tokens don't fix correctness, and makes a clear context-dependent recommendation with tradeoffs.",
+      "files": [],
+      "expectations": []
+    }
+  ]
+}

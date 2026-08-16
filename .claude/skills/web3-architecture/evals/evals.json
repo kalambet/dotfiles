@@ -1,0 +1,50 @@
+{
+  "skill_name": "web3-architecture",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "We're building a lending protocol on Base and the team is split on whether the core contracts should be upgradeable behind a proxy or shipped immutable with a migration path if we need changes. Can you write up the decision for us so everyone's on the same page?",
+      "expected_output": "An ADR that frames the lending-protocol context and value at risk, compares immutable vs upgradeable-proxy approaches with trade-offs, does a security pass on upgrade-specific risks (storage collisions, upgrade-key control), and makes a clear recommendation with governance controls and an audit caveat.",
+      "files": [],
+      "expectations": [
+        "The output is structured as an Architecture Decision Record with, at minimum, a Context section, an Options-Considered section, a Decision/recommendation section, and a Consequences section",
+        "Presents at least two distinct options for the upgradeability decision (e.g. immutable vs a proxy pattern) with pros and cons for each",
+        "Names at least one specific upgradeability pattern (UUPS, Transparent, Beacon, or Diamond) or a relevant EIP (e.g. EIP-1967, EIP-1822, EIP-2535)",
+        "Identifies upgrade-specific security risks, specifically storage-layout collisions and/or control of the upgrade key",
+        "If it recommends upgradeability it pairs it with governance controls such as a timelock and/or multisig (Safe); if it recommends immutable it addresses the bug-fix/migration path",
+        "Makes an explicit final recommendation with rationale tied to the value at risk",
+        "States that the system should be independently audited (and tested) before holding real user funds"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Design the architecture for an NFT marketplace with creator royalties and off-chain order matching. I mainly need to know what should live on-chain vs off-chain and how we keep settlement secure. We're targeting Ethereum L1 with maybe an L2 later.",
+      "expected_output": "An ADR that separates on-chain settlement/custody from off-chain order matching, recommends an EIP-712 signed-order pattern with replay/front-running protections, treats royalty enforcement honestly (ERC-2981 is advisory), includes a component breakdown or diagram, recommends clearly, and notes audit before mainnet.",
+      "files": [],
+      "expectations": [
+        "The output is structured as an Architecture Decision Record (Context, Options/Decision, Consequences) and includes a dedicated security discussion",
+        "Explicitly separates on-chain responsibilities (custody/settlement/access control) from off-chain responsibilities (order matching, order storage, indexing)",
+        "Recommends an off-chain signed-order pattern using EIP-712 typed-data signatures, or names a concrete implementation of it (e.g. Seaport or 0x)",
+        "Addresses signed-order security with at least replay protection (nonces and/or deadlines) and mentions front-running/MEV or signature-verification concerns",
+        "Treats creator-royalty enforcement realistically — notes that on-chain royalties (e.g. ERC-2981) are advisory / not automatically enforced on transfer rather than assuming they are guaranteed",
+        "Includes an on-chain/off-chain component diagram or a clearly labeled component-by-component breakdown, and makes an explicit recommendation",
+        "Notes that the contracts should be audited and tested before mainnet"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Our team wants to let users borrow against their LP tokens as collateral. Someone flagged oracle manipulation and flash loans as a risk. Help us choose an oracle approach and write up the decision.",
+      "expected_output": "An ADR comparing oracle approaches for valuing LP-token collateral, explicitly rejecting spot AMM pricing as flash-loan manipulable, recommending a manipulation-resistant approach with fair LP-token valuation and oracle safety checks, with a clear recommendation and audit caveat.",
+      "files": [],
+      "expectations": [
+        "The output is structured as an Architecture Decision Record (Context, Options Considered, Decision, Consequences)",
+        "Compares at least two oracle approaches (e.g. spot AMM price vs TWAP vs a decentralized price feed such as Chainlink)",
+        "Explicitly warns against or rejects pricing collateral off a spot AMM reserve/pool price because it is manipulable within a single transaction via a flash loan",
+        "Recommends a manipulation-resistant approach (e.g. Chainlink feed and/or TWAP) with reasoning",
+        "Addresses LP-token valuation specifically — e.g. fair-reserves / underlying-asset ('fair LP') pricing rather than reading the pool's naive quoted price",
+        "Includes concrete oracle safety checks such as staleness (updatedAt), sane min/max bounds, sequencer-uptime on L2, or handling a reverting/zero feed",
+        "Makes an explicit recommendation and notes that the design must be audited and tested before holding real funds"
+      ]
+    }
+  ]
+}

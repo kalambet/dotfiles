@@ -1,0 +1,138 @@
+---
+name: typescript-team
+description: TypeScript Team — architect designs the issue's implementation, developer judges the design from the code standpoint and implements after consensus, reviewer judges the result as a pair of fresh eyes with no design context. Use when the user asks to build, implement, or fix something non-trivial in TypeScript with the team, e.g. "get the typescript team on this", "ts team: implement X", or any substantial TS change that deserves a design-consensus-review cycle. Not for trivial one-line TS fixes — delegate those to typescript-developer directly.
+---
+
+# TypeScript Team
+
+Three roles, three phases, one deliberate blindness: the reviewer never sees the
+design or the debate. If the code needs the design doc to look correct, that is a
+finding, not a formality.
+
+## The roster
+
+| Teammate | Agent definition | Phase |
+|---|---|---|
+| `architect` | `typescript-architect` | Designs the implementation for this issue |
+| `developer` | `typescript-developer` | Critiques the design from the code standpoint, then implements the consensus |
+| `reviewer` | `typescript-reviewer` | Reviews the diff cold — fresh eyes, no design context |
+
+Each agent preloads its skill (`typescript-architect` / `typescript-developer` /
+`typescript-reviewer`), so the conventions travel with them.
+
+## Your role: facilitator, not arbiter
+
+You assemble the brief, dispatch phases, carry messages between architect and
+developer, enforce the reviewer's context blindness, and escalate unresolved
+disagreements to the user. You do not settle technical disputes, soften findings,
+or write design or implementation content yourself.
+
+## Phase 0 — Brief
+
+Write `team/brief.md` before dispatching anyone: the issue in one paragraph, the
+relevant packages/modules (paths), acceptance criteria, and constraints (Node and
+browser targets, ESM/CJS, public-API stability, published-types surface,
+package-manager and test-framework already in use). State assumptions explicitly
+rather than stalling; flag the ones that would fork the design if wrong.
+
+## Phase 1 — Design
+
+Dispatch `architect` with `team/brief.md`. It reads the affected code and writes
+`team/design.md`: the recommended implementation shape — package/module placement,
+public surface (exact exported signatures), type strategy (unions, brands, guards
+at boundaries), error contract, async/cancellation commitments, and the test plan
+(including type-level tests if the published type surface changes) — plus rejected
+alternatives with reasons. Design only; no implementation code beyond type
+signatures and skeletons.
+
+## Phase 2 — Code-standpoint critique → consensus
+
+Dispatch `developer` with the brief and `team/design.md`. Its job here is to judge,
+not to build: read the actual code the design touches and take a position on every
+design decision —
+
+- `AGREE` — implementable as specified.
+- `AMEND` — the goal is right, the shape fights the existing code; propose the
+  concrete alternative (with `file:line` evidence of what it collides with —
+  tsconfig settings, existing error classes, module boundaries, circular-import
+  risk).
+- `OBJECT` — the decision creates a real implementation problem: names the
+  mechanism (a type that can't be narrowed at the stated boundary, an API that
+  forces `as` casts on callers, a cancellation path with nowhere to thread the
+  `AbortSignal`, an ESM/CJS conflict with a dependency), not a taste complaint.
+
+Relay the critique to the **same** `architect` (SendMessage — its context must
+survive). The architect answers each `AMEND`/`OBJECT` with evidence or concession.
+**Two rounds maximum.** Consensus = no open `OBJECT`. Record the agreed changes in
+`team/design.md` with a short decision log. Anything still contested after round 2
+goes to the user with both positions intact — do not break the tie yourself.
+
+Preference is not conflict: an `AMEND` the architect accepts costs one line in the
+log, not a round.
+
+## Phase 3 — Implementation
+
+The **same** `developer` (context preserved) implements the consensus design:
+matches the surrounding code, writes tests with the change (behavior-level, plus
+type-level tests for published types), runs the project's gates — typically
+`yarn lint`, `yarn tsc --noEmit`, `yarn test` (or npm/pnpm equivalents from
+package.json scripts) — and reports results honestly. Deviations from the
+consensus that the code forces get recorded in `team/design.md`'s decision log —
+silent drift is what Phase 4 exists to catch.
+
+## Phase 4 — Fresh-eyes review
+
+Spawn a **new** `reviewer` whose prompt contains only: the repo path, the list of
+changed files (or the diff), and the instruction to review. **Never** pass it
+`team/brief.md`, `team/design.md`, the debate, or any rationale. This blindness is
+the point: the reviewer judges whether the code stands on its own — types, naming,
+error handling, async discipline, tests — exactly as a stranger reading the PR
+would.
+
+The reviewer works its checklist, runs the same gates, and returns findings with a
+verdict: LGTM / LGTM-with-nits / request-changes (or refuses to review if the
+project lacks `strict: true`).
+
+## Phase 5 — Fix loop
+
+Findings go back to `developer` (same one). It fixes or, where it disagrees,
+states why. Send the updated diff and the developer's responses back to the same
+`reviewer` for re-review. **Three review rounds maximum.**
+
+- Reviewer satisfied → proceed to sign-off.
+- Still contested at the cap → present both positions to the user as open
+  decisions. Findings are SOFT WARNING tier — the operator (user) decides on
+  merge, but the disagreement ships to them explicitly, never silently dropped.
+
+## Phase 6 — Team sign-off
+
+The issue is not finished when the code lands — it is finished when the team
+agrees it is. Send the final diff and the decision log to the **same**
+`architect`, which verifies the implementation against the consensus design and
+answers `DESIGN-CONFORMS` or raises specific deviations. Deviations go back to
+the fix loop (or, if the architect and developer disagree about whether a
+deviation is justified, to the user).
+
+## Definition of done
+
+All of these, explicitly, or the issue is still open:
+
+1. Every acceptance criterion from `team/brief.md` is met, with evidence.
+2. Tests are implemented and green (lint / `tsc --noEmit` / test gates pass).
+3. **Consensus among all three members:** architect — `DESIGN-CONFORMS`;
+   developer — implementation complete, gates green; reviewer — LGTM (nits
+   allowed). Any standing objection from any member means not done; it either
+   resolves inside the loops above or ships to the user as an open decision,
+   never gets quietly dropped.
+
+## Output
+
+Report to the user: what shipped (files + summary), the decision log from
+`team/design.md`, gate results (lint/typecheck/test), the reviewer's final
+verdict, and any open decisions with both positions.
+
+## Cost discipline
+
+If the issue turns out to be trivial once briefed (single obvious change, no
+design decisions), say so and delegate straight to `typescript-developer` with a
+follow-up `typescript-reviewer` pass — don't run the full protocol for a rename.

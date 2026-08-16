@@ -1,0 +1,23 @@
+{
+  "skill_name": "llm-system-architecture",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "We're a mid-size B2B SaaS company and we want to build an AI assistant that answers customer questions using our help center (about 800 articles that change a few times a week) plus each customer's own account data from our Postgres database. It needs to feel fast in a chat widget and we're worried about it making stuff up. How should we architect this? Give me a design I can take to my eng team.",
+      "expected_output": "A decision-first design doc that lands on RAG over the help center (justified by size + change frequency) combined with a tool/query path for account data, single generation call rather than an agent, hybrid search + likely reranking, hard grounding + citations + 'I don't know' behavior against hallucination, and a concrete eval plan splitting retrieval vs generation metrics plus production monitoring. Should name trade-offs and the unhappy path, and follow the design-doc template.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "I want to build an autonomous multi-agent system where a 'planner agent', a 'research agent', a 'writer agent', and a 'QA agent' collaborate to produce weekly competitive-intelligence reports from public web sources. Help me design the agent architecture.",
+      "expected_output": "Should push back on defaulting to four agents: interrogate whether this is really a fixed pipeline (research -> draft -> critique) rather than an autonomous multi-agent system, apply the ladder, and justify any agency by genuine need (runtime-variable steps, parallel research fan-out, context isolation). Should cover tool design for web research, loop bounds, prompt-injection risk from untrusted web content, human gate on publishing, and trajectory-based evals. Recommends a specific (likely simpler) shape rather than rubber-stamping the four-agent idea.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Our RAG system is live but quality is bad — users say it 'hallucinates' and sometimes can't find answers that are definitely in our docs. We're on a general-purpose embedding model with fixed 512-token chunks and top-5 vector search, no reranking. We keep thinking about switching to a bigger LLM. What should we actually do?",
+      "expected_output": "Should diagnose that 'hallucination' is likely a retrieval failure, not a generation/model problem, and steer away from model-shopping. Concrete fixes: better semantic chunking vs fixed 512, hybrid (dense+sparse) search, add a reranker, query transformation, contextual enrichment, and metadata. Crucially recommends evaluating retrieval and generation separately (recall@k/precision@k/MRR vs faithfulness) before changing anything, so fixes are measured. Names the real fix per symptom.",
+      "files": []
+    }
+  ]
+}

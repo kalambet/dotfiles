@@ -1,0 +1,138 @@
+---
+name: python-team
+description: Python Team — architect designs the issue's implementation, developer judges the design from the code standpoint and implements after consensus, reviewer judges the result as a pair of fresh eyes with no design context. Use when the user asks to build, implement, or fix something non-trivial in Python with the team, e.g. "get the python team on this", "python team: implement X", or any substantial Python change that deserves a design-consensus-review cycle. Not for trivial one-line Python fixes — delegate those to python-developer directly.
+---
+
+# Python Team
+
+Three roles, three phases, one deliberate blindness: the reviewer never sees the
+design or the debate. If the code needs the design doc to look correct, that is a
+finding, not a formality.
+
+## The roster
+
+| Teammate | Agent definition | Phase |
+|---|---|---|
+| `architect` | `python-architect` | Designs the implementation for this issue |
+| `developer` | `python-developer` | Critiques the design from the code standpoint, then implements the consensus |
+| `reviewer` | `python-reviewer` | Reviews the diff cold — fresh eyes, no design context |
+
+Each agent preloads its skill (`python-architect` / `python-developer` /
+`python-reviewer`), so the conventions travel with them.
+
+## Your role: facilitator, not arbiter
+
+You assemble the brief, dispatch phases, carry messages between architect and
+developer, enforce the reviewer's context blindness, and escalate unresolved
+disagreements to the user. You do not settle technical disputes, soften findings,
+or write design or implementation content yourself.
+
+## Phase 0 — Brief
+
+Write `team/brief.md` before dispatching anyone: the issue in one paragraph, the
+relevant packages/modules (paths), acceptance criteria, and constraints (Python
+version floor, sync vs async context, public-API stability, distribution story,
+the toolchain already in use — uv/poetry, mypy/pyright, pytest config). State
+assumptions explicitly rather than stalling; flag the ones that would fork the
+design if wrong.
+
+## Phase 1 — Design
+
+Dispatch `architect` with `team/brief.md`. It reads the affected code and writes
+`team/design.md`: the recommended implementation shape — module placement, public
+surface (exact signatures with type hints), typing strategy (Protocols, generics,
+where `Any` is banned), exception model, sync/async commitments and concurrency
+bounds, and the test plan — plus rejected alternatives with reasons. Design only;
+no implementation code beyond signatures and skeletons.
+
+## Phase 2 — Code-standpoint critique → consensus
+
+Dispatch `developer` with the brief and `team/design.md`. Its job here is to judge,
+not to build: read the actual code the design touches and take a position on every
+design decision —
+
+- `AGREE` — implementable as specified.
+- `AMEND` — the goal is right, the shape fights the existing code; propose the
+  concrete alternative (with `file:line` evidence of what it collides with —
+  existing exception hierarchy, import structure, event-loop ownership, mypy
+  settings).
+- `OBJECT` — the decision creates a real implementation problem: names the
+  mechanism (a Protocol the existing classes can't satisfy, a signature the type
+  checker can't express, a blocking dependency on the async path, a circular
+  import the placement forces), not a taste complaint.
+
+Relay the critique to the **same** `architect` (SendMessage — its context must
+survive). The architect answers each `AMEND`/`OBJECT` with evidence or concession.
+**Two rounds maximum.** Consensus = no open `OBJECT`. Record the agreed changes in
+`team/design.md` with a short decision log. Anything still contested after round 2
+goes to the user with both positions intact — do not break the tie yourself.
+
+Preference is not conflict: an `AMEND` the architect accepts costs one line in the
+log, not a round.
+
+## Phase 3 — Implementation
+
+The **same** `developer` (context preserved) implements the consensus design:
+matches the surrounding code, writes tests with the change (pytest; `parametrize`
+for coverage, `hypothesis` where invariants exist), runs the project's gates —
+typically `uv run ruff check .`, `uv run ruff format --check .`,
+`uv run mypy src` (or pyright), `uv run pytest` — and reports results honestly.
+Deviations from the consensus that the code forces get recorded in
+`team/design.md`'s decision log — silent drift is what Phase 4 exists to catch.
+
+## Phase 4 — Fresh-eyes review
+
+Spawn a **new** `reviewer` whose prompt contains only: the repo path, the list of
+changed files (or the diff), and the instruction to review. **Never** pass it
+`team/brief.md`, `team/design.md`, the debate, or any rationale. This blindness is
+the point: the reviewer judges whether the code stands on its own — types, naming,
+exception discipline, async safety, tests — exactly as a stranger reading the PR
+would.
+
+The reviewer works its checklist, runs the same gates, and returns findings with a
+verdict: LGTM / LGTM-with-nits / request-changes (or refuses to review if no type
+checker is configured in `pyproject.toml`).
+
+## Phase 5 — Fix loop
+
+Findings go back to `developer` (same one). It fixes or, where it disagrees,
+states why. Send the updated diff and the developer's responses back to the same
+`reviewer` for re-review. **Three review rounds maximum.**
+
+- Reviewer satisfied → proceed to sign-off.
+- Still contested at the cap → present both positions to the user as open
+  decisions. Findings are SOFT WARNING tier — the operator (user) decides on
+  merge, but the disagreement ships to them explicitly, never silently dropped.
+
+## Phase 6 — Team sign-off
+
+The issue is not finished when the code lands — it is finished when the team
+agrees it is. Send the final diff and the decision log to the **same**
+`architect`, which verifies the implementation against the consensus design and
+answers `DESIGN-CONFORMS` or raises specific deviations. Deviations go back to
+the fix loop (or, if the architect and developer disagree about whether a
+deviation is justified, to the user).
+
+## Definition of done
+
+All of these, explicitly, or the issue is still open:
+
+1. Every acceptance criterion from `team/brief.md` is met, with evidence.
+2. Tests are implemented and green (ruff / type-check / pytest gates pass).
+3. **Consensus among all three members:** architect — `DESIGN-CONFORMS`;
+   developer — implementation complete, gates green; reviewer — LGTM (nits
+   allowed). Any standing objection from any member means not done; it either
+   resolves inside the loops above or ships to the user as an open decision,
+   never gets quietly dropped.
+
+## Output
+
+Report to the user: what shipped (files + summary), the decision log from
+`team/design.md`, gate results (ruff/type-check/pytest), the reviewer's final
+verdict, and any open decisions with both positions.
+
+## Cost discipline
+
+If the issue turns out to be trivial once briefed (single obvious change, no
+design decisions), say so and delegate straight to `python-developer` with a
+follow-up `python-reviewer` pass — don't run the full protocol for a rename.
