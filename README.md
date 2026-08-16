@@ -10,6 +10,10 @@ This repository contains configuration files for the local setup of macOS enviro
 - [LazyVim](https://www.lazyvim.org/) - as a NeoVim plugin manager
 - [Zed](https://zed.dev/) - as IDE
 - [mosh](https://mosh.org/) - SSH Server friendly for mobile and unstable connections
+- [eza](https://github.com/eza-community/eza) - modern `ls` replacement behind the `l`, `la`, `t`, and `lt` aliases
+- [fzf](https://github.com/junegunn/fzf) - fuzzy finder with shell key bindings and completion
+- [trash](https://formulae.brew.sh/formula/trash) - moves files to the macOS Trash instead of `rm`
+- [nvm](https://github.com/nvm-sh/nvm) - Node.js version manager (Homebrew install)
 - [1Password](https://developer.1password.com/docs/ssh/) - SSH agent and git commit signing (on `master`)
 
 # Claude Code
