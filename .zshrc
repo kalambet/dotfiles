@@ -163,8 +163,8 @@ if [ -d "$HOME/.daml" ]; then
   export PATH="$PATH:$HOME/.dpm/bin:$HOME/.daml/bin"
 fi
 
-# Added by Antigravity
-export PATH="/Users/peter/.antigravity/antigravity/bin:$PATH"
+# Anthropic
+CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
 
 # Set up fzf key bindings and fuzzy completion
 source <(fzf --zsh)
