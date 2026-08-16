@@ -1,18 +1,11 @@
 {
-  "telemetry": {
-    "diagnostics": true,
-    "metrics": false,
-    "anthropic_retention": false
-  },
   "ssh_connections": [
     {
       "host": "neurolambda",
       "args": [],
       "projects": [
         {
-          "paths": [
-            "/Users/peter/Developer"
-          ]
+          "paths": ["/Users/peter/Developer"]
         },
         {
           "paths": [
@@ -38,9 +31,7 @@
     "dock": "right"
   },
   "agent": {
-    "dock": "left",
-    "favorite_models": [],
-    "model_parameters": []
+    "dock": "left"
   },
   "git_panel": {
     "dock": "right"
