@@ -163,7 +163,7 @@ if [ -d "$HOME/.daml" ]; then
 fi
 
 # Anthropic
-CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
+export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
 
 # Set up fzf key bindings and fuzzy completion
 source <(fzf --zsh)
