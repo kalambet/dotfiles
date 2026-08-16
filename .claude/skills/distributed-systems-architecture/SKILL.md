@@ -2,17 +2,16 @@
 name: distributed-systems-architecture
 description: >-
   Expert methodology for designing and reviewing distributed systems. Use this
-  skill whenever the user is designing, architecting, evaluating, or debugging any
-  system that spans multiple services, databases, or machines — including choosing
-  between databases or message brokers, deciding on replication / sharding /
-  consistency, designing event-driven or microservice architectures, planning for
-  scale and high availability, or diagnosing distributed failure modes (data
-  inconsistency, cascading failures, network partitions, hot shards, duplicate
-  processing). Trigger it even when the user never says "distributed systems" —
-  e.g. "how should I scale my API", "design a URL shortener / rate limiter /
-  notification service", "will this architecture hold up under load", "Kafka vs
-  SQS", "strong vs eventual consistency", "how do I stop double-charging on
-  retries", "review this design doc / RFC". Covers four domains: data &
+  skill whenever the user is designing, evaluating, or debugging any system that
+  spans multiple services, databases, or machines — including choosing between
+  databases or message brokers, deciding on replication / sharding / consistency,
+  designing event-driven or microservice architectures, planning for scale and
+  high availability, or diagnosing distributed failure modes (data inconsistency,
+  cascading failures, network partitions, hot shards, duplicate processing).
+  Trigger even when the user never says "distributed systems" — e.g. "how should
+  I scale my API", "design a URL shortener / rate limiter / notification
+  service", "will this architecture hold up under load", "Kafka vs SQS", "strong
+  vs eventual consistency", "review this design doc / RFC". Covers data &
   consistency, messaging & streaming, coordination & consensus, and scale &
   reliability.
 ---
