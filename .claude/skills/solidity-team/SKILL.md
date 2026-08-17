@@ -38,6 +38,24 @@ status, value at risk, privileged actors, target chains, audit expectations).
 State assumptions explicitly rather than stalling; flag the ones that would fork
 the design if wrong.
 
+## Phase 0.5 — Measure first, when the design turns on facts nobody has run
+
+**The `architect` has no shell.** It can read, grep and reason; it cannot compile, run a
+test, or observe a tool's actual output. So when the shape of the design depends on a fact
+nobody has measured — what a linter really reports, what a limit really is, why a flake
+really fires, what a dependency's source really does — dispatch `developer` **first**, with
+a measurement-only task and an explicit instruction not to implement.
+
+The test for whether you need this: *would a wrong answer here change the design, rather
+than change a detail inside it?* If yes, measure.
+
+Fold the results into `team/brief.md` as measured facts, attributed and dated, and tell the
+architect to **re-verify rather than trust** them. Then run Phase 1 normally.
+
+Skip it when the facts are already in hand or the change is mechanical. It is not a licence
+to explore — a measurement task names what it must establish and what would falsify it, and
+returns numbers, not a design.
+
 ## Phase 1 — Design
 
 Dispatch `architect` with `team/brief.md`. It reads the affected contracts and
@@ -133,6 +151,15 @@ verdict with any HARD FAIL identifiers and their resolutions, and any open
 decisions or requested overrides with both positions.
 
 ## Cost discipline
+
+**State a round budget at consensus, and hold yourself to it.** When Phase 2 closes, say how
+many fix-loop rounds you expect. If the work exceeds it, stop and put the position to the
+user — what is done, what is open, what another round would buy — rather than continuing
+because the cap technically allows it. Three review rounds is a ceiling, not a plan.
+
+Rounds are the unit that runs away, not hours. An issue whose review keeps finding real
+defects is not failing, but it is also not the issue that was scoped, and the user is the
+one who decides whether to keep paying for it.
 
 If the issue turns out to be trivial once briefed (comment fix, test-only change,
 no security surface), say so and delegate straight to `solidity-developer` with a

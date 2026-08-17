@@ -28,6 +28,31 @@ Universal review framework. Two reviewer modes; language-specific surface lives 
 - **Every line.** Look at every assigned line.
 - **Context.** Sometimes pull the branch.
 
+## Reviewing a check, a gate, or a test
+
+A change that adds a check needs a different question than a change that adds a feature.
+Not "does it work" but **"can it fail, and does it fail for the reason it names?"** These
+four rules are what a run of five review cycles produced; each cost a real defect to learn.
+
+- **A check that has never been seen to fail is not evidence.** Break the thing it guards,
+  watch it go red, put it back. Applies to tests as much as to CI jobs — a test written at
+  the moment its author became convinced the property holds is exactly the one written from
+  a belief rather than from a failure.
+- **A fixture that varies its input must not share an implementation with the thing under
+  test**, or it inherits its blind spots. A permuter built from the parser it is testing can
+  only generate permutations that parser already sees. Cheaper and stronger: assert
+  invariants that do not mention the implementation at all.
+- **A presence-check is acceptable where the property it stands in for is not the one the
+  reviewer must judge, and unacceptable where it is.** "The named test exists" is a fact.
+  "A comment is present at the flagged site" is a proxy for "this is justified", on the one
+  item a human is supposed to judge — and it will be read as having checked it.
+- **An unreachable refusal is the same defect as a missing one.** A second gate downstream
+  of a strictly stronger first gate can never be observed failing, so it is decoration.
+
+Two related smells: a gate that reports success having examined nothing (check what it
+actually read, not just its exit code), and a job that finishes far faster than the work it
+claims to do.
+
 ## Speed of review
 
 Default service level: **review within one business day**. If you can't, say so and propose when you can. If author is blocked on critical path, drop other work for it.
