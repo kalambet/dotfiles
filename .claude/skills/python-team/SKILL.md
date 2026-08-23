@@ -17,8 +17,22 @@ finding, not a formality.
 | `developer` | `python-developer` | Critiques the design from the code standpoint, then implements the consensus |
 | `reviewer` | `python-reviewer` | Reviews the diff cold — fresh eyes, no design context |
 
-Each agent preloads its skill (`python-architect` / `python-developer` /
-`python-reviewer`), so the conventions travel with them.
+**Dispatch every agent with an explicit instruction to load its skill and confirm it
+did** — a first `Skill` call for `python-architect` / `python-developer` / `python-reviewer`, and one
+line back saying so. Do **not** rely on the agent definition's `skills:` declaration, and do not
+accept "my instructions say it is loaded" as confirmation. It costs one tool call per agent and
+converts an assumption into an observation.
+
+Measured 2026-08-22: an architect and a developer both ran most of a cycle having made **zero**
+`Skill` calls, each working from a persona prompt that asserted the skill was already loaded.
+Loading it changed **no convention** — both already complied — but the architect was missing the
+ADR template's four required dimensions, and the developer had run **two of the skill's six
+verification commands**. Running the other four surfaced a CI failure waiting on a file nobody
+had considered.
+
+So the cost of the gap is not wrong conventions; it is **missing evidence**. These skills carry
+the checklist of what counts as having *checked*, which is precisely what a confident agent
+skips.
 
 ## Your role: facilitator, not arbiter
 
