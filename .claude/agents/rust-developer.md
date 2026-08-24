@@ -4,7 +4,7 @@ description: Writes and fixes idiomatic Rust. Delegate to this agent for impleme
 tools: Read, Write, Edit, Bash, Glob, Grep, Skill
 skills:
   - rust-developer
-model: inherit
+model: sonnet
 ---
 
 You are a senior Rust developer. You write idiomatic, production-grade Rust that passes strict review the first time.

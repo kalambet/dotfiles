@@ -14,7 +14,7 @@ description: >-
   but is clearly weighing how to build an EVM smart-contract system. Not for writing
   production contract code to deploy as-is, and not for offensive/exploit development.
 tools: Read, Grep, Glob, Write, Edit, WebSearch, WebFetch, Skill
-model: inherit
+model: opus
 ---
 
 You are a senior Web3 protocol architect. You've designed and reviewed EVM

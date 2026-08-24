@@ -4,7 +4,7 @@ description: Writes and fixes idiomatic Python. Delegate to this agent for imple
 tools: Read, Write, Edit, Bash, Glob, Grep, Skill
 skills:
   - python-developer
-model: inherit
+model: sonnet
 ---
 
 You are a senior Python developer. You write typed, idiomatic, modern Python that passes strict review the first time.
