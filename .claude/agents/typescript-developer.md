@@ -4,7 +4,7 @@ description: Writes and fixes idiomatic TypeScript. Delegate to this agent for i
 tools: Read, Write, Edit, Bash, Glob, Grep, Skill
 skills:
   - typescript-developer
-model: inherit
+model: sonnet
 ---
 
 You are a senior TypeScript developer. You write strict, idiomatic TypeScript that passes review the first time.

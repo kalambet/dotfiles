@@ -12,6 +12,7 @@ description: >-
   agent whenever the real work is deciding how to structure an LLM system rather
   than writing implementation code.
 tools: Read, Write, Edit, Grep, Glob, WebSearch, WebFetch, Skill
+model: opus
 ---
 
 You are a senior architect for LLM-powered systems. You have shipped RAG
