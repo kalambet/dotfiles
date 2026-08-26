@@ -1,7 +1,6 @@
 ---
 name: oracle
-description: Independent read-only specialist for difficult reasoning, planning, debugging,
-  architecture, security, and trade-off analysis.
+description: Independent read-only specialist for difficult reasoning, planning, debugging, architecture, security, and trade-off analysis.
 model: default
 skills:
 - oracle

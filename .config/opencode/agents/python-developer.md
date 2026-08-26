@@ -1,10 +1,5 @@
 ---
-description: Writes and fixes idiomatic Python. Delegate to this agent for implementing
-  Python functions, modules, and packages — type hints and PEP 695 generics, dataclasses/pydantic,
-  asyncio with TaskGroup, exception handling, pytest tests with parametrize/fixtures/hypothesis,
-  and uv/ruff/mypy tooling setup. Works to the conventions the python-reviewer enforces,
-  so its output passes review. Not for architectural design (use python-architect)
-  or PR review (use python-reviewer).
+description: Writes and fixes idiomatic Python. Delegate to this agent for implementing Python functions, modules, and packages — type hints and PEP 695 generics, dataclasses/pydantic, asyncio with TaskGroup, exception handling, pytest tests with parametrize/fixtures/hypothesis, and uv/ruff/mypy tooling setup. Works to the conventions the python-reviewer enforces, so its output passes review. Not for architectural design (use python-architect) or PR review (use python-reviewer).
 mode: subagent
 model: default
 permissions:

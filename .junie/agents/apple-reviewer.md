@@ -1,10 +1,6 @@
 ---
 name: apple-reviewer
-description: Reviews Swift and Apple platform code for quality, correctness, HIG compliance,
-  accessibility, and best practices. Delegates to this agent for reviewing SwiftUI
-  views, SwiftData models, concurrency patterns, navigation architecture, or any Swift
-  code targeting Apple platforms. Catches accessibility violations, concurrency safety
-  issues, state management anti-patterns, and HIG non-compliance.
+description: Reviews Swift and Apple platform code for quality, correctness, HIG compliance, accessibility, and best practices. Delegates to this agent for reviewing SwiftUI views, SwiftData models, concurrency patterns, navigation architecture, or any Swift code targeting Apple platforms. Catches accessibility violations, concurrency safety issues, state management anti-patterns, and HIG non-compliance.
 model: default
 skills:
 - apple-dev

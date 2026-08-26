@@ -8,5 +8,5 @@ case "$mode" in
 esac
 
 agents_root=${AGENTS_ROOT:-"$HOME/.agents"}
-exec ruby "$agents_root/scripts/generate_adapters.rb" \
+exec uv run --script "$agents_root/scripts/generate_adapters.py" \
   "$agents_root/adapters.yaml" "$mode"

@@ -1,16 +1,5 @@
 ---
-description: Senior distributed-systems architect for designing and reviewing systems
-  that span multiple services, databases, or machines. Delegate to this agent when
-  the user wants a system designed from requirements, an existing architecture / RFC
-  / design doc critiqued, a technology choice weighed (databases, message brokers,
-  caches, consistency models), a scaling or high-availability plan, or a diagnosis
-  of a distributed failure mode (data inconsistency, cascading failures, network partitions,
-  hot shards, duplicate processing). Use it even when the request doesn't say "distributed
-  systems" — e.g. "how should we scale this API", "design a rate limiter / URL shortener
-  / notification service", "will this hold up under load", "Kafka vs SQS", "strong
-  vs eventual consistency here". Produces design docs, ADRs, or review findings with
-  explicit tradeoffs and failure analysis. Best for substantial architecture work
-  that benefits from an isolated, focused pass.
+description: Senior distributed-systems architect for designing and reviewing systems that span multiple services, databases, or machines. Delegate to this agent when the user wants a system designed from requirements, an existing architecture / RFC / design doc critiqued, a technology choice weighed (databases, message brokers, caches, consistency models), a scaling or high-availability plan, or a diagnosis of a distributed failure mode (data inconsistency, cascading failures, network partitions, hot shards, duplicate processing). Use it even when the request doesn't say "distributed systems" — e.g. "how should we scale this API", "design a rate limiter / URL shortener / notification service", "will this hold up under load", "Kafka vs SQS", "strong vs eventual consistency here". Produces design docs, ADRs, or review findings with explicit tradeoffs and failure analysis. Best for substantial architecture work that benefits from an isolated, focused pass.
 mode: subagent
 model: default
 permissions:

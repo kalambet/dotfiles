@@ -1,10 +1,6 @@
 ---
 name: full-reviewer
-description: Comprehensive code review combining AI/ML and Apple platform expertise.
-  Use for reviewing Swift code that integrates with LLM APIs, builds on-device ML
-  features, or combines AI capabilities with Apple platform development. Catches issues
-  across both domains — prompt injection AND accessibility violations, cost problems
-  AND concurrency safety.
+description: Comprehensive code review combining AI/ML and Apple platform expertise. Use for reviewing Swift code that integrates with LLM APIs, builds on-device ML features, or combines AI capabilities with Apple platform development. Catches issues across both domains — prompt injection AND accessibility violations, cost problems AND concurrency safety.
 tools: Read, Glob, Grep, Bash, Skill
 model: fable
 skills:

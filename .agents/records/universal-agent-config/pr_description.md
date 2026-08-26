@@ -10,7 +10,7 @@
 - verified adapter generation is idempotent and detects drift
 - verified symlinks and generated-file ownership
 - verified Amp discovers the canonical Oracle, Librarian, and workflow skills
-- ran Ruby and shell syntax checks plus a staged secret-pattern scan
+- ran Ruff, Python compilation, and shell syntax checks plus a staged secret-pattern scan
 
 ## Limitations
 

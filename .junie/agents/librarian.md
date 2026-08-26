@@ -1,7 +1,6 @@
 ---
 name: librarian
-description: Read-only research specialist for official documentation, external codebases,
-  upstream behavior, and current best practices.
+description: Read-only research specialist for official documentation, external codebases, upstream behavior, and current best practices.
 model: default
 skills:
 - librarian

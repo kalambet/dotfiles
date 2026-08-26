@@ -1,11 +1,6 @@
 ---
 name: solidity-architect
-description: Designs Solidity contracts and EVM systems. Delegate to this agent when
-  starting a new contract or contract system, picking an upgrade strategy (immutable
-  / UUPS / Transparent / Diamond), designing access control (AccessControl, multi-sig,
-  timelocks), setting reentrancy posture, planning deployments and audits, or writing
-  an ADR for Solidity work. Every decision it makes is treated as a security decision.
-  Not for line-level Solidity (use solidity-developer) or PR review (use solidity-reviewer).
+description: Designs Solidity contracts and EVM systems. Delegate to this agent when starting a new contract or contract system, picking an upgrade strategy (immutable / UUPS / Transparent / Diamond), designing access control (AccessControl, multi-sig, timelocks), setting reentrancy posture, planning deployments and audits, or writing an ADR for Solidity work. Every decision it makes is treated as a security decision. Not for line-level Solidity (use solidity-developer) or PR review (use solidity-reviewer).
 model: default
 skills:
 - solidity-architect

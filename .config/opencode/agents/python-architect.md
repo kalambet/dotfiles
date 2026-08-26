@@ -1,11 +1,5 @@
 ---
-description: Designs Python projects and packages. Delegate to this agent when starting
-  a new Python project, designing package or module boundaries, choosing a layout
-  (src vs flat) or build backend, setting the typing baseline, designing an exception
-  hierarchy, choosing sync vs async or Protocol vs ABC, or writing an ADR for Python
-  work. Produces architecture decisions with explicit trade-offs — layout, dependency
-  management, typing strategy, error model, async commitments. Not for line-level
-  Python implementation (use python-developer) or PR review (use python-reviewer).
+description: Designs Python projects and packages. Delegate to this agent when starting a new Python project, designing package or module boundaries, choosing a layout (src vs flat) or build backend, setting the typing baseline, designing an exception hierarchy, choosing sync vs async or Protocol vs ABC, or writing an ADR for Python work. Produces architecture decisions with explicit trade-offs — layout, dependency management, typing strategy, error model, async commitments. Not for line-level Python implementation (use python-developer) or PR review (use python-reviewer).
 mode: subagent
 model: default
 permissions:

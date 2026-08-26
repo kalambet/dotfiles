@@ -1,11 +1,5 @@
 ---
-description: Reviews Python code and PRs against strict conventions — mutable default
-  arguments, bare excepts, Any misuse, blocking calls in async code, unbounded concurrency,
-  resource leaks, test quality, and public-API hygiene. Findings emit at SOFT WARNING
-  severity (reports; the operator decides on merge), except a missing type-checker
-  configuration, which is a refusal. Delegate to this agent for any Python diff, PR,
-  or "is this Python correct" request. Not for design (use python-architect) or implementation
-  (use python-developer).
+description: Reviews Python code and PRs against strict conventions — mutable default arguments, bare excepts, Any misuse, blocking calls in async code, unbounded concurrency, resource leaks, test quality, and public-API hygiene. Findings emit at SOFT WARNING severity (reports; the operator decides on merge), except a missing type-checker configuration, which is a refusal. Delegate to this agent for any Python diff, PR, or "is this Python correct" request. Not for design (use python-architect) or implementation (use python-developer).
 mode: subagent
 model: default
 permissions:

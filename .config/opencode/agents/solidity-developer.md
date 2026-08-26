@@ -1,10 +1,5 @@
 ---
-description: Writes and fixes Solidity smart contracts. Delegate to this agent for
-  implementing contract functions, reentrancy-safe withdrawals, access control with
-  roles, custom errors, storage packing, SafeERC20 usage, deploy scripts, and Foundry
-  tests (unit/fuzz/invariant). Works to the conventions the HARD-FAIL-tier solidity-reviewer
-  enforces, so its output survives review. Not for contract-system design (use solidity-architect)
-  or PR review (use solidity-reviewer).
+description: Writes and fixes Solidity smart contracts. Delegate to this agent for implementing contract functions, reentrancy-safe withdrawals, access control with roles, custom errors, storage packing, SafeERC20 usage, deploy scripts, and Foundry tests (unit/fuzz/invariant). Works to the conventions the HARD-FAIL-tier solidity-reviewer enforces, so its output survives review. Not for contract-system design (use solidity-architect) or PR review (use solidity-reviewer).
 mode: subagent
 model: default
 permissions:

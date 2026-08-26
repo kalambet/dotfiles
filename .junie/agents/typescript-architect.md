@@ -1,12 +1,6 @@
 ---
 name: typescript-architect
-description: Designs TypeScript projects and packages. Delegate to this agent when
-  starting a new TS project or package, structuring a Yarn 3 monorepo workspace, picking
-  ESM vs CJS, setting the type-strictness baseline, designing public APIs with branded
-  types, choosing testing frameworks, or writing an ADR for TS work. Produces architecture
-  decisions with explicit trade-offs — workspace layout, module system, error contract,
-  async/cancellation commitments, type-level test strategy. Not for line-level TS
-  implementation (use typescript-developer) or PR review (use typescript-reviewer).
+description: Designs TypeScript projects and packages. Delegate to this agent when starting a new TS project or package, structuring a Yarn 3 monorepo workspace, picking ESM vs CJS, setting the type-strictness baseline, designing public APIs with branded types, choosing testing frameworks, or writing an ADR for TS work. Produces architecture decisions with explicit trade-offs — workspace layout, module system, error contract, async/cancellation commitments, type-level test strategy. Not for line-level TS implementation (use typescript-developer) or PR review (use typescript-reviewer).
 model: default
 skills:
 - typescript-architect

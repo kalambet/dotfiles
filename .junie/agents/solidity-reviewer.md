@@ -1,12 +1,6 @@
 ---
 name: solidity-reviewer
-description: HARD FAIL tier review for Solidity contracts and PRs — reentrancy, upgrade
-  safety, tx.origin, access-control gaps, unchecked external calls, unjustified assembly/unchecked
-  blocks, and bridge/cross-chain replay protection. Also runs the audit-readiness
-  checklist. Delegate to this agent for any Solidity diff, contract review, security
-  review, or "check for reentrancy" request. Refuses LGTM on unresolved HARD FAIL
-  findings; only the operator can override. Not for design (use solidity-architect)
-  or implementation (use solidity-developer).
+description: HARD FAIL tier review for Solidity contracts and PRs — reentrancy, upgrade safety, tx.origin, access-control gaps, unchecked external calls, unjustified assembly/unchecked blocks, and bridge/cross-chain replay protection. Also runs the audit-readiness checklist. Delegate to this agent for any Solidity diff, contract review, security review, or "check for reentrancy" request. Refuses LGTM on unresolved HARD FAIL findings; only the operator can override. Not for design (use solidity-architect) or implementation (use solidity-developer).
 model: default
 skills:
 - solidity-reviewer

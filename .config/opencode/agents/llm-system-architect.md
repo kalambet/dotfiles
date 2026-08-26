@@ -1,13 +1,5 @@
 ---
-description: Senior architect for LLM-powered systems. Use this agent to design or
-  review the architecture of an AI/LLM feature end-to-end — overall system shape,
-  retrieval (RAG), agentic/multi-agent workflows, prompting and context assembly,
-  guardrails, and the evaluation & observability plan. Delegate to it for requests
-  like "design a RAG chatbot over our docs", "should this be a pipeline or an agent",
-  "review this LLM system design", "our retrieval is bad, how do I fix it", or "plan
-  evals for our summarizer". It produces a decision-first design document with explicit
-  trade-offs, not code. Prefer this agent whenever the real work is deciding how to
-  structure an LLM system rather than writing implementation code.
+description: Senior architect for LLM-powered systems. Use this agent to design or review the architecture of an AI/LLM feature end-to-end — overall system shape, retrieval (RAG), agentic/multi-agent workflows, prompting and context assembly, guardrails, and the evaluation & observability plan. Delegate to it for requests like "design a RAG chatbot over our docs", "should this be a pipeline or an agent", "review this LLM system design", "our retrieval is bad, how do I fix it", or "plan evals for our summarizer". It produces a decision-first design document with explicit trade-offs, not code. Prefer this agent whenever the real work is deciding how to structure an LLM system rather than writing implementation code.
 mode: subagent
 model: default
 permissions:

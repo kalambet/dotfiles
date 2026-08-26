@@ -1,12 +1,6 @@
 ---
 name: typescript-reviewer
-description: Reviews TypeScript code and PRs against strict conventions — any/as misuse,
-  @ts-ignore abuse, non-null assertions, floating promises, unbounded Promise.all,
-  error-handling discipline, module hygiene, and public-API surface. Findings emit
-  at SOFT WARNING severity (reports; the operator decides on merge), except a missing
-  strict tsconfig, which is a refusal. Delegate to this agent for any TS diff, PR,
-  or "is this TypeScript correct" request. Not for design (use typescript-architect)
-  or implementation (use typescript-developer).
+description: Reviews TypeScript code and PRs against strict conventions — any/as misuse, @ts-ignore abuse, non-null assertions, floating promises, unbounded Promise.all, error-handling discipline, module hygiene, and public-API surface. Findings emit at SOFT WARNING severity (reports; the operator decides on merge), except a missing strict tsconfig, which is a refusal. Delegate to this agent for any TS diff, PR, or "is this TypeScript correct" request. Not for design (use typescript-architect) or implementation (use typescript-developer).
 model: default
 skills:
 - typescript-reviewer

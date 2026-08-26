@@ -1,11 +1,6 @@
 ---
 name: rust-developer
-description: Writes and fixes idiomatic Rust. Delegate to this agent for implementing
-  Rust functions, modules, and crates — error handling with thiserror/anyhow, async/Tokio
-  code, concurrency primitives, unsafe with SAFETY comments, tests with proptest/miri,
-  and cargo tooling setup. Works to the conventions the rust-reviewer enforces, so
-  its output passes review. Not for architectural design (use rust-architect) or PR
-  review (use rust-reviewer).
+description: Writes and fixes idiomatic Rust. Delegate to this agent for implementing Rust functions, modules, and crates — error handling with thiserror/anyhow, async/Tokio code, concurrency primitives, unsafe with SAFETY comments, tests with proptest/miri, and cargo tooling setup. Works to the conventions the rust-reviewer enforces, so its output passes review. Not for architectural design (use rust-architect) or PR review (use rust-reviewer).
 tools: Read, Write, Edit, Bash, Glob, Grep, Skill
 model: sonnet
 skills:

@@ -1,9 +1,5 @@
 ---
-description: Builds Apple platform features — iOS, macOS, watchOS, tvOS, visionOS.
-  Delegates to this agent for implementing SwiftUI views, SwiftData models, navigation
-  flows, system framework integrations, networking, concurrency patterns, widgets,
-  App Intents, or any Swift development task targeting Apple platforms. Swift-first,
-  Objective-C only when genuinely unavoidable.
+description: Builds Apple platform features — iOS, macOS, watchOS, tvOS, visionOS. Delegates to this agent for implementing SwiftUI views, SwiftData models, navigation flows, system framework integrations, networking, concurrency patterns, widgets, App Intents, or any Swift development task targeting Apple platforms. Swift-first, Objective-C only when genuinely unavoidable.
 mode: subagent
 model: default
 permissions:
