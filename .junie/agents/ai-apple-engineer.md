@@ -8,9 +8,9 @@ skills:
 tools:
 - read
 - write
-- shell
 - search
 - web
+- shell
 ---
 <!-- Generated from ~/.agents; edit the canonical source instead. -->
 

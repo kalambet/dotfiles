@@ -152,8 +152,9 @@ these forces a re-derivation of how to even check the work.
 2. **Honest state or the document is worthless.** If tests fail, say so and paste the
    failure. If a step was skipped, say it was skipped. Never round "probably fine" up
    to "done". Hedged completeness beats confident fiction.
-3. **Respect the repo's invariants.** Read `AGENTS.md`, `ARCHITECTURE.md`, and
-   `LIBRARIAN.md` if present, and don't write anything the project forbids — for
+3. **Respect the repo's invariants.** Read `AGENTS.md` and `CLAUDE.md` when
+   present, plus `ARCHITECTURE.md` and `LIBRARIAN.md`. If both instruction files
+   resolve to the same file, read it once. Don't write anything the project forbids — for
    Verity that includes never calling the system "trustless" and using
    `licensed_composeHash == attested_composeHash` in new text.
 4. **Cite, don't restate.** If the spec or an ADR already says it, link it. A handoff

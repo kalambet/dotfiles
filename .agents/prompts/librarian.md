@@ -3,6 +3,7 @@ name: librarian
 description: Read-only research specialist for official documentation, external codebases, upstream behavior, and current best practices.
 model_class: researcher
 read_only: true
+shell: false
 skills:
   - librarian
 ---

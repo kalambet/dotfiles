@@ -123,4 +123,4 @@ Once implementation is running, the human's role shifts from architect to superv
 
 ---
 
-*Based on Boris Tane's Research → Plan → Implement workflow.*
+*Based on [Boris Tane's Research → Plan → Implement workflow](https://boristane.com/blog/how-i-use-claude-code/).*

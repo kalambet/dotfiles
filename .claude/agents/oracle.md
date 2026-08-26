@@ -1,7 +1,7 @@
 ---
 name: oracle
 description: Independent read-only specialist for difficult reasoning, planning, debugging, architecture, security, and trade-off analysis.
-tools: Read, Grep, Glob, Write, Edit, WebSearch, WebFetch, Skill
+tools: Read, Grep, Glob, WebSearch, WebFetch, Skill
 model: opus
 skills:
 - oracle

@@ -1,5 +1,5 @@
 ---
-description: Run the research phase of the approved Research → Plan → Annotate → Implement workflow
+description: Start the research phase for substantial implementation work
 ---
 <!-- Generated from ~/.agents; edit the canonical source instead. -->
 

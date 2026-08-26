@@ -33,8 +33,9 @@ Read its **`Follows:`** chain back one or two links if the current one reference
 decisions or dead ends it does not restate. Do not read the whole chain by default;
 that is what supersession is for.
 
-Also read the repo's `AGENTS.md`, and `ARCHITECTURE.md` / `LIBRARIAN.md` if present.
-The handoff assumes them.
+Also read the repo's `AGENTS.md` and `CLAUDE.md` when present, plus
+`ARCHITECTURE.md` / `LIBRARIAN.md`. If both instruction files resolve to the
+same file, read it once. The handoff assumes them.
 
 ## 2. Verify before you trust — do this before any work
 

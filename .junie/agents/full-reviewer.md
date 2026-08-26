@@ -11,6 +11,7 @@ tools:
 - read
 - search
 - web
+- shell
 ---
 <!-- Generated from ~/.agents; edit the canonical source instead. -->
 

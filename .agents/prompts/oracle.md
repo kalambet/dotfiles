@@ -3,6 +3,7 @@ name: oracle
 description: Independent read-only specialist for difficult reasoning, planning, debugging, architecture, security, and trade-off analysis.
 model_class: architect
 read_only: true
+shell: false
 skills:
   - oracle
 ---

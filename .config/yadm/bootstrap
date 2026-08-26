@@ -1,0 +1,5 @@
+#!/bin/sh
+set -eu
+
+"$HOME/.agents/scripts/sync-adapters.sh" --apply
+"$HOME/.agents/scripts/verify-setup.sh"

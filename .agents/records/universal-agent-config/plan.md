@@ -578,3 +578,35 @@ item means its verification passed, not merely that files were written.
 - [ ] Push the branch and write a concise Markdown pull-request description.
 - [ ] Open the pull request and report its URL and verification status; do not
       merge it.
+
+## Claude review remediation (approved 2026-08-26)
+
+The operator approved the following disposition after reviewing
+`~/.claude/review-claude.md` item by item:
+
+- [x] Define `read_only` consistently as prohibiting file edits while retaining
+      shell access, and add an independent `shell` capability for roles such as
+      Oracle and Librarian.
+- [x] Generate Claude, Junie, and OpenCode permissions from those capabilities
+      and verify Oracle/Librarian cannot edit or run shell commands.
+- [x] Generate and verify all configured instruction symlinks, including Claude,
+      with collision refusal and relative targets.
+- [x] Make `AGENTS_ROOT` and `ADAPTER_HOME` genuine test-path overrides while
+      preserving the existing defaults.
+- [x] Preflight every generated target before writing so an unmanaged collision
+      cannot cause a partial apply.
+- [x] Move command descriptions into canonical command frontmatter and generate
+      adapters from that metadata.
+- [x] Update `pickup` and `warp` to read both `AGENTS.md` and a distinct
+      `CLAUDE.md` when present.
+- [x] Restore the linked Boris Tane attribution.
+- [x] Add yadm bootstrap apply/verify integration and a pre-push drift check;
+      avoid automatic mutation on every checkout or merge.
+- [x] Add isolated behavioral checks for permissions, deterministic generation,
+      instruction links, collision preflight, path overrides, and drift.
+- [x] Keep the current generated marker; record Junie/OpenCode as statically
+      verified until their CLIs are available.
+- [x] Remove the tracked single-use PR-description artifact after updating the
+      live PR body; retain `research.md` and `plan.md` as durable records.
+- [x] Run all verification gates, update the PR, commit, and push without
+      merging.

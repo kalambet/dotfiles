@@ -1,5 +1,5 @@
 ---
-description: Run the plan phase of the approved Research → Plan → Annotate → Implement workflow
+description: Create an implementation plan from reviewed research
 allowPromptArgument: true
 ---
 <!-- Generated from ~/.agents; edit the canonical source instead. -->

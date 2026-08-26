@@ -4,6 +4,7 @@ mode: subagent
 model: default
 permissions:
   edit: allow
+  shell: allow
 ---
 <!-- Generated from ~/.agents; edit the canonical source instead. -->
 

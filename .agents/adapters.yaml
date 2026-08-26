@@ -21,6 +21,7 @@ models:
     reviewer: default
     researcher: default
 instruction_adapters:
+  claude: ~/.claude/CLAUDE.md
   codex: ~/.codex/AGENTS.md
   amp: ~/.config/AGENTS.md
   junie: ~/.junie/AGENTS.md

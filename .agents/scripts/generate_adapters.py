@@ -10,6 +10,7 @@ import argparse
 import os
 import re
 import tempfile
+from dataclasses import dataclass
 from pathlib import Path
 
 import yaml
@@ -21,6 +22,27 @@ SKILL_NAME = re.compile(r"\A[a-z0-9]+(?:-[a-z0-9]+)*\Z")
 
 class ConfigError(RuntimeError):
     """Raised when adapter configuration or source metadata is invalid."""
+
+
+@dataclass(frozen=True)
+class RuntimePaths:
+    agents_root: Path
+    adapter_home: Path
+
+
+@dataclass(frozen=True)
+class FileTarget:
+    path: Path
+    content: str
+
+
+@dataclass(frozen=True)
+class LinkTarget:
+    path: Path
+    source: Path
+
+
+Target = FileTarget | LinkTarget
 
 
 def require_mapping(value: object, context: str) -> dict[str, object]:
@@ -57,8 +79,25 @@ def nested(config: dict[str, object], *keys: str) -> object:
     return value
 
 
-def expand(path: object, context: str) -> Path:
-    return Path(require_string(path, context)).expanduser()
+def runtime_paths() -> RuntimePaths:
+    home = Path(os.environ.get("HOME", "~")).expanduser()
+    return RuntimePaths(
+        agents_root=Path(os.environ.get("AGENTS_ROOT", home / ".agents")),
+        adapter_home=Path(os.environ.get("ADAPTER_HOME", home)),
+    )
+
+
+def expand(path: object, context: str, paths: RuntimePaths) -> Path:
+    value = require_string(path, context)
+    if value == "~/.agents":
+        return paths.agents_root
+    if value.startswith("~/.agents/"):
+        return paths.agents_root / value.removeprefix("~/.agents/")
+    if value == "~":
+        return paths.adapter_home
+    if value.startswith("~/"):
+        return paths.adapter_home / value.removeprefix("~/")
+    return Path(value)
 
 
 def load_yaml_mapping(path: Path) -> dict[str, object]:
@@ -94,30 +133,6 @@ def frontmatter(data: dict[str, object]) -> str:
     )
 
 
-def managed_write(path: Path, content: str, *, apply: bool) -> bool:
-    if path.exists():
-        current = path.read_text(encoding="utf-8")
-        if MARKER not in current:
-            raise ConfigError(f"refusing to overwrite unmanaged file: {path}")
-        if current == content:
-            return False
-    if not apply:
-        return True
-
-    path.parent.mkdir(parents=True, exist_ok=True)
-    descriptor, temporary_name = tempfile.mkstemp(
-        prefix=f".{path.name}.", dir=path.parent
-    )
-    temporary = Path(temporary_name)
-    try:
-        with os.fdopen(descriptor, "w", encoding="utf-8") as handle:
-            handle.write(content)
-        temporary.replace(path)
-    finally:
-        temporary.unlink(missing_ok=True)
-    return True
-
-
 def model(config: dict[str, object], harness: str, model_class: str) -> str:
     return require_string(
         nested(config, "models", harness, model_class),
@@ -125,9 +140,33 @@ def model(config: dict[str, object], harness: str, model_class: str) -> str:
     )
 
 
-def generate_agents(config: dict[str, object], *, apply: bool) -> list[Path]:
-    prompts_dir = expand(nested(config, "canonical", "prompts"), "canonical.prompts")
-    changed: list[Path] = []
+def claude_tools(model_class: str, *, read_only: bool, shell: bool) -> str:
+    tools = {
+        "architect": [
+            "Read",
+            "Grep",
+            "Glob",
+            "Write",
+            "Edit",
+            "WebSearch",
+            "WebFetch",
+            "Skill",
+        ],
+        "developer": ["Read", "Write", "Edit", "Bash", "Glob", "Grep", "Skill"],
+        "researcher": ["Read", "Glob", "Grep", "WebSearch", "WebFetch"],
+    }.get(model_class, ["Read", "Glob", "Grep", "Bash", "Skill"])
+    if read_only:
+        tools = [tool for tool in tools if tool not in {"Write", "Edit"}]
+    if not shell:
+        tools = [tool for tool in tools if tool != "Bash"]
+    return ", ".join(tools)
+
+
+def render_agents(config: dict[str, object], paths: RuntimePaths) -> list[FileTarget]:
+    prompts_dir = expand(
+        nested(config, "canonical", "prompts"), "canonical.prompts", paths
+    )
+    targets: list[FileTarget] = []
     for source in sorted(prompts_dir.glob("*.md")):
         metadata, body = load_markdown(source)
         name = require_string(metadata.get("name"), f"{source}: name")
@@ -138,107 +177,193 @@ def generate_agents(config: dict[str, object], *, apply: bool) -> list[Path]:
             metadata.get("model_class"), f"{source}: model_class"
         )
         read_only = require_bool(metadata.get("read_only"), f"{source}: read_only")
+        shell = require_bool(metadata.get("shell", True), f"{source}: shell")
         skills = require_strings(metadata.get("skills", []), f"{source}: skills")
 
-        claude_tools = {
-            "architect": "Read, Grep, Glob, Write, Edit, WebSearch, WebFetch, Skill",
-            "developer": "Read, Write, Edit, Bash, Glob, Grep, Skill",
-            "researcher": "Read, Glob, Grep, WebSearch, WebFetch",
-        }.get(model_class, "Read, Glob, Grep, Bash, Skill")
         claude: dict[str, object] = {
             "name": name,
             "description": description,
-            "tools": claude_tools,
+            "tools": claude_tools(model_class, read_only=read_only, shell=shell),
             "model": model(config, "claude", model_class),
         }
         if skills:
             claude["skills"] = skills
-        content = f"---\n{frontmatter(claude)}---\n{MARKER}\n\n{body}\n"
-        path = (
-            expand(
-                nested(config, "agent_directories", "claude"),
-                "agent_directories.claude",
+        targets.append(
+            FileTarget(
+                expand(
+                    nested(config, "agent_directories", "claude"),
+                    "agent_directories.claude",
+                    paths,
+                )
+                / f"{name}.md",
+                f"---\n{frontmatter(claude)}---\n{MARKER}\n\n{body}\n",
             )
-            / f"{name}.md"
         )
-        if managed_write(path, content, apply=apply):
-            changed.append(path)
 
+        junie_tools = ["read", "search", "web"]
+        if not read_only:
+            junie_tools.insert(1, "write")
+        if shell:
+            junie_tools.append("shell")
         junie: dict[str, object] = {
             "name": name,
             "description": description,
             "model": model(config, "junie", model_class),
             "skills": skills,
-            "tools": ["read", "search", "web"]
-            if read_only
-            else ["read", "write", "shell", "search", "web"],
+            "tools": junie_tools,
         }
-        content = f"---\n{frontmatter(junie)}---\n{MARKER}\n\n{body}\n"
-        path = (
-            expand(
-                nested(config, "agent_directories", "junie"), "agent_directories.junie"
+        targets.append(
+            FileTarget(
+                expand(
+                    nested(config, "agent_directories", "junie"),
+                    "agent_directories.junie",
+                    paths,
+                )
+                / f"{name}.md",
+                f"---\n{frontmatter(junie)}---\n{MARKER}\n\n{body}\n",
             )
-            / f"{name}.md"
         )
-        if managed_write(path, content, apply=apply):
-            changed.append(path)
 
-        permissions: dict[str, object] = {"edit": "deny" if read_only else "allow"}
-        if name in {"oracle", "librarian"}:
-            permissions["shell"] = "deny"
         opencode: dict[str, object] = {
             "description": description,
             "mode": "subagent",
             "model": model(config, "opencode", model_class),
-            "permissions": permissions,
+            "permissions": {
+                "edit": "deny" if read_only else "allow",
+                "shell": "allow" if shell else "deny",
+            },
         }
-        content = f"---\n{frontmatter(opencode)}---\n{MARKER}\n\n{body}\n"
-        path = (
-            expand(
-                nested(config, "agent_directories", "opencode"),
-                "agent_directories.opencode",
+        targets.append(
+            FileTarget(
+                expand(
+                    nested(config, "agent_directories", "opencode"),
+                    "agent_directories.opencode",
+                    paths,
+                )
+                / f"{name}.md",
+                f"---\n{frontmatter(opencode)}---\n{MARKER}\n\n{body}\n",
             )
-            / f"{name}.md"
         )
-        if managed_write(path, content, apply=apply):
-            changed.append(path)
-    return changed
+    return targets
 
 
-def generate_commands(config: dict[str, object], *, apply: bool) -> list[Path]:
-    commands_dir = expand(nested(config, "canonical", "commands"), "canonical.commands")
-    changed: list[Path] = []
+def render_commands(config: dict[str, object], paths: RuntimePaths) -> list[FileTarget]:
+    commands_dir = expand(
+        nested(config, "canonical", "commands"), "canonical.commands", paths
+    )
+    targets: list[FileTarget] = []
     for source in sorted(commands_dir.glob("*.md")):
+        metadata, body = load_markdown(source)
         name = source.stem
-        body = source.read_text(encoding="utf-8").strip()
-        description = (
-            f"Run the {name} phase of the approved "
-            "Research → Plan → Annotate → Implement workflow"
+        description = require_string(
+            metadata.get("description"), f"{source}: description"
         )
         contents = {
             "claude": f"---\ndescription: {description}\n---\n{MARKER}\n\n{body}\n",
             "codex": f"{MARKER}\n\n{body}\n",
-            "junie": (
-                f"---\ndescription: {description}\nallowPromptArgument: true\n---\n"
-                f"{MARKER}\n\n{body.replace('$ARGUMENTS', '$prompt')}\n"
-            ),
+            "junie": f"---\ndescription: {description}\nallowPromptArgument: true\n---\n{MARKER}\n\n{body.replace('$ARGUMENTS', '$prompt')}\n",
             "opencode": f"---\ndescription: {description}\n---\n{MARKER}\n\n{body}\n",
         }
         for harness, content in contents.items():
-            target = (
-                expand(
-                    nested(config, "command_directories", harness),
-                    f"command_directories.{harness}",
+            targets.append(
+                FileTarget(
+                    expand(
+                        nested(config, "command_directories", harness),
+                        f"command_directories.{harness}",
+                        paths,
+                    )
+                    / f"{name}.md",
+                    content,
                 )
-                / f"{name}.md"
             )
-            if managed_write(target, content, apply=apply):
-                changed.append(target)
+    return targets
+
+
+def render_instruction_links(
+    config: dict[str, object], paths: RuntimePaths
+) -> list[LinkTarget]:
+    source = expand(
+        nested(config, "canonical", "instructions"), "canonical.instructions", paths
+    )
+    adapters = require_mapping(
+        config.get("instruction_adapters"), "instruction_adapters"
+    )
+    return [
+        LinkTarget(expand(target, f"instruction_adapters.{name}", paths), source)
+        for name, target in sorted(adapters.items())
+    ]
+
+
+def desired_link(target: LinkTarget) -> str:
+    return os.path.relpath(target.source, start=target.path.parent)
+
+
+def target_changed(target: Target) -> bool:
+    if isinstance(target, FileTarget):
+        if target.path.is_symlink():
+            raise ConfigError(f"refusing to overwrite unmanaged symlink: {target.path}")
+        if target.path.exists():
+            current = target.path.read_text(encoding="utf-8")
+            if MARKER not in current:
+                raise ConfigError(
+                    f"refusing to overwrite unmanaged file: {target.path}"
+                )
+            return current != target.content
+        return True
+    if target.path.is_symlink():
+        return os.readlink(target.path) != desired_link(target)
+    if target.path.exists():
+        raise ConfigError(
+            f"refusing to overwrite unmanaged instruction adapter: {target.path}"
+        )
+    return True
+
+
+def preflight(targets: list[Target]) -> list[Target]:
+    seen: set[Path] = set()
+    changed: list[Target] = []
+    for target in targets:
+        if target.path in seen:
+            raise ConfigError(f"duplicate generated target: {target.path}")
+        seen.add(target.path)
+        if target_changed(target):
+            changed.append(target)
     return changed
 
 
-def validate_skills(config: dict[str, object]) -> None:
-    skills_dir = expand(nested(config, "canonical", "skills"), "canonical.skills")
+def atomic_write(target: FileTarget) -> None:
+    target.path.parent.mkdir(parents=True, exist_ok=True)
+    descriptor, temporary_name = tempfile.mkstemp(
+        prefix=f".{target.path.name}.", dir=target.path.parent
+    )
+    temporary = Path(temporary_name)
+    try:
+        with os.fdopen(descriptor, "w", encoding="utf-8") as handle:
+            handle.write(target.content)
+        temporary.replace(target.path)
+    finally:
+        temporary.unlink(missing_ok=True)
+
+
+def atomic_link(target: LinkTarget) -> None:
+    target.path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = target.path.parent / f".{target.path.name}.{os.getpid()}.tmp"
+    try:
+        temporary.symlink_to(desired_link(target))
+        temporary.replace(target.path)
+    finally:
+        temporary.unlink(missing_ok=True)
+
+
+def apply_targets(targets: list[Target]) -> None:
+    for target in targets:
+        atomic_write(target) if isinstance(target, FileTarget) else atomic_link(target)
+
+
+def validate_skills(config: dict[str, object], paths: RuntimePaths) -> None:
+    skills_dir = expand(
+        nested(config, "canonical", "skills"), "canonical.skills", paths
+    )
     names: set[str] = set()
     for path in sorted(skills_dir.glob("*/SKILL.md")):
         metadata, _ = load_markdown(path)
@@ -273,18 +398,23 @@ def parse_args() -> argparse.Namespace:
 def main() -> int:
     args = parse_args()
     config = load_yaml_mapping(args.config)
+    paths = runtime_paths()
     if args.validate_skills:
-        validate_skills(config)
+        validate_skills(config, paths)
         return 0
-
-    changed = generate_agents(config, apply=args.apply)
-    changed.extend(generate_commands(config, apply=args.apply))
+    targets: list[Target] = []
+    targets.extend(render_instruction_links(config, paths))
+    targets.extend(render_agents(config, paths))
+    targets.extend(render_commands(config, paths))
+    changed = preflight(targets)
     if not changed:
         print("adapters are current")
         return 0
+    if args.apply:
+        apply_targets(changed)
     print("updated:" if args.apply else "drift:")
-    for path in changed:
-        print(f"  {path}")
+    for target in changed:
+        print(f"  {target.path}")
     return 0 if args.apply else 1
 
 
