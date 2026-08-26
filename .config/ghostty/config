@@ -1,6 +1,9 @@
 shell-integration = zsh
 shell-integration-features = no-cursor
 
+macos-secure-input-indication = true
+macos-auto-secure-input = true
+
 theme = dark:Apple System Colors,light:Apple System Colors Light
 font-family = "TX02 Nerd Font"
 font-size = 16
