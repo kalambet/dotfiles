@@ -1,14 +1,17 @@
 # Plan: Universal agent configuration with Claude adapters
 
 Date: 2026-08-26
-Status: Revised after annotation; awaiting explicit implementation approval
+Status: Implemented; Junie/OpenCode live validation deferred
 
 
 ## Implementation status
 
 - Completed: canonical instructions, 34 validated skills, 23 canonical agent prompts, Claude/Codex/Amp/Junie/OpenCode adapters, YAML-driven generation, idempotence and negative drift checks, secret scan, and Amp discovery.
 - Live verified: Claude filesystem discovery contract and Amp skill discovery.
-- Statically verified only: Junie and OpenCode adapters (CLIs unavailable).
+- Initial support only: Junie and OpenCode adapters are generated, but neither
+  CLI is installed or live-validated. Current official documentation indicates
+  schema drift; treat these adapters as experimental pending a dedicated
+  follow-up.
 - Partially verified: Codex instructions and skills; custom prompt UI requires a fresh interactive session.
 - Not configured or live-tested: Hermes (CLI unavailable; canonical skills remain compatible and ready for external-skill configuration).
 - Delivery: dedicated `refactor/universal-agent-config` branch; PR required and must not be merged by the agent.
@@ -770,3 +773,145 @@ migration.
       tests, Ruff, Python compilation, shell syntax, staged diff, and secret scan.
 - [x] Mark this checklist complete issue by issue, commit and push to PR #1,
       update its description, and leave it open and unmerged.
+
+## Close Junie/OpenCode validation and records review
+
+Planned: 2026-08-27. This section requires explicit approval before installation
+or implementation.
+
+### Operator annotation — deferred 2026-08-27
+
+- Do not install Junie or OpenCode in this PR.
+- Do not implement the schema-correction or live-validation checklist below in
+  this PR.
+- Current generated Junie/OpenCode adapters are initial, experimental support;
+  their presence is not a compatibility claim.
+- Preserve the source-backed findings and unchecked checklist below as future
+  work.
+- Item 9 is resolved: retain `research.md` and `plan.md` as durable decision
+  records. Keep transient installers, logs, transcripts, and PR scratch files
+  untracked.
+
+Status: deferred follow-up; not approved for implementation in this PR.
+
+### Future follow-up outcome (deferred)
+
+Correct the source-backed schema drift, install the current stable Junie and
+OpenCode CLIs for validation, and replace the broad "statically verified only"
+limitation with exact versioned evidence. Retain `research.md` and `plan.md` as
+the durable audit record; do not restore the deleted single-use PR-description
+file.
+
+### Future installation boundary (deferred)
+
+Live discovery requires installed binaries. The planned installation is scoped
+to validation and does not imply authentication, paid model calls, or acceptance
+of broad filesystem permissions:
+
+- OpenCode: install the current stable CLI from the maintained
+  `anomalyco/tap/opencode` Homebrew formula, record `opencode --version`, and use
+  offline/listing commands first.
+- Junie: download the official stable installer to `/private/tmp`, inspect it,
+  then execute the local file rather than piping the network response directly
+  into a shell. Record `junie --version` and `junie --help`.
+- Do not add either tool to `Brewfile` or bootstrap in this PR. They are optional
+  harnesses, not prerequisites for cloning the universal configuration. Keep the
+  installed binaries after validation unless the operator asks to remove them.
+- Do not read, print, or stage credentials. If an authenticated smoke test is
+  needed, stop at the login boundary for the operator to authenticate through
+  the harness's supported flow. Do not initiate a paid task without explicit
+  authorization.
+
+### Schema corrections
+
+Modify `~/.agents/scripts/generate_adapters.py` and
+`~/.agents/adapters.yaml` as follows:
+
+- Junie agents: emit only documented case-sensitive tool groups. Derive them
+  from the same role/capability inputs used elsewhere:
+  `Read`, `Glob`, `Grep`, `Bash`, `Write`, `Edit`, and `WebSearch`. Do not emit
+  unsupported generic `search`, `web`, `shell`, or a `Skill` tool group; the
+  existing `skills` frontmatter remains the skill preload surface.
+- Junie agents: omit `model` until an installed environment provides a verified
+  supported model ID. Remove the dead `models.junie` defaults.
+- OpenCode agents: emit singular `permission`, using `edit` and `bash` keys.
+  Preserve `mode: subagent` and current read-only/shell capability semantics.
+- OpenCode agents: omit the invalid/unverified literal `model: default` and
+  remove the dead `models.opencode` defaults. A future explicit
+  `provider/model` mapping can be added when desired.
+- Junie commands retain `description`, `allowPromptArgument: true`, and `$prompt`.
+  OpenCode commands retain `description` and `$ARGUMENTS`; these match current
+  official schemas.
+- Regenerate adapters and the deterministic ownership manifest through the
+  existing preflight pipeline.
+
+Representative desired frontmatter:
+
+```yaml
+# Junie read-only reviewer with shell
+tools:
+  - Read
+  - Glob
+  - Grep
+  - Bash
+
+# OpenCode Oracle
+permission:
+  edit: deny
+  bash: deny
+```
+
+### Validation ladder
+
+Run the cheapest non-mutating evidence first:
+
+1. Existing generator/unit-style behavioral suite and negative drift checks.
+2. Binary versions and help output.
+3. OpenCode `agent list` to confirm every generated agent parses and is
+   discoverable; use available config/debug commands to inspect effective
+   permissions without invoking a model.
+4. Inspect OpenCode command discovery through its non-model CLI/TUI surface if
+   exposed by the installed version.
+5. Use Junie's explicit `--agent-location` and `--command-location` options with
+   isolated temporary fixtures. Prefer a listing/ACP surface that does not call
+   a model; record when the installed CLI offers no unauthenticated listing.
+6. If authentication is available and the operator authorizes model calls, run
+   minimal smoke tests: list commands/skills, invoke one workflow command, invoke
+   Oracle, and confirm a deliberately requested sentinel edit is denied. Perform
+   these in an isolated temporary repository and record model/cost scope.
+
+A parser/listing result proves schema and discovery. Only an authorized live
+invocation can prove delegation, prompt loading, and effective runtime
+permissions. Report these evidence levels separately rather than rounding
+partial verification up to "fully verified."
+
+### Durable records
+
+- Keep `~/.agents/records/universal-agent-config/research.md` and `plan.md`.
+- Update the implementation-status section with installed versions, commands
+  executed, schema corrections, authenticated/unauthenticated scope, and any
+  remaining limitation.
+- Keep transient installer copies, logs containing environment details, session
+  transcripts, credentials, and PR-body scratch outside yadm.
+- Update PR #1 from an untracked temporary Markdown body and leave it open.
+
+### Checklist
+
+- [ ] Correct Junie tool-group casing/vocabulary and omit its unverified model.
+- [ ] Correct OpenCode `permission`/`bash` metadata and omit its unverified model.
+- [ ] Update behavioral assertions and regenerate all affected adapters plus the
+      ownership manifest.
+- [ ] Download, inspect, and install the stable Junie CLI; record its version.
+- [ ] Install stable OpenCode from its maintained Homebrew tap; record its
+      version.
+- [ ] Run unauthenticated/offline parser, agent-discovery, command-discovery, and
+      effective-config checks exposed by each installed binary.
+- [ ] Stop for operator authentication/paid-call authorization if either harness
+      requires it for the remaining live smoke tests.
+- [ ] If authorized, run isolated command, skill, agent, and permission smoke
+      tests without touching the real workspace.
+- [ ] Record exact evidence and residual limitations in `research.md`, `plan.md`,
+      and PR #1; retain the two durable records only.
+- [ ] Run generator check, setup verification, behavioral tests, Ruff, Python
+      compilation, shell syntax, staged diff, secret scan, and yadm hooks.
+- [ ] Commit and push the approved corrections to PR #1 without merging.

@@ -242,3 +242,53 @@ frontmatter. This removes generator text from model context while preserving
 and strengthening collision refusal across all adapter formats. The next phase
 should specify manifest schema, migration lifecycle, write ordering, and failure
 recovery in `plan.md` before implementation.
+
+## Junie and OpenCode live-validation research (2026-08-27)
+
+- Neither `junie` nor `opencode` is currently installed, and neither is declared
+  in the current `Brewfile`.
+- Installation is not required to identify schema errors: current official docs
+  are sufficient to show that the generated adapters have drifted. Installation
+  is required to close the limitation with evidence that the actual released
+  binaries discover, list, and invoke the generated definitions.
+- Junie's current subagent schema uses case-sensitive built-in tool groups such
+  as `Read`, `Bash`, `Glob`, `Grep`, `Write`, `Edit`, and `WebSearch`. The
+  generated lowercase `read`, `search`, `web`, `write`, and `shell` values do not
+  match that documented vocabulary. `model` is optional and supported names
+  depend on the installed environment, so emitting the literal `default` without
+  live evidence is unnecessary risk. Commands use `~/.junie/commands`,
+  `description`, `allowPromptArgument`, and `$prompt` as currently documented.
+  <https://junie.jetbrains.com/docs/junie-cli-subagents.html>
+  <https://junie.jetbrains.com/docs/custom-slash-commands.html>
+- Junie's stable CLI is installed by its official shell installer. `--version`
+  and `--help` do not require authentication, but a genuine headless task does.
+  The CLI supports explicit agent and command locations, which can isolate
+  discovery tests. Authentication can use a JetBrains account/token or BYOK and
+  must remain a user-controlled step.
+  <https://junie.jetbrains.com/docs/junie-cli.html>
+  <https://junie.jetbrains.com/docs/parameters.html>
+- OpenCode's current Markdown agent schema uses singular `permission`; the
+  permission key for shell execution is `bash`, not `shell`. Its documented
+  `model` values use `provider/model`, so the generated literal `default` should
+  be omitted. `mode: subagent` is valid. Its command directory, `description`,
+  and `$ARGUMENTS` usage match current documentation.
+  <https://opencode.ai/docs/agents/>
+  <https://opencode.ai/v2/docs/commands>
+- OpenCode can be installed through its maintained Homebrew tap and exposes
+  `opencode agent list`, allowing discovery validation without invoking a model.
+  An authenticated `opencode run` is only needed for an end-to-end command or
+  agent execution smoke test.
+  <https://github.com/anomalyco/opencode>
+  <https://dev.opencode.ai/docs/cli/>
+- Durable `research.md` and `plan.md` records already contain decisions,
+  limitations, and verification history that are not recoverable from generated
+  configuration alone. Retaining them is justified; the removed one-use PR body
+  remains the correct boundary between durable records and delivery scratch.
+
+## Operator decision — 2026-08-27
+
+Junie and OpenCode installation, schema remediation, and live validation are
+deferred. Their adapters in PR #1 provide initial, experimental support only;
+they are not a compatibility claim. Preserve the source-backed findings and
+validation checklist as future work, and retain this research together with
+`plan.md` as the durable decision record.
