@@ -155,3 +155,90 @@ next `plan.md` phase after review.
   establish a universal subagent-definition format. The portable conclusion is
   therefore limited to AGENTS.md and Agent Skills rather than inferred from a
   Codex-specific mechanism.
+## Generated-marker research (2026-08-27)
+
+### Current behavior
+
+- `generate_adapters.py` inserts the same HTML comment into every generated
+  agent and command body. For agents, the comment follows YAML frontmatter and
+  is therefore part of the system prompt. For Codex prompts it is the first
+  line of the submitted prompt.
+- Ownership is currently inferred solely by searching the existing file for
+  that marker. This refuses clearly unmanaged files, but any unrelated file
+  containing the string is treated as generator-owned, and removing the marker
+  from generated output would remove the only ownership evidence.
+- Symlink ownership already uses a stronger mechanism: the generator compares
+  the link target rather than embedding metadata in consumed content.
+
+### Harness format evidence
+
+- Claude Code documents a fixed set of supported subagent frontmatter fields
+  and states that the Markdown body becomes the subagent system prompt. It does
+  not document an ignored ownership/comment field. Adding a private frontmatter
+  key would therefore depend on undocumented parser behavior.
+  <https://code.claude.com/docs/en/sub-agents>
+- Claude now treats legacy `.claude/commands/*.md` and skills as the same prompt
+  mechanism; the full Markdown instructions are loaded when invoked. There is
+  no documented out-of-band generated-file metadata field.
+  <https://code.claude.com/docs/en/slash-commands>
+- Junie documents supported subagent and command frontmatter fields and states
+  that the body is the system prompt or command prompt. It does not document a
+  generator-ownership field.
+  <https://junie.jetbrains.com/docs/junie-cli-subagents.html>
+  <https://junie.jetbrains.com/docs/custom-slash-commands.html>
+- OpenCode likewise defines agent and command frontmatter as runtime
+  configuration and the Markdown body as the system prompt/template. Its
+  documented field sets do not provide generator ownership metadata.
+  <https://opencode.ai/docs/agents/>
+  <https://opencode.ai/v2/docs/commands>
+
+Applicable documentation was checked on 2026-08-27. Junie and OpenCode evolve
+quickly, but relying on undocumented ignored keys would remain less portable
+even if a particular current parser tolerated them.
+
+### Design implications
+
+- Moving the HTML comment into frontmatter is not a safe universal solution:
+  it either invents unsupported keys or overloads user-visible fields.
+- Removing ownership checks would regress the generator's central collision
+  guarantee.
+- A sidecar ownership manifest is harness-neutral. It can record each generated
+  regular file's path and cryptographic digest while leaving consumed Markdown
+  clean. Before overwriting, the generator can require the current file digest
+  to match the manifest's recorded digest. A user-edited generated file then
+  refuses safely; an unchanged prior generation can be replaced when canonical
+  input changes.
+- The manifest itself should be canonical generator state under `~/.agents`,
+  tracked by yadm, deterministic, and updated atomically after all output files
+  are written. It must not authorize a path merely because the path is listed:
+  the recorded digest must match the current bytes.
+- Symlinks should remain target-validated and need not enter the file-digest
+  manifest.
+- Migration needs one explicit trust bridge for files produced by the current
+  marker-based version. The narrow safe bridge is: accept a current file only
+  when it contains the exact legacy marker and otherwise refuse; after the first
+  successful apply, write clean content plus its digest to the manifest. Future
+  ownership checks use only the manifest. The legacy marker must not remain an
+  evergreen authorization path after migration.
+
+### Verification requirements
+
+- Assert no generated Markdown contains the legacy marker.
+- Assert agent bodies and Codex prompt bodies begin with canonical content, not
+  generator instructions.
+- Deliberately edit a manifest-owned file and observe both `--check` and
+  `--apply` refuse without changing any other target or the manifest.
+- Change canonical input while leaving generated output untouched; confirm
+  `--apply` accepts the old recorded digest, regenerates the file, and updates
+  the digest.
+- Delete the manifest and confirm ordinary marker-free files are treated as
+  unmanaged. Separately exercise the one-time legacy migration fixture.
+- Generate two isolated homes and byte-compare both outputs and manifests.
+
+### Research conclusion
+
+Use a deterministic sidecar digest manifest rather than harness-specific
+frontmatter. This removes generator text from model context while preserving
+and strengthening collision refusal across all adapter formats. The next phase
+should specify manifest schema, migration lifecycle, write ordering, and failure
+recovery in `plan.md` before implementation.

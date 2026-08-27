@@ -84,9 +84,7 @@ that a harness can consume natively are symlinked instead of copied.
 Move harness-neutral material from the current `~/.claude/CLAUDE.md` into
 `~/.agents/AGENTS.md`:
 
-```md
 ## General
-...
 
 ## Required workflow
 
@@ -628,3 +626,147 @@ The operator approved the following disposition after reviewing
 - [x] Report the exact failing path from `nested()` for malformed configuration.
 - [x] Exercise both successful and deliberately failing checks, run all gates,
       update PR #1, commit, and push without merging.
+
+## Remove generator markers from model context
+
+Research approved: 2026-08-27. Implementation requires separate explicit
+approval after review of this section.
+
+### Decision
+
+Replace the model-visible HTML ownership marker with a deterministic SHA-256
+sidecar at `~/.agents/generated-adapters.yaml`. Do not add undocumented
+frontmatter keys to Claude, Junie, OpenCode, or Codex files. Continue validating
+symlinks by their link targets rather than recording them in the manifest.
+
+The tracked manifest schema is:
+
+```yaml
+version: 1
+algorithm: sha256
+files:
+  home/.claude/agents/oracle.md: 53e2c9...a817
+  home/.codex/prompts/research.md: 0f123b...71cc
+```
+
+Keys are POSIX-style paths relative to `ADAPTER_HOME`, prefixed with `home/`.
+The generator must reject regular-file targets outside `ADAPTER_HOME`, duplicate
+manifest keys, unsupported versions/algorithms, non-lowercase 64-character
+SHA-256 values, absolute keys, and keys containing `..`. Entries are emitted in
+lexicographic order with fixed YAML settings and no timestamps or host data.
+
+Add the manifest location to `~/.agents/adapters.yaml`:
+
+```yaml
+ownership_manifest: ~/.agents/generated-adapters.yaml
+```
+
+`AGENTS_ROOT` remaps this path during isolated tests in the same way as other
+`~/.agents/...` paths.
+
+### Ownership and apply algorithm
+
+Render every desired file without the legacy marker, compute its exact-byte
+SHA-256, load the old manifest, and preflight the complete target set before any
+write or deletion.
+
+For a desired regular file:
+
+```text
+missing file                       -> safe to create
+current hash == desired hash       -> safe; also repairs a missing/stale manifest
+current hash == recorded old hash  -> safe to replace with desired bytes
+otherwise                          -> refuse the entire operation
+```
+
+For a manifest entry no longer present in the desired target set:
+
+```text
+file missing                       -> remove stale manifest entry
+current hash == recorded old hash  -> safe to delete on --apply
+otherwise                          -> refuse the entire operation
+```
+
+This ordering gives fail-safe crash recovery without a journal. Output files are
+written/deleted only after full preflight; the manifest is written atomically
+last. If a process stops partway through file updates, the next run accepts
+already-written files because they equal freshly rendered desired bytes and
+accepts untouched files because they still equal recorded old hashes. It then
+completes the operation and writes the final manifest. If canonical input changes
+between attempts, only files matching the newly rendered bytes or recorded old
+hashes remain eligible; anything else refuses.
+
+`--check` reports drift when file bytes, stale files, or the manifest differ from
+the desired state. `--apply` performs safe writes/deletions and writes the final
+manifest. `--validate-skills` remains read-only and does not require the manifest.
+
+### One-time migration
+
+Do not ship a permanent `--adopt-marker` or marker-based authorization path.
+During implementation only, use a temporary untracked helper under
+`/private/tmp` to:
+
+1. Enumerate exactly the currently configured regular-file targets using the
+   pre-change generator/configuration.
+2. Require every existing target to contain the exact legacy marker at its
+   generated boundary.
+3. Refuse missing, extra, duplicate, or untracked paths.
+4. Write the initial manifest containing hashes of the existing marker-bearing
+   bytes.
+5. Run the new generator once; recorded old hashes authorize replacement with
+   marker-free bytes, after which it writes their new hashes.
+
+The temporary helper is not committed. The clean generated files and final
+manifest are committed together, so fresh yadm clones never need legacy-marker
+migration.
+
+### Files
+
+- Modify `~/.agents/scripts/generate_adapters.py`: hashing, manifest parsing and
+  serialization, portable path IDs, marker-free rendering, stale-file handling,
+  preflight ownership, and manifest-last apply.
+- Modify `~/.agents/scripts/test-adapters.sh`: manifest determinism, ownership,
+  deletion, reconstruction, crash-recovery simulation, and negative tests.
+- Modify `~/.agents/adapters.yaml`: declare `ownership_manifest`.
+- Add generated `~/.agents/generated-adapters.yaml`.
+- Regenerate all tracked agent and command adapters without the marker.
+- Update `research.md` and this `plan.md`; update the live PR description without
+  reintroducing a tracked single-use PR-description file.
+
+### Trade-offs
+
+- The manifest adds one tracked generated artifact, but removes generator text
+  from every model prompt and strengthens ownership from a forgeable substring
+  to exact-byte identity.
+- SHA-256 is used for identity and corruption/edit detection, not secrecy.
+- Automatically deleting stale manifest-owned files is necessary for removed
+  adapters to converge. Deletion is allowed only after an exact recorded-hash
+  match and complete preflight.
+- There is no filesystem-wide atomic transaction. Manifest-last ordering plus
+  dual acceptance of recorded-old and freshly-rendered hashes makes interrupted
+  applies safely resumable without weakening manual-edit detection.
+
+### Implementation checklist
+
+- [x] Add and strictly validate the configured manifest schema and portable path
+      IDs.
+- [x] Remove `MARKER` from every agent and command renderer.
+- [x] Compute desired hashes and enforce the old-or-desired ownership rules in
+      complete preflight.
+- [x] Detect and safely remove stale manifest-owned outputs.
+- [x] Write regular files atomically and the deterministic manifest atomically
+      last.
+- [x] Build and inspect the one-time initial manifest from exact legacy outputs;
+      do not commit the migration helper.
+- [x] Regenerate all adapters and confirm no generated Markdown contains the
+      legacy marker or generator instruction.
+- [x] Test two-home byte determinism for both adapters and manifest.
+- [x] Test refusal for an edited owned file, an unmanaged marker-free file, a
+      malformed manifest, and a target outside `ADAPTER_HOME`.
+- [x] Test manifest reconstruction when clean outputs match desired bytes.
+- [x] Test canonical-input changes, stale-output deletion, and simulated
+      interrupted-apply recovery.
+- [x] Run bootstrap, pre-push, generator check, setup verification, behavioral
+      tests, Ruff, Python compilation, shell syntax, staged diff, and secret scan.
+- [x] Mark this checklist complete issue by issue, commit and push to PR #1,
+      update its description, and leave it open and unmerged.

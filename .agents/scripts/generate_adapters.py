@@ -7,17 +7,18 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import os
 import re
 import tempfile
 from dataclasses import dataclass
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 import yaml
 
-MARKER = "<!-- Generated from ~/.agents; edit the canonical source instead. -->"
 FRONTMATTER = re.compile(r"\A---\s*\n(.*?)\n---\s*\n(.*)\Z", re.DOTALL)
 SKILL_NAME = re.compile(r"\A[a-z0-9]+(?:-[a-z0-9]+)*\Z")
+DIGEST = re.compile(r"\A[0-9a-f]{64}\Z")
 
 
 class ConfigError(RuntimeError):
@@ -43,6 +44,15 @@ class LinkTarget:
 
 
 Target = FileTarget | LinkTarget
+
+
+@dataclass(frozen=True)
+class PreflightResult:
+    changed: list[Target]
+    stale: list[Path]
+    manifest_path: Path
+    manifest_content: str
+    manifest_changed: bool
 
 
 def require_mapping(value: object, context: str) -> dict[str, object]:
@@ -196,7 +206,7 @@ def render_agents(config: dict[str, object], paths: RuntimePaths) -> list[FileTa
                     paths,
                 )
                 / f"{name}.md",
-                f"---\n{frontmatter(claude)}---\n{MARKER}\n\n{body}\n",
+                f"---\n{frontmatter(claude)}---\n{body}\n",
             )
         )
 
@@ -220,7 +230,7 @@ def render_agents(config: dict[str, object], paths: RuntimePaths) -> list[FileTa
                     paths,
                 )
                 / f"{name}.md",
-                f"---\n{frontmatter(junie)}---\n{MARKER}\n\n{body}\n",
+                f"---\n{frontmatter(junie)}---\n{body}\n",
             )
         )
 
@@ -241,7 +251,7 @@ def render_agents(config: dict[str, object], paths: RuntimePaths) -> list[FileTa
                     paths,
                 )
                 / f"{name}.md",
-                f"---\n{frontmatter(opencode)}---\n{MARKER}\n\n{body}\n",
+                f"---\n{frontmatter(opencode)}---\n{body}\n",
             )
         )
     return targets
@@ -260,10 +270,10 @@ def render_commands(config: dict[str, object], paths: RuntimePaths) -> list[File
         )
         metadata_yaml = frontmatter({"description": description})
         contents = {
-            "claude": f"---\n{metadata_yaml}---\n{MARKER}\n\n{body}\n",
-            "codex": f"{MARKER}\n\n{body}\n",
-            "junie": f"---\n{frontmatter({'description': description, 'allowPromptArgument': True})}---\n{MARKER}\n\n{body.replace('$ARGUMENTS', '$prompt')}\n",
-            "opencode": f"---\n{metadata_yaml}---\n{MARKER}\n\n{body}\n",
+            "claude": f"---\n{metadata_yaml}---\n{body}\n",
+            "codex": f"{body}\n",
+            "junie": f"---\n{frontmatter({'description': description, 'allowPromptArgument': True})}---\n{body.replace('$ARGUMENTS', '$prompt')}\n",
+            "opencode": f"---\n{metadata_yaml}---\n{body}\n",
         }
         directories = require_mapping(
             config.get("command_directories"), "command_directories"
@@ -316,37 +326,150 @@ def desired_link(target: LinkTarget) -> str:
     return os.path.relpath(target.source, start=target.path.parent)
 
 
-def target_changed(target: Target) -> bool:
-    if isinstance(target, FileTarget):
-        if target.path.is_symlink():
-            raise ConfigError(f"refusing to overwrite unmanaged symlink: {target.path}")
-        if target.path.exists():
-            current = target.path.read_text(encoding="utf-8")
-            if MARKER not in current:
-                raise ConfigError(
-                    f"refusing to overwrite unmanaged file: {target.path}"
-                )
-            return current != target.content
-        return True
+def sha256(content: bytes) -> str:
+    return hashlib.sha256(content).hexdigest()
+
+
+def portable_key(path: Path, paths: RuntimePaths) -> str:
+    try:
+        relative = path.relative_to(paths.adapter_home)
+    except ValueError as error:
+        raise ConfigError(f"generated file is outside ADAPTER_HOME: {path}") from error
+    if not relative.parts or ".." in relative.parts:
+        raise ConfigError(f"invalid generated-file path: {path}")
+    return f"home/{relative.as_posix()}"
+
+
+def path_from_key(key: str, paths: RuntimePaths) -> Path:
+    pure = PurePosixPath(key)
+    if pure.is_absolute() or not pure.parts or pure.parts[0] != "home":
+        raise ConfigError(f"invalid ownership-manifest path: {key}")
+    relative = pure.parts[1:]
+    if not relative or ".." in relative or "." in relative:
+        raise ConfigError(f"invalid ownership-manifest path: {key}")
+    return paths.adapter_home.joinpath(*relative)
+
+
+def load_manifest(path: Path, paths: RuntimePaths) -> dict[str, str]:
+    if not path.exists():
+        return {}
+    manifest = load_yaml_mapping(path)
+    if set(manifest) != {"version", "algorithm", "files"}:
+        raise ConfigError(f"invalid ownership manifest keys: {path}")
+    version = manifest.get("version")
+    if not isinstance(version, int) or isinstance(version, bool) or version != 1:
+        raise ConfigError(f"unsupported ownership manifest version: {version}")
+    if manifest.get("algorithm") != "sha256":
+        raise ConfigError(
+            f"unsupported ownership manifest algorithm: {manifest.get('algorithm')}"
+        )
+    files = require_mapping(manifest.get("files"), f"{path}: files")
+    result: dict[str, str] = {}
+    for key, value in files.items():
+        path_from_key(key, paths)
+        digest = require_string(value, f"{path}: files.{key}")
+        if DIGEST.fullmatch(digest) is None:
+            raise ConfigError(f"invalid SHA-256 digest for {key}")
+        result[key] = digest
+    return result
+
+
+def manifest_content(files: dict[str, str]) -> str:
+    return frontmatter(
+        {
+            "version": 1,
+            "algorithm": "sha256",
+            "files": {key: files[key] for key in sorted(files)},
+        }
+    )
+
+
+def link_changed(target: LinkTarget) -> bool:
     if target.path.is_symlink():
         return os.readlink(target.path) != desired_link(target)
     if target.path.exists():
-        raise ConfigError(
-            f"refusing to overwrite unmanaged instruction adapter: {target.path}"
-        )
+        raise ConfigError(f"refusing to overwrite unmanaged symlink: {target.path}")
     return True
 
 
-def preflight(targets: list[Target]) -> list[Target]:
+def preflight(
+    config: dict[str, object], paths: RuntimePaths, targets: list[Target]
+) -> PreflightResult:
+    manifest_path = expand(
+        config.get("ownership_manifest"), "ownership_manifest", paths
+    )
+    ownership = load_manifest(manifest_path, paths)
     seen: set[Path] = set()
     changed: list[Target] = []
+    desired_hashes: dict[str, str] = {}
     for target in targets:
         if target.path in seen:
             raise ConfigError(f"duplicate generated target: {target.path}")
         seen.add(target.path)
-        if target_changed(target):
+        if isinstance(target, LinkTarget):
+            if link_changed(target):
+                changed.append(target)
+            continue
+        key = portable_key(target.path, paths)
+        if key in desired_hashes:
+            raise ConfigError(f"duplicate ownership-manifest path: {key}")
+        desired = sha256(target.content.encode("utf-8"))
+        desired_hashes[key] = desired
+        if target.path.is_symlink():
+            raise ConfigError(f"refusing to overwrite unmanaged symlink: {target.path}")
+        if not target.path.exists():
             changed.append(target)
-    return changed
+            continue
+        try:
+            current = target.path.read_bytes()
+        except OSError as error:
+            raise ConfigError(
+                f"cannot read generated target {target.path}: {error}"
+            ) from error
+        current_hash = sha256(current)
+        if current_hash == desired:
+            continue
+        if ownership.get(key) != current_hash:
+            raise ConfigError(
+                f"refusing to overwrite modified or unmanaged file: {target.path}"
+            )
+        changed.append(target)
+
+    stale: list[Path] = []
+    for key, recorded_hash in sorted(ownership.items()):
+        if key in desired_hashes:
+            continue
+        path = path_from_key(key, paths)
+        if path.is_symlink():
+            raise ConfigError(f"refusing to delete symlink recorded as a file: {path}")
+        if not path.exists():
+            continue
+        try:
+            current_hash = sha256(path.read_bytes())
+        except OSError as error:
+            raise ConfigError(
+                f"cannot read stale generated target {path}: {error}"
+            ) from error
+        if current_hash != recorded_hash:
+            raise ConfigError(f"refusing to delete modified stale file: {path}")
+        stale.append(path)
+
+    content = manifest_content(desired_hashes)
+    try:
+        current_manifest = manifest_path.read_text(encoding="utf-8")
+    except FileNotFoundError:
+        current_manifest = ""
+    except OSError as error:
+        raise ConfigError(
+            f"cannot read ownership manifest {manifest_path}: {error}"
+        ) from error
+    return PreflightResult(
+        changed=changed,
+        stale=stale,
+        manifest_path=manifest_path,
+        manifest_content=content,
+        manifest_changed=current_manifest != content,
+    )
 
 
 def atomic_write(target: FileTarget) -> None:
@@ -373,9 +496,18 @@ def atomic_link(target: LinkTarget) -> None:
         temporary.unlink(missing_ok=True)
 
 
-def apply_targets(targets: list[Target]) -> None:
-    for target in targets:
+def apply_result(result: PreflightResult) -> None:
+    for target in result.changed:
         atomic_write(target) if isinstance(target, FileTarget) else atomic_link(target)
+    for path in result.stale:
+        try:
+            path.unlink()
+        except OSError as error:
+            raise ConfigError(
+                f"cannot delete stale generated target {path}: {error}"
+            ) from error
+    if result.manifest_changed:
+        atomic_write(FileTarget(result.manifest_path, result.manifest_content))
 
 
 def validate_skills(config: dict[str, object], paths: RuntimePaths) -> None:
@@ -440,15 +572,19 @@ def main() -> int:
     targets.extend(render_skill_links(config, paths))
     targets.extend(render_agents(config, paths))
     targets.extend(render_commands(config, paths))
-    changed = preflight(targets)
-    if not changed:
+    result = preflight(config, paths, targets)
+    if not result.changed and not result.stale and not result.manifest_changed:
         print("adapters are current")
         return 0
     if args.apply:
-        apply_targets(changed)
+        apply_result(result)
     print("updated:" if args.apply else "drift:")
-    for target in changed:
+    for target in result.changed:
         print(f"  {target.path}")
+    for path in result.stale:
+        print(f"  {path} (stale)")
+    if result.manifest_changed:
+        print(f"  {result.manifest_path}")
     return 0 if args.apply else 1
 
 
