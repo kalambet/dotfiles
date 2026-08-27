@@ -610,3 +610,21 @@ The operator approved the following disposition after reviewing
       live PR body; retain `research.md` and `plan.md` as durable records.
 - [x] Run all verification gates, update the PR, commit, and push without
       merging.
+
+## Claude second-review remediation (approved 2026-08-27)
+
+- [x] Stop generating Claude command files whose names collide with canonical
+      skills; remove the three tracked generated Claude commands.
+- [x] Reject skill/command name collisions during validation for harnesses that
+      expose both through one namespace.
+- [x] Make the yadm bootstrap fail early with an actionable `uv` prerequisite
+      message instead of invoking a missing command.
+- [x] Add configured skill-adapter symlinks and manage Claude's skill link
+      through the generator, preflight, verification, and isolated tests.
+- [x] Serialize command frontmatter with `safe_dump` rather than interpolating
+      YAML scalars.
+- [x] Replace the vacuous collision-test checksums with a real unchanged-file
+      assertion and retain the missing-target assertion.
+- [x] Report the exact failing path from `nested()` for malformed configuration.
+- [x] Exercise both successful and deliberately failing checks, run all gates,
+      update PR #1, commit, and push without merging.

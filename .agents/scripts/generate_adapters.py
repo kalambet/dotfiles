@@ -71,8 +71,8 @@ def require_strings(value: object, context: str) -> list[str]:
 
 def nested(config: dict[str, object], *keys: str) -> object:
     current = config
-    for key in keys[:-1]:
-        current = require_mapping(current.get(key), ".".join(keys[:-1]))
+    for index, key in enumerate(keys[:-1], start=1):
+        current = require_mapping(current.get(key), ".".join(keys[:index]))
     value = current.get(keys[-1])
     if value is None:
         raise ConfigError(f"missing configuration: {'.'.join(keys)}")
@@ -258,17 +258,24 @@ def render_commands(config: dict[str, object], paths: RuntimePaths) -> list[File
         description = require_string(
             metadata.get("description"), f"{source}: description"
         )
+        metadata_yaml = frontmatter({"description": description})
         contents = {
-            "claude": f"---\ndescription: {description}\n---\n{MARKER}\n\n{body}\n",
+            "claude": f"---\n{metadata_yaml}---\n{MARKER}\n\n{body}\n",
             "codex": f"{MARKER}\n\n{body}\n",
-            "junie": f"---\ndescription: {description}\nallowPromptArgument: true\n---\n{MARKER}\n\n{body.replace('$ARGUMENTS', '$prompt')}\n",
-            "opencode": f"---\ndescription: {description}\n---\n{MARKER}\n\n{body}\n",
+            "junie": f"---\n{frontmatter({'description': description, 'allowPromptArgument': True})}---\n{MARKER}\n\n{body.replace('$ARGUMENTS', '$prompt')}\n",
+            "opencode": f"---\n{metadata_yaml}---\n{MARKER}\n\n{body}\n",
         }
-        for harness, content in contents.items():
+        directories = require_mapping(
+            config.get("command_directories"), "command_directories"
+        )
+        for harness, directory in sorted(directories.items()):
+            content = contents.get(harness)
+            if content is None:
+                raise ConfigError(f"unsupported command adapter: {harness}")
             targets.append(
                 FileTarget(
                     expand(
-                        nested(config, "command_directories", harness),
+                        directory,
                         f"command_directories.{harness}",
                         paths,
                     )
@@ -290,6 +297,17 @@ def render_instruction_links(
     )
     return [
         LinkTarget(expand(target, f"instruction_adapters.{name}", paths), source)
+        for name, target in sorted(adapters.items())
+    ]
+
+
+def render_skill_links(
+    config: dict[str, object], paths: RuntimePaths
+) -> list[LinkTarget]:
+    source = expand(nested(config, "canonical", "skills"), "canonical.skills", paths)
+    adapters = require_mapping(config.get("skill_adapters"), "skill_adapters")
+    return [
+        LinkTarget(expand(target, f"skill_adapters.{name}", paths), source)
         for name, target in sorted(adapters.items())
     ]
 
@@ -380,6 +398,21 @@ def validate_skills(config: dict[str, object], paths: RuntimePaths) -> None:
         if name in names:
             raise ConfigError(f"duplicate skill: {name}")
         names.add(name)
+    collision_directories = require_mapping(
+        config.get("command_collision_directories"),
+        "command_collision_directories",
+    )
+    for harness, directory in sorted(collision_directories.items()):
+        commands_dir = expand(
+            directory, f"command_collision_directories.{harness}", paths
+        )
+        collisions = sorted(
+            path.stem for path in commands_dir.glob("*.md") if path.stem in names
+        )
+        if collisions:
+            raise ConfigError(
+                f"skill/command collision for {harness}: {', '.join(collisions)}"
+            )
     print(f"validated {len(names)} skills")
 
 
@@ -404,6 +437,7 @@ def main() -> int:
         return 0
     targets: list[Target] = []
     targets.extend(render_instruction_links(config, paths))
+    targets.extend(render_skill_links(config, paths))
     targets.extend(render_agents(config, paths))
     targets.extend(render_commands(config, paths))
     changed = preflight(targets)
