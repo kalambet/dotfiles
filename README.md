@@ -1,34 +1,104 @@
-# Overview
+# macOS dotfiles
 
-This repository contains configuration files for the local setup of macOS environment. Setup is based on the following components:
+Personal macOS configuration managed with [yadm](https://yadm.io/). The
+repository stores user-level configuration, a Homebrew package manifest, and a
+portable agent-harness setup. It does not contain a complete macOS image or
+install every declared tool when cloned.
 
-- [Ghostty](https://ghostty.org/) - Nice terminal built with Zig
-- [Z Shell](https://www.zsh.org/) - as a main Shell
-- [zsh-syntax-highlighting](https://github.com/zsh-users/zsh-syntax-highlighting) - Syntax highlighting for Z Shell
-- [Starship](https://starship.rs/) - prompt for Z Shell
-- [NeoVim](https://neovim.io/) - as a text editor
-- [LazyVim](https://www.lazyvim.org/) - as a NeoVim plugin manager
-- [Zed](https://zed.dev/) - as IDE
-- [mosh](https://mosh.org/) - SSH Server friendly for mobile and unstable connections
-- [eza](https://github.com/eza-community/eza) - modern `ls` replacement behind the `l`, `la`, `t`, and `lt` aliases
-- [fzf](https://github.com/junegunn/fzf) - fuzzy finder with shell key bindings and completion
-- [trash](https://formulae.brew.sh/formula/trash) - moves files to the macOS Trash instead of `rm`
-- [nvm](https://github.com/nvm-sh/nvm) - Node.js version manager (Homebrew install)
-- [1Password](https://developer.1password.com/docs/ssh/) - SSH agent and git commit signing
+## What the repository contains
 
-# Claude Code
+### Shell and command-line environment
 
-The repository also carries a [Claude Code](https://claude.com/claude-code) setup under `.claude/`:
+- Zsh startup and aliases: `.zshrc`, `.zsh_aliases`
+- Starship prompt: `.config/starship.toml`
+- Git configuration: `.gitconfig`, `.gitignore`
+- tmux configuration: `.config/tmux/tmux.conf`
+- 1Password CLI shell integration: `.config/op/plugins.sh`
 
-- `CLAUDE.md` - global instructions plus the roster of installed skills, teams, and agents
-- `skills/` - custom skills: domain (ai-dev, apple-dev, reviewers), language suites (Python / Rust / TypeScript / Solidity architect-developer-reviewer), architecture (distributed systems, LLM systems, web3), process (research-plan-implement, pr-review, warp / pickup), and multi-agent team skills
-- `agents/` - subagent definitions mirroring the skills for delegated and parallel work
+### Applications
 
-# Install
-To install dotfiles `yadm` needs to be installed before. More details on how to do it can be found in the [official `yadm` documentation](https://yadm.io/docs/install).
+- Ghostty: `.config/ghostty/config`
+- Zed: `.config/zed/settings.json`
+- `Brewfile`: Homebrew formulae, casks, and npm packages used by this setup
+
+The `Brewfile` includes tools such as Neovim, tmux, mosh, eza, fzf, Starship,
+uv, yadm, Claude Code, and the 1Password CLI. A package being listed does not
+mean its application-specific configuration is tracked here.
+
+### Universal agent configuration
+
+`~/.agents/` is the source of truth shared across supported coding-agent
+harnesses:
+
+- `AGENTS.md` — universal instructions
+- `skills/` — portable skills
+- `prompts/` — canonical agent-role prompts
+- `commands/` — canonical research, plan, and implementation workflows
+- `adapters.yaml` and `scripts/` — adapter generation and verification
+- `records/` — durable research and implementation decisions
+
+Tracked adapters expose that source through the native locations used by Claude
+Code, Codex, Amp, JetBrains Junie, and OpenCode. Claude, Codex, and Amp are the
+primary supported surfaces, although Codex custom-prompt discovery still needs
+confirmation in a fresh interactive session. Junie and OpenCode adapters are
+initial, experimental support and have not been live-validated with installed
+CLIs.
+
+Generated regular files are owned through
+`.agents/generated-adapters.yaml`. Edit canonical files under `.agents/`, then
+run:
 
 ```shell
-yadm clone https://github.com/kalambet/dotfiles
+~/.agents/scripts/sync-adapters.sh --apply
+~/.agents/scripts/verify-setup.sh
 ```
 
-After repository is cloned, check `yadm status` to see potential conflicts.
+## What `yadm clone` does
+
+`yadm clone` clones the repository and attempts to check its tracked files out
+directly into `$HOME`. If a local file already exists with different content,
+yadm leaves it unchanged so the conflict can be reviewed. See the official
+[getting-started documentation](https://yadm.io/docs/getting_started).
+
+Cloning brings:
+
+- the tracked dotfiles and application configuration listed above;
+- the `Brewfile`, but not the software declared in it;
+- canonical agent skills, prompts, commands, and records;
+- tracked harness adapters, the adapter generator, validation scripts, bootstrap,
+  and pre-push hook.
+
+Cloning does not install Homebrew packages, configure macOS system preferences,
+authenticate external services, or install the optional Junie/OpenCode CLIs.
+
+After a successful clone, yadm detects `.config/yadm/bootstrap` and offers to run
+it. This repository's bootstrap requires `uv`; it regenerates the agent adapters
+and verifies their state. It does not run `brew bundle`. The prompt can be
+controlled with `yadm clone --bootstrap` or `yadm clone --no-bootstrap`; see the
+official [bootstrap documentation](https://yadm.io/docs/bootstrap).
+
+## Install on a new Mac
+
+Install Homebrew first, then install the two prerequisites needed to clone and
+run this repository's bootstrap:
+
+```shell
+brew install yadm uv
+yadm clone https://github.com/kalambet/dotfiles
+yadm status
+```
+
+Accept the bootstrap prompt, or run it later:
+
+```shell
+yadm bootstrap
+```
+
+Install the broader toolset separately when wanted:
+
+```shell
+brew bundle --file ~/Brewfile
+```
+
+Review `yadm status` after cloning and before replacing any pre-existing local
+configuration.
