@@ -370,3 +370,146 @@ async, resource, or exception surface. This repository has no `pyproject.toml`
 or configured Python type checker, so the Python-reviewer policy cannot provide
 type-review sign-off. Ruff, Python compilation, and behavioral tests remain the
 available gates; absence of a type checker should be reported rather than hidden.
+
+## Harness-maintainer guide research (2026-08-28)
+
+### Intended artifact and audience
+
+The requested `~/.agents/harness-instructions.md` should be a human- and
+agent-maintainer guide, not another automatically loaded instruction source.
+Its lowercase name is intentional: the canonical always-loaded instructions
+remain `~/.agents/AGENTS.md`, while this document explains how to maintain the
+adapter system without adding context to every harness session.
+
+The guide should answer five questions for each harness:
+
+1. Which canonical files are edited?
+2. Which native locations consume generated or linked adapters?
+3. Which capabilities are native, adapted, partial, or unverified?
+4. How is discovery and behavior verified?
+5. Which official documentation must be rechecked before changing schemas?
+
+### Current repository contract
+
+- `~/.agents/AGENTS.md`, `skills/`, `prompts/`, and `commands/` are canonical.
+- `~/.agents/adapters.yaml` declares native instruction, skill, agent, and
+  command destinations. `generate_adapters.py` translates canonical metadata to
+  harness-specific frontmatter and owns generated regular files through the
+  SHA-256 `generated-adapters.yaml` sidecar.
+- The generator refuses unmanaged-file overwrite, modified stale-file deletion,
+  paths outside `ADAPTER_HOME`, malformed manifests, invalid skills, and
+  configured skill/command collisions. Ordinary `--check` and `--apply` both
+  validate skills first.
+- Maintainers edit canonical sources, never generated adapters. The supported
+  sequence is generator `--check`, canonical edit, `--apply`, setup and
+  behavioral verification, then review both generated diff and manifest diff.
+- Current locally installed versions are Claude Code 2.1.250, Codex CLI 0.149.1,
+  and Amp build `0.0.1775636421-g1ea6b1`. Junie and OpenCode are not installed.
+
+### Claude Code
+
+- Global instructions are discovered at `~/.claude/CLAUDE.md`; Claude reads
+  `CLAUDE.md`, not `AGENTS.md`, and official docs explicitly allow a symlink when
+  no Claude-specific suffix is needed. The current repository links this path to
+  `~/.agents/AGENTS.md`.
+- Personal skills live under `~/.claude/skills/<name>/SKILL.md`; the repository
+  links the whole skills directory to `~/.agents/skills`. Personal subagents live
+  at `~/.claude/agents/*.md` and are rendered from canonical prompts.
+- Current official docs say skills take precedence over same-name legacy command
+  files. The installed setup previously observed the inverse and therefore keeps
+  the conservative collision guard. This must be described as version-sensitive
+  evidence, not a universal rule. Use `/context`, skill listing/invocation,
+  delegated-agent smoke tests, and `claude --version` when revalidating.
+- Official sources:
+  <https://code.claude.com/docs/en/memory>,
+  <https://code.claude.com/docs/en/skills>, and
+  <https://code.claude.com/docs/en/sub-agents>.
+
+### Codex
+
+- The repository links `~/.codex/AGENTS.md` to the canonical instructions and
+  exposes portable skills directly from `~/.agents/skills` in the active Codex
+  environment. Workflow adapters are generated into `~/.codex/prompts`.
+- Skills are supported by the current OpenAI skill format, and Codex has native
+  AGENTS.md and subagent documentation. The guide should link official OpenAI
+  documentation rather than restating volatile UI or precedence details.
+- Instruction and skill discovery are working in the current setup. Custom
+  prompt discovery still needs confirmation in a fresh interactive session and
+  must remain labeled partial until observed.
+- Official sources:
+  <https://learn.chatgpt.com/docs/agent-configuration/agents-md>,
+  <https://learn.chatgpt.com/docs/agent-configuration/subagents>, and
+  <https://learn.chatgpt.com/docs/build-skills>.
+
+### Amp
+
+- Amp automatically includes both `~/.config/amp/AGENTS.md` and
+  `~/.config/AGENTS.md`; the repository uses the latter as a link to the
+  canonical instructions. Amp skill discovery from `~/.agents/skills` has been
+  live-verified for Oracle, Librarian, and the workflow skills.
+- Amp provides native subagents but no generated role-agent files are maintained
+  in this repository. Workflow parity is skill-based, not a claim that Amp has
+  the same custom Markdown command surface as other harnesses.
+- Revalidation should use the command-palette `agents-md list`, skill listing and
+  invocation, and a minimal subagent task.
+- Official sources:
+  <https://ampcode.com/docs/customize/agents-md> and
+  <https://ampcode.com/docs/models-and-subagents>.
+
+### JetBrains Junie
+
+- The repository links `~/.junie/AGENTS.md` to canonical instructions, generates
+  subagents under `~/.junie/agents`, and generates workflow commands under
+  `~/.junie/commands`. Junie now also documents direct discovery of
+  `~/.agents/skills` and user-scope `~/.agents` subagents.
+- Current Junie documentation uses case-sensitive tool groups and supports
+  command frontmatter with `allowPromptArgument` plus `$prompt`. The current
+  generated agent tool/model metadata is known to have schema drift and remains
+  initial, experimental support. Do not present generated Junie agents as
+  compatible until the deferred schema plan is implemented and tested with an
+  installed CLI.
+- Revalidation should record the installed version, inspect `/skills` and
+  `/commands`, confirm instruction and subagent discovery, then run isolated
+  permission/delegation smoke tests only with operator authorization for any
+  authenticated or paid call.
+- Official sources:
+  <https://junie.jetbrains.com/docs/guidelines-and-memory.html>,
+  <https://junie.jetbrains.com/docs/agent-skills.html>,
+  <https://junie.jetbrains.com/docs/junie-cli-subagents.html>, and
+  <https://junie.jetbrains.com/docs/custom-slash-commands.html>.
+
+### OpenCode
+
+- The repository links `~/.config/opencode/AGENTS.md` to canonical instructions,
+  generates agents under `~/.config/opencode/agents`, and generates commands
+  under `~/.config/opencode/commands`. OpenCode directly discovers global
+  `~/.agents/skills/<name>/SKILL.md`.
+- Current official agent metadata uses singular `permission` and the `bash` key;
+  the generated plural `permissions`, `shell`, and literal `model: default` are
+  known schema drift. Support remains initial and experimental until the
+  deferred correction and installed-CLI validation are completed.
+- Revalidation should use rule/skill discovery, `opencode agent list`, command
+  discovery, and isolated permission smoke tests. Authentication or paid model
+  calls require explicit operator authorization.
+- Official sources: <https://opencode.ai/docs/rules>,
+  <https://opencode.ai/docs/skills>, <https://opencode.ai/docs/agents/>, and
+  <https://opencode.ai/docs/commands>.
+
+### Required maintenance shape
+
+The future guide should contain:
+
+- a canonical-to-native mapping table;
+- per-harness capability/status sections;
+- an edit/regenerate/verify checklist;
+- rules for adding a skill, prompt/agent, command, or new harness;
+- ownership, stale cleanup, collision, and symlink safety notes;
+- a versioned validation-evidence table with `verified`, `partial`, and
+  `experimental` labels;
+- primary-documentation links and a reminder to recheck them before schema work;
+- troubleshooting for drift, unmanaged files, command collisions, and newly
+  created discovery directories that may require a session restart.
+
+The guide should not duplicate all schemas or list every generated file. Those
+details would drift. It should point to `adapters.yaml`, generator rendering
+functions, tests, and official docs as the live sources of truth.

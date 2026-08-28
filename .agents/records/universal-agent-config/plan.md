@@ -1086,3 +1086,221 @@ open and unmerged.
   durable record files. No generated adapter or ownership-manifest file changed.
 - Python type-review sign-off remains unavailable because no Python type checker
   is configured; no new dependency or type-checking stack was introduced.
+
+## Add the harness-maintainer guide
+
+Planned: 2026-08-28. Research approved by the operator; implementation awaits
+explicit approval of this section.
+
+### Outcome
+
+Create `~/.agents/harness-instructions.md` as the durable operating guide for
+maintaining the universal agent configuration across Claude Code, Codex, Amp,
+JetBrains Junie, and OpenCode. Keep it out of default model context, but add a
+short routing rule to canonical `AGENTS.md` so every supported harness knows to
+read it before changing harness configuration.
+
+The document is a maintenance map, not another source of behavioral policy and
+not a copy of every volatile harness schema.
+
+### 1. Create the maintainer guide
+
+Add `~/.agents/harness-instructions.md` with these sections:
+
+1. Purpose, audience, and source-of-truth rules.
+2. A canonical-to-native mapping table for instructions, skills, role prompts,
+   workflow commands, generated ownership, and validation tooling.
+3. A status vocabulary: `verified`, `partial`, and `experimental`.
+4. Per-harness sections for Claude Code, Codex, Amp, Junie, and OpenCode.
+5. Standard procedures for editing instructions, adding/updating a skill,
+   adding/updating a role prompt, adding/updating a workflow command, and adding
+   a new harness.
+6. Regeneration, verification, and review commands.
+7. Safety invariants and troubleshooting.
+8. Versioned local evidence and primary documentation links.
+
+The opening contract should be explicit:
+
+```markdown
+Edit canonical sources under `~/.agents`; do not hand-edit generated adapters.
+Recheck the target harness's official documentation before changing discovery
+paths or frontmatter schemas.
+```
+
+The mapping table will point to live configuration rather than repeat every
+generated file:
+
+| Concern | Canonical source | Adapter declaration/output |
+|---|---|---|
+| Instructions | `~/.agents/AGENTS.md` | `instruction_adapters` |
+| Skills | `~/.agents/skills/` | native discovery plus `skill_adapters` |
+| Roles | `~/.agents/prompts/` | `agent_directories` |
+| Workflows | `~/.agents/commands/` | `command_directories` |
+| Ownership | canonical inputs | `generated-adapters.yaml` |
+
+Per-harness entries must name native locations, support level, locally observed
+evidence, known limitations, verification commands/surfaces, and official links.
+They must distinguish current documentation from local observation:
+
+- Claude Code: verified instruction symlink, skills symlink, and generated
+  agents. Preserve the conservative command-collision guard because local
+  evidence previously differed from current official precedence documentation.
+- Codex: instructions and skills working; custom prompt discovery remains
+  partial pending a fresh interactive confirmation.
+- Amp: instructions and skills verified; workflow parity is skill-based and no
+  role-agent adapter is generated.
+- Junie: instructions/skills paths documented, but generated agent metadata is
+  experimental with known tool/model schema drift. State explicitly that the CLI
+  was not installed or live-tested as of 2026-08-28.
+- OpenCode: instructions/skills paths documented, but generated agent metadata
+  is experimental with known permission/model schema drift. State explicitly
+  that the CLI was not installed or live-tested as of 2026-08-28.
+
+Do not claim authentication, paid invocation, or runtime permission behavior
+that was not tested.
+
+#### First-install remediation runbooks
+
+The Junie and OpenCode sections must each include a prominent instruction for a
+future session running under that harness:
+
+```markdown
+If this harness is now installed, do not treat the generated adapters as
+compatible merely because they exist. Recheck the linked official documentation,
+record the installed version, correct the canonical generator/configuration,
+regenerate, and replace this experimental status with exact validation evidence.
+Never patch generated adapter files directly.
+```
+
+The Junie runbook must identify the already known correction path:
+
+1. Record `junie --version` and inspect current help/discovery surfaces.
+2. Recheck official guideline, skill, subagent, command, tool-group, and model
+   documentation for that installed version.
+3. Update `generate_adapters.py` and `adapters.yaml` to use documented,
+   case-sensitive Junie tool groups and omit or replace the unverified literal
+   `model: default` with an actually supported model value.
+4. Decide from current docs and live discovery whether direct `~/.agents`
+   subagent discovery can replace any generated Junie adapter layer; prefer the
+   simplest verified arrangement.
+5. Regenerate through `sync-adapters.sh --apply`; validate `/skills`,
+   `/commands`, instruction discovery, subagent discovery, delegation, and
+   effective read-only/shell restrictions in an isolated workspace.
+6. Require operator authorization before authentication or paid model calls.
+7. Update the guide's version/evidence/status entry and durable records.
+
+The OpenCode runbook must identify its known correction path:
+
+1. Record `opencode --version` and inspect current configuration/help output.
+2. Recheck official rules, skills, agents, commands, permission, and model
+   documentation for that installed version.
+3. Update `generate_adapters.py` and `adapters.yaml` to emit singular
+   `permission`, use the documented `bash` permission key, and omit or replace
+   the unverified literal `model: default` with a valid `provider/model` value.
+4. Regenerate through `sync-adapters.sh --apply`; validate rule and skill
+   discovery, `opencode agent list`, command discovery, delegation, and
+   effective permission denial in an isolated workspace.
+5. Require operator authorization before authentication or paid model calls.
+6. Update the guide's version/evidence/status entry and durable records.
+
+For both harnesses, parser or listing success proves schema/discovery only.
+Runtime delegation and permission claims require an explicitly authorized live
+smoke test and must be reported separately.
+
+### 2. Add a discovery route to universal instructions
+
+Modify `~/.agents/AGENTS.md` under configuration preferences or portable
+capabilities with one concise rule:
+
+```markdown
+- Before changing shared harness instructions, skills, agents, commands,
+  adapters, or validation tooling, read `~/.agents/harness-instructions.md`.
+```
+
+This sentence is intentionally the only part loaded in every harness session.
+Do not import or inline the entire guide into `AGENTS.md`, `CLAUDE.md`, or other
+native instruction adapters.
+
+Because native instruction files are symlinks to `~/.agents/AGENTS.md`, this
+canonical edit propagates without regeneration or duplicate edits.
+
+### 3. Link the guide from the repository README
+
+Update `~/README.md` in the universal-agent section so a human browsing the
+repository can find `~/.agents/harness-instructions.md`. Describe it as the
+maintenance and troubleshooting guide; keep the README's installation material
+unchanged.
+
+### 4. Verification
+
+Verify documentation and runtime boundaries:
+
+- Confirm every referenced local path exists or is explicitly described as a
+  generated destination.
+- Confirm all official links resolve to primary documentation.
+- Compare mapping/status claims against `adapters.yaml`, generator rendering,
+  installed versions, and the durable research record.
+- Confirm `harness-instructions.md` is not listed in `instruction_adapters`, is
+  not symlinked into a native always-loaded path, and is not added to the
+  ownership manifest.
+- Run generator `--check`, `verify-setup.sh`, `test-adapters.sh`, yadm bootstrap,
+  pre-push, Markdown whitespace/diff checks, and staged secret-pattern scan.
+- Confirm generated adapters and `generated-adapters.yaml` remain unchanged.
+
+### Files changed
+
+- `~/.agents/harness-instructions.md` (new)
+- `~/.agents/AGENTS.md`
+- `~/README.md`
+- `~/.agents/records/universal-agent-config/research.md`
+- `~/.agents/records/universal-agent-config/plan.md`
+- PR #1 description, updated through an untracked temporary Markdown file
+
+No generator, adapter schema, generated adapter, dependency, or optional harness
+installation is in scope.
+
+### Delivery
+
+Commit and push the approved documentation to the existing
+`refactor/universal-agent-config` branch, update PR #1, and leave it open and
+unmerged. The previously discussed record cleanup remains deferred until after
+the PR is merged.
+
+### Checklist
+
+- [x] Create `~/.agents/harness-instructions.md` with mapping, status,
+      per-harness, workflow, safety, troubleshooting, evidence, and source
+      sections.
+- [x] State that Junie and OpenCode were not installed or live-tested as of
+      2026-08-28 and add actionable first-install remediation runbooks for both.
+- [x] Add the one-line conditional routing rule to `~/.agents/AGENTS.md` without
+      importing the guide into default context.
+- [x] Link the guide from `~/README.md`.
+- [x] Validate every local path and primary documentation link.
+- [x] Confirm the guide is neither a generated target nor an always-loaded
+      native adapter.
+- [x] Run generator, setup, behavioral, bootstrap, pre-push, diff, and secret
+      gates; confirm generated files and manifest are unchanged.
+- [x] Record exact verification evidence and mark the checklist complete issue
+      by issue.
+- [x] Commit and push to PR #1, update its description, and leave it open and
+      unmerged.
+
+### Implementation evidence — 2026-08-28
+
+- All referenced local canonical, native adapter, generated, and validation
+  paths exist.
+- All sixteen linked primary documentation pages for Claude Code, Codex, Amp,
+  Junie, and OpenCode resolved successfully on 2026-08-28.
+- `harness-instructions.md` is absent from `adapters.yaml` and
+  `generated-adapters.yaml`; it is not linked into any native instruction path.
+  Only the conditional routing sentence in canonical `AGENTS.md` enters default
+  context.
+- Generator check, setup verification, the full adapter behavioral suite, yadm
+  bootstrap, pre-push, and whitespace checks passed.
+- Yadm status shows only the new guide, canonical `AGENTS.md`, README, and the
+  two durable records. No generated adapter or ownership-manifest file changed.
+- The first verification attempt exposed a zsh-specific test-script mistake:
+  assigning loop variable `path` overwrote zsh's special `$path`/`$PATH` array.
+  The corrected verification used `required_path`; this affected only the
+  ephemeral command and no tracked file.

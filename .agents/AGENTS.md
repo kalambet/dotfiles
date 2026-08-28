@@ -47,3 +47,6 @@ implementation, execute and verify the approved checklist issue by issue.
 Shared skills live under `~/.agents/skills/`. Harness-specific agents and command
 adapters may expose those skills through native paths, but the shared skill is the
 source of truth.
+
+- Before changing shared harness instructions, skills, agents, commands,
+  adapters, or validation tooling, read `~/.agents/harness-instructions.md`.

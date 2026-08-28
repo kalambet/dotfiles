@@ -35,6 +35,7 @@ harnesses:
 - `prompts/` — canonical agent-role prompts
 - `commands/` — canonical research, plan, and implementation workflows
 - `adapters.yaml` and `scripts/` — adapter generation and verification
+- `harness-instructions.md` — harness maintenance, validation, and troubleshooting
 - `records/` — durable research and implementation decisions
 
 Tracked adapters expose that source through the native locations used by Claude
