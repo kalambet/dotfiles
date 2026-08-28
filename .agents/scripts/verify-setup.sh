@@ -15,8 +15,6 @@ check() {
 check test -f "$agents_root/AGENTS.md"
 check test -d "$agents_root/skills"
 check test -d "$agents_root/prompts"
-check test -L "$HOME/.claude/skills"
-check test "$(readlink "$HOME/.claude/skills")" = "../.agents/skills"
 check "$agents_root/scripts/sync-adapters.sh" --check
 
 uv run --script "$agents_root/scripts/generate_adapters.py" \

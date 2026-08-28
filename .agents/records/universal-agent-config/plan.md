@@ -915,3 +915,174 @@ partial verification up to "fully verified."
 - [ ] Run generator check, setup verification, behavioral tests, Ruff, Python
       compilation, shell syntax, staged diff, secret scan, and yadm hooks.
 - [ ] Commit and push the approved corrections to PR #1 without merging.
+
+## Address third-review minor findings
+
+Planned: 2026-08-28. Research approved by the operator; implementation awaits
+explicit approval of this section.
+
+### Scope and disposition
+
+Implement findings 1, 5, and 6. Record findings 2, 3, and 4 as intentionally
+deferred or accepted limitations; do not add undocumented harness metadata, a
+transaction journal, or destructive orphan scanning in this PR.
+
+This keeps the change local to validation, dead rendering code, verification,
+tests, and durable records. Junie/OpenCode schema remediation remains deferred
+under the preceding operator annotation.
+
+### 1. Put collision validation on the ordinary check path
+
+Modify `~/.agents/scripts/generate_adapters.py` so both `--check` and `--apply`
+validate canonical skills and configured command collisions before rendering or
+preflight. Retain `--validate-skills` as a focused mode that validates and exits.
+
+The intended control flow is:
+
+```python
+validate_skills(config, paths)
+if args.validate_skills:
+    return 0
+
+targets: list[Target] = []
+```
+
+This deliberately makes `sync-adapters.sh --check`, the yadm pre-push hook, and
+ordinary applies fail before touching output whenever a collision exists. It
+avoids coupling the hook to the broader presentation logic in
+`verify-setup.sh` while ensuring every generator entry point enforces the
+invariant.
+
+Update `~/.agents/scripts/test-adapters.sh` so the collision fixture observes
+both focused validation and ordinary `--check` fail. Restore the fixture and
+confirm `--check` succeeds afterward. This is a negative test of the real gate,
+not a presence assertion.
+
+### 2. Preserve sidecar-only ownership and experimental disclosure
+
+Do not add `generated: true`, comments, or other undocumented frontmatter to
+generated adapters. Ownership remains exclusively in
+`~/.agents/generated-adapters.yaml`, outside model-visible prompt bodies.
+
+Keep the Junie/OpenCode experimental label in `research.md`, `plan.md`, and the
+PR limitations. A point-of-edit marker requires verified native metadata and is
+future work; it is not represented as completed.
+
+### 3. Preserve fail-closed crash recovery
+
+Do not implement `current_hash in {ownership.get(key), desired}` because it does
+not authorize the intermediate generation in the reported scenario. Retain the
+current behavior: unchanged canonical input self-heals, while a simultaneous
+canonical change may require manual recovery rather than risking overwrite.
+
+A pending-manifest or journal protocol is future work if operational evidence
+justifies its complexity. No ownership condition changes in this pass.
+
+### 4. Preserve manifest-bounded stale cleanup
+
+Do not enumerate or reap files absent from both desired targets and the manifest.
+Adapter directories are not declared generator-exclusive, so an orphan sweep
+could misclassify legitimate local files. Continue deleting only stale files
+whose ownership and unchanged digest are proven by the manifest.
+
+### 5. Remove dead Claude command rendering
+
+Modify `render_commands()` in
+`~/.agents/scripts/generate_adapters.py` to remove the unused `"claude"` entry
+from `contents`:
+
+```python
+contents = {
+    "codex": f"{body}\n",
+    "junie": ...,
+    "opencode": ...,
+}
+```
+
+Keep the existing unsupported-adapter error. Therefore, accidentally adding a
+Claude command directory fails explicitly instead of silently re-enabling the
+known skill-shadowing path. The behavioral test continues to assert that no
+Claude workflow command is emitted.
+
+### 6. Remove duplicate hardcoded skills-link checks
+
+Modify `~/.agents/scripts/verify-setup.sh` to remove:
+
+```sh
+check test -L "$HOME/.claude/skills"
+check test "$(readlink "$HOME/.claude/skills")" = "../.agents/skills"
+```
+
+The following generator `--check` already validates every configured
+`skill_adapters` link using `AGENTS_ROOT` and `ADAPTER_HOME`. The isolated
+behavioral suite retains its explicit expected-target assertion, so link
+semantics remain tested without duplicating runtime configuration in the setup
+wrapper.
+
+### Files changed
+
+- `~/.agents/scripts/generate_adapters.py`
+- `~/.agents/scripts/test-adapters.sh`
+- `~/.agents/scripts/verify-setup.sh`
+- `~/.agents/records/universal-agent-config/research.md`
+- `~/.agents/records/universal-agent-config/plan.md`
+- PR #1 description, updated from an untracked temporary Markdown file
+
+Generated adapters and `generated-adapters.yaml` should remain byte-identical;
+the generator rendering change removes only an unreachable dictionary entry.
+
+### Verification and delivery
+
+Run the collision negative test before and after the implementation to prove the
+ordinary `--check` path changes from incorrectly green to correctly red. Then
+run:
+
+- generator `--check` and focused `--validate-skills`
+- `verify-setup.sh`
+- `test-adapters.sh`
+- Ruff and Python compilation
+- POSIX shell syntax checks
+- yadm diff check, staged secret-pattern scan, bootstrap/pre-push hooks
+
+The Python reviewer cannot provide type-review sign-off because this scripts-only
+repository has no configured `pyproject.toml` type checker. Do not introduce a
+new project/type-checking stack for these minor fixes; report that limitation.
+
+Commit and push the approved changes to the existing PR branch, update the PR
+description with the exact disposition of all six findings, and leave the PR
+open and unmerged.
+
+### Checklist
+
+- [x] Capture a pre-change negative test showing ordinary `--check` currently
+      misses a skill/command collision.
+- [x] Invoke `validate_skills()` on ordinary `--check` and `--apply`, retaining
+      focused `--validate-skills` behavior.
+- [x] Extend the behavioral collision fixture to prove ordinary `--check` fails
+      and succeeds again after cleanup.
+- [x] Remove the dead Claude entry from `render_commands()` and retain the
+      no-Claude-command assertion.
+- [x] Remove the two hardcoded Claude skills-link checks from `verify-setup.sh`.
+- [x] Confirm no generated adapter or manifest content changes.
+- [x] Run all generator, setup, behavioral, lint, compile, shell, diff, secret,
+      bootstrap, and pre-push gates listed above.
+- [x] Mark this checklist complete issue by issue and record exact verification
+      evidence in this plan.
+- [x] Commit and push to PR #1, update its description, and leave it open and
+      unmerged.
+
+### Implementation evidence — 2026-08-28
+
+- Before the fix, an isolated fixture containing
+  `.claude/commands/oracle.md` returned exit code 0 from ordinary `--check`,
+  reproducing the pre-push gap.
+- After the fix, `test-adapters.sh` proves the same ordinary `--check` fails for
+  the collision and succeeds after the fixture is removed; the full behavioral
+  suite passed.
+- Generator `--check`, focused `--validate-skills`, `verify-setup.sh`, Ruff,
+  Python compilation, POSIX shell syntax, yadm bootstrap, and the yadm pre-push
+  hook all passed.
+- Yadm status contains only the three approved implementation files and the two
+  durable record files. No generated adapter or ownership-manifest file changed.
+- Python type-review sign-off remains unavailable because no Python type checker
+  is configured; no new dependency or type-checking stack was introduced.

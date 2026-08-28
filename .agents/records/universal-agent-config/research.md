@@ -292,3 +292,81 @@ deferred. Their adapters in PR #1 provide initial, experimental support only;
 they are not a compatibility claim. Preserve the source-backed findings and
 validation checklist as future work, and retain this research together with
 `plan.md` as the durable decision record.
+
+## Third-review minor findings (2026-08-28)
+
+Claude's third pass reports no blockers and six minor items. Inspection of the
+applied generator, wrappers, hooks, configuration, and behavioral tests confirms
+the following dispositions.
+
+### 1. Collision validation is absent from pre-push
+
+Confirmed. `~/.config/yadm/hooks/pre_push` invokes
+`sync-adapters.sh --check`, while collision detection runs only in the separate
+`--validate-skills` mode. A tracked `~/.claude/commands/<skill>.md` can therefore
+pass pre-push. The narrow fix is to make ordinary generator checks validate
+skills and collisions before rendering, so every caller of `--check` receives
+the same safety property. Keep the explicit validation mode for focused setup
+diagnostics.
+
+The behavioral test must demonstrate the actual gate: create a colliding command
+and observe `--check` fail, not merely call the dedicated validator.
+
+### 2. Human-facing generated/experimental labels
+
+Confirmed as a discoverability trade-off, but the proposed arbitrary
+`generated: true` frontmatter is not safe. The sidecar was introduced precisely
+to avoid adding generator-only data to harness inputs, and Junie/OpenCode schema
+compatibility is already explicitly deferred. Unknown frontmatter could be
+ignored, rejected, or enter model context depending on the harness.
+
+Do not restore per-file markers or add undocumented metadata. Keep ownership in
+`generated-adapters.yaml`; retain experimental-status disclosure in the durable
+records and PR limitations. A point-of-edit signpost should wait for a verified
+harness-native metadata or filesystem mechanism.
+
+### 3. Crash window between file and manifest writes
+
+The narrow window is real, but the suggested condition
+`current_hash in {ownership.get(key), desired}` does not close the described
+case. If generation A writes a file and crashes before its manifest update, then
+the canonical source changes to generation B, the on-disk hash is A, the
+manifest hash is older, and `desired` is B; the current hash matches neither.
+
+Closing this fully requires recoverable transaction state (for example a
+pending manifest/journal written before target replacement), not a one-line
+authorization relaxation. The present fail-closed behavior prevents data loss,
+and an unchanged canonical source self-heals on the next apply. Defer the more
+complex journal design unless this rare manual-recovery case proves costly.
+
+### 4. Pre-manifest orphans
+
+Confirmed and accepted. Unrecorded files that are not desired targets remain
+untouched. Automatically scanning adapter directories would risk deleting or
+rejecting legitimate harness-local files because those directories are not
+declared generator-exclusive. Yadm still exposes tracked removals. Preserve the
+safe rule that only manifest-owned stale files may be reaped.
+
+### 5. Dead Claude command rendering
+
+Confirmed. `render_commands()` constructs a Claude value that cannot be selected
+because `command_directories` intentionally omits Claude. Remove the dead entry;
+this reduces confusion and prevents accidental reactivation beside the collision
+guard. Add a behavioral assertion that no Claude command adapter is emitted.
+
+### 6. Duplicate hardcoded skills-link verification
+
+Confirmed. `verify-setup.sh` checks the Claude skills symlink directly and then
+runs the generator check, which already validates the configured
+`skill_adapters` target. The direct check also uses `$HOME` rather than
+`ADAPTER_HOME`, weakening isolated verification. Remove both hardcoded symlink
+checks and rely on the configured generator preflight. Existing behavioral tests
+continue to assert the resolved link target.
+
+### Python review note
+
+The planned Python edit is small and typed, with no new public API, dependency,
+async, resource, or exception surface. This repository has no `pyproject.toml`
+or configured Python type checker, so the Python-reviewer policy cannot provide
+type-review sign-off. Ruff, Python compilation, and behavioral tests remain the
+available gates; absence of a type checker should be reported rather than hidden.

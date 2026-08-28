@@ -270,7 +270,6 @@ def render_commands(config: dict[str, object], paths: RuntimePaths) -> list[File
         )
         metadata_yaml = frontmatter({"description": description})
         contents = {
-            "claude": f"---\n{metadata_yaml}---\n{body}\n",
             "codex": f"{body}\n",
             "junie": f"---\n{frontmatter({'description': description, 'allowPromptArgument': True})}---\n{body.replace('$ARGUMENTS', '$prompt')}\n",
             "opencode": f"---\n{metadata_yaml}---\n{body}\n",
@@ -564,8 +563,8 @@ def main() -> int:
     args = parse_args()
     config = load_yaml_mapping(args.config)
     paths = runtime_paths()
+    validate_skills(config, paths)
     if args.validate_skills:
-        validate_skills(config, paths)
         return 0
     targets: list[Target] = []
     targets.extend(render_instruction_links(config, paths))

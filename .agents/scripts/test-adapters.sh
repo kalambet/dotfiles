@@ -66,11 +66,16 @@ grep '^Use the `research` skill' "$test_root/first/home/.codex/prompts/research.
 
 mkdir -p "$test_root/first/home/.claude/commands"
 printf '%s\n' collision > "$test_root/first/home/.claude/commands/oracle.md"
+if run_generator first --check >/dev/null 2>&1; then
+  echo 'ordinary adapter check missed a skill/command collision' >&2
+  exit 1
+fi
 if run_validator first >/dev/null 2>&1; then
   echo 'skill/command collision check unexpectedly passed' >&2
   exit 1
 fi
 rm "$test_root/first/home/.claude/commands/oracle.md"
+run_generator first --check >/dev/null
 
 oracle="$test_root/first/home/.claude/agents/oracle.md"
 grep '^tools: Read, Grep, Glob, WebSearch, WebFetch, Skill$' "$oracle" >/dev/null
