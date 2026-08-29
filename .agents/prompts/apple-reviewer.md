@@ -7,6 +7,7 @@ description: Reviews Swift and Apple platform code for quality, correctness, HIG
   issues, state management anti-patterns, and HIG non-compliance.
 model_class: reviewer
 read_only: true
+shell: false
 skills:
 - apple-dev
 - apple-reviewer

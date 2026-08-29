@@ -513,3 +513,106 @@ The future guide should contain:
 The guide should not duplicate all schemas or list every generated file. Those
 details would drift. It should point to `adapters.yaml`, generator rendering
 functions, tests, and official docs as the live sources of truth.
+
+## Fourth-review regression research (2026-08-28)
+
+Claude's fourth pass compares the branch against `origin/master` specifically
+for lost Claude Code behavior. Direct comparison confirms two functional
+regressions and one description-quality regression.
+
+### R1: `ai-apple-engineer` lost web tools — confirmed
+
+On `origin/master`, the role had `WebFetch` and `WebSearch`. The generated branch
+agent has neither because canonical metadata classifies it as `developer`, and
+`claude_tools()` uses a fixed developer bundle with no additive web capability.
+The role's cloud APIs and Apple/AI framework remit makes current documentation
+access intentional, not incidental.
+
+The narrow correction is a canonical `web: true` capability on
+`~/.agents/prompts/ai-apple-engineer.md`, parsed as a required boolean with a
+default of `false`. Extend `claude_tools()` with a keyword-only `web` argument
+that adds `WebSearch` and `WebFetch` without changing model class, write/edit,
+or shell semantics. Other harness output must remain unchanged in this pass;
+Junie/OpenCode schema remediation is still deferred.
+
+A behavioral test must assert the regenerated Claude agent contains both web
+tools and that an ordinary developer without `web: true` does not gain them.
+
+### R2: three reviewers gained Bash — confirmed
+
+`apple-reviewer`, `ml-reviewer`, and `full-reviewer` had only `Read, Glob, Grep`
+on `origin/master`; each generated branch agent also has `Bash` and `Skill`.
+The canonical prompt schema already has two independent axes:
+
+- `read_only` controls direct `Write`/`Edit` tools;
+- `shell` controls Bash availability.
+
+Therefore, globally stripping Bash whenever `read_only` is true would be a new
+regression. `python-reviewer`, `rust-reviewer`, `solidity-reviewer`, and
+`typescript-reviewer` are also `read_only: true`, but intentionally had Bash on
+master and still have it on the branch so they can run checks. The precise fix
+is to add `shell: false` to only the three affected canonical prompts. The
+existing renderer already honors that flag.
+
+The term `read_only` remains imperfect because shell can mutate, but within the
+current two-axis schema it means no direct edit tools rather than a security
+sandbox. `shell: false` expresses strict no-shell roles. The maintainer guide
+should document this distinction so future changes do not infer enforcement
+from the name alone.
+
+Behavioral tests must assert the three restored agents omit Bash while a
+language reviewer such as `python-reviewer` retains Bash.
+
+### N1: three skill descriptions lost literal syntax — confirmed
+
+The canonical branch descriptions changed meaningful retrieval tokens:
+
+- `rust-architect`: `Arc<Mutex<T>> or channel` became `Arc plus Mutex or channel`;
+- `rust-developer`: `Arc<Mutex>` became `Arc plus Mutex`;
+- `solidity-reviewer`: `<id>` / `<reason>` placeholders became plain `ID` /
+  `reason`.
+
+Folded block scalars solve the YAML colon-space problem without requiring these
+text substitutions. Restore the exact literal syntax inside the existing `>-`
+descriptions and validate all 34 skill frontmatter documents with PyYAML. This
+is a retrieval and documentation correction, not a schema change.
+
+### N2: capability catalogue removal — no restoration planned
+
+The removed Claude-only catalogue duplicated generated discovery and created a
+drift surface. Current universal instructions already require Oracle/Librarian
+consultation, and each team/reviewer skill declares its own composition. A
+single portable pairing rule may be useful later if observed invocation behavior
+shows agents failing to combine `pr-review` with language reviewers, but the old
+catalogue should not be restored merely for parity.
+
+### N3: orphaned legacy file — deferred
+
+`~/.config/agents/research-plan-implement.md` remains tracked but unused. Its
+cleanup belongs with the post-merge record/legacy cleanup the operator already
+deferred, not this regression fix.
+
+### Python-review boundary
+
+The generator change is small and typed, but the repository still has no
+configured Python type checker, so the Python-reviewer policy cannot provide
+type-review sign-off. Required evidence remains Ruff, Python compilation,
+PyYAML parsing, behavioral tests, generator/setup checks, and explicit
+master-versus-generated capability assertions.
+
+### Operator annotation: portable shell semantics (2026-08-29)
+
+The operator accepted cross-harness propagation of `shell: false`. The three
+reviewer roles must lose shell capability in Claude, Junie, and OpenCode rather
+than introducing a Claude-only metadata flag. Junie/OpenCode remain
+experimental because their broader schemas are unverified; this change only
+keeps the canonical no-shell intent consistent across generated adapters.
+
+### Additional parity finding: `ai-architect` Bash (2026-08-29)
+
+The implementation plan's all-agent semantic comparison found that
+`ai-architect` lost Bash relative to `origin/master`; the external review had
+incorrectly categorized its tool difference as ordering only. Other architect
+roles did not have Bash on master. The operator approved tri-state `shell`
+metadata: omitted preserves the bundle, explicit true adds shell, and explicit
+false removes it. `ai-architect` alone receives `shell: true`.

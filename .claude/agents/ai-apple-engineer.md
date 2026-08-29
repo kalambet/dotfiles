@@ -1,7 +1,7 @@
 ---
 name: ai-apple-engineer
 description: Builds AI-powered Apple platform features — on-device inference with CoreML/MLX, cloud LLM integration, hybrid on-device/cloud architectures, Apple Foundation Models, streaming AI responses in SwiftUI, and embedding/vector search on Apple devices. Use when the task requires both AI/ML expertise AND Apple platform knowledge simultaneously.
-tools: Read, Write, Edit, Bash, Glob, Grep, Skill
+tools: Read, Write, Edit, Bash, Glob, Grep, Skill, WebSearch, WebFetch
 model: sonnet
 skills:
 - ai-dev

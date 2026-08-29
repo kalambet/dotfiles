@@ -219,6 +219,11 @@ Official documentation:
 
 1. Edit `~/.agents/prompts/<name>.md`, including canonical `name`, `description`,
    `model_class`, `read_only`, `shell`, and `skills` metadata.
+   `read_only: true` removes direct Write/Edit tools; it is not a security
+   sandbox while shell remains enabled. Shell is tri-state: omit `shell` to keep
+   the model-class default, set `shell: true` to add shell access explicitly,
+   and set `shell: false` to remove it. Set `web: true` only when the role
+   requires current external documentation.
 2. Update `adapters.yaml` or rendering functions only when the native mapping
    changes. Recheck official schemas first.
 3. Apply generation and review every affected native file plus the ownership

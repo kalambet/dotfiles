@@ -1,15 +1,15 @@
 version: 1
 algorithm: sha256
 files:
-  home/.claude/agents/ai-apple-engineer.md: a65fa5668140d535b33aef4c9a2fdd9c1d65eb8761a2825ea182a15f57869821
-  home/.claude/agents/ai-architect.md: 043378b82363d22d071bf92568b5a9e16d7b203ecd004a66b131b11eef464976
+  home/.claude/agents/ai-apple-engineer.md: 8fc9855c66fcdad5714ed0c8e2036e75d3bce70f2ebaa9866b421c3c9d1ed483
+  home/.claude/agents/ai-architect.md: 8c1c7f73530b02f9b3d45d5e757059c9cf8803b51fb0550c12264b7b1531bf56
   home/.claude/agents/apple-engineer.md: a55ab3385258672a870d50f75610fd43c5fed9673c1c7d905a8aebd64ed40072
-  home/.claude/agents/apple-reviewer.md: 4bff53bb1f58d21f54386d13cdc5adc8300df6173f605c7b0034400d227d6888
+  home/.claude/agents/apple-reviewer.md: 9c8a833acdacf2e1307ff7a6d44df28e1a8c973c66aec76b3afe587dfb4a94ab
   home/.claude/agents/distributed-systems-architect.md: 526f129a6b249fcd436fb8f0558de010b9d4352cc6748da95dc2223269d62503
-  home/.claude/agents/full-reviewer.md: df1df5875074633910d1424dac8059347e308fe84749723d6c0ea8cf153f7620
+  home/.claude/agents/full-reviewer.md: ae17400b91a846ccda0f38e45e50dd298e4a9d072486d648ade22fdfc3cc1162
   home/.claude/agents/librarian.md: d2d6613a42ff9b20529f6c5189f48977b884220fb2602350a4065df7f45af347
   home/.claude/agents/llm-system-architect.md: 1a43cd6fa4961cb95ac4dba83593d506c2207fc01354c5551269fbb3a798cafe
-  home/.claude/agents/ml-reviewer.md: d1eea7399dd2cfea2c17ccb02047028016fae36c85c5ea004245f3c44f707d5a
+  home/.claude/agents/ml-reviewer.md: f946416ab4a101559b4443fa9463b43827321f14dc39bc7d5d376bc9bfaf3941
   home/.claude/agents/oracle.md: cae21581741702dd37316da614325cef5ff976d2cbf9056cf5a20e87249df670
   home/.claude/agents/python-architect.md: 382bad6b65b8f376afa757ddea503d5ce0e1a86553c8dfadad766091bbbed699
   home/.claude/agents/python-developer.md: 2c61b1c69f7757a2936094723bd598280de8e3836ddfcc343863ab4ffdbad5e7
@@ -30,12 +30,12 @@ files:
   home/.config/opencode/agents/ai-apple-engineer.md: 83981ba66c45dfe26b4a34f0aff79e94c0f00c2316b9c721f5c8882b8427a28d
   home/.config/opencode/agents/ai-architect.md: 4d3cbd2836347e5b08fe0a217e0589260e9ee826d65d9a5be0c4aae59874b500
   home/.config/opencode/agents/apple-engineer.md: 863d29bcb20e5c303bfd2bb9392faf9c202127b9fec133c6ad3109a14d8bb5e0
-  home/.config/opencode/agents/apple-reviewer.md: f309a55e1866cdff7c07dbd57ec7f35072e1df765314b9a1279684088d017ea0
+  home/.config/opencode/agents/apple-reviewer.md: e10e679dba00af3b255752a3824bb187873cc4feda931196cca08d14d048e271
   home/.config/opencode/agents/distributed-systems-architect.md: e2b518ed3132c1208c74a0260252d5f2a4fc69f3178f8f4060b294125c3edfe0
-  home/.config/opencode/agents/full-reviewer.md: b38c265b17f6e3b5f54d910b2411b78b3500a0b43f2d3e01b14551594bd4a4dc
+  home/.config/opencode/agents/full-reviewer.md: bcb46222a4133fdac625edeb8e93d98c2ea34b54e339bf1ad8c17862d887f9c4
   home/.config/opencode/agents/librarian.md: c6b77ecb1ead67208a27d3162ba39877d1082fc2e03a7df99e4fd1d736f49fce
   home/.config/opencode/agents/llm-system-architect.md: 37ba032db5fbfd218f21f5311e2e381033828b7ca6e2f1a6b852fe325fe590c6
-  home/.config/opencode/agents/ml-reviewer.md: 1f2baf502dbd1979c503b75bf380db45e4ed5a75956278334d2c6e27a4f24d58
+  home/.config/opencode/agents/ml-reviewer.md: 194a03974e8ef6107f6e8f8aff09a501b7e80963a0b93c5cb55c438a38714cad
   home/.config/opencode/agents/oracle.md: 64004e374c4929212d810a639c57f6159ca3d41553074dc3d9b102cc4a3d3d0f
   home/.config/opencode/agents/python-architect.md: b2aaa7400b07d74ea62dd78d1ace8dd677f5e6d5c610c8bc2fd48cde9b507545
   home/.config/opencode/agents/python-developer.md: 485955112a34f7ddcc8cb448d50460041b32c4d71ce0527eb3eba718df188cd8
@@ -56,12 +56,12 @@ files:
   home/.junie/agents/ai-apple-engineer.md: 70bed964c898673c0feb9ae6c6c7aa297c921068208c5617d30c529dc38e1423
   home/.junie/agents/ai-architect.md: 97acc7a4eeb41ec402aa94caaa4f43fdf7dbb3b8c7c13881409ee8aa55149f9a
   home/.junie/agents/apple-engineer.md: a28b64e266eb43fc5a8fa0c63f847d1a4c45fd2bb3cea9cbde376e1c2b1cde98
-  home/.junie/agents/apple-reviewer.md: 5ac1dce69e41f306bc0294750e4541e955950e1635f609991e8b91c32065ff03
+  home/.junie/agents/apple-reviewer.md: 1c2a62abf91add61fd2d01cbf8c5511ba6017fea1d70aee50852134799e4164a
   home/.junie/agents/distributed-systems-architect.md: dbfb65aac174c20a41e88b1f2902903ff586e2d6428d044d58002df98596d045
-  home/.junie/agents/full-reviewer.md: 1c63e5068025b5922829cf57acb34a13c07d6cdb0c79c788a8394a7c092171bd
+  home/.junie/agents/full-reviewer.md: d6ffa193a18c5d65f78e58af02a1269c6278fb5d65fa9fea2c8996c43347fa9e
   home/.junie/agents/librarian.md: 4ca17e14cfbc54c61c5e4d62f202ee3c3d0f1d34982c67453b41a2a7cd201ea5
   home/.junie/agents/llm-system-architect.md: 158b36e184c586a0de57bfec48064130564817540c7eb663bb06fccd7504ec1e
-  home/.junie/agents/ml-reviewer.md: bae934cf12eb6d1f6fee1e28ab97d92430ad982cd7ca3bbb320746f4ed2c59ec
+  home/.junie/agents/ml-reviewer.md: f74b1363b7f87b86e19cffb9f5cb77d8cca9ee7009649f4823811631ea7f8b77
   home/.junie/agents/oracle.md: 09a7d3ed5ac22122a21fe6b0bf5f176f532f5c868696af4e4adf2214f4e3f5da
   home/.junie/agents/python-architect.md: edf09d5fb2f00ebe8bb7794470c901bd1271ea18708f22e048eaeb6b1513910a
   home/.junie/agents/python-developer.md: 8b242fd9fe31f3b2fb163aa41a649c0969a0dae6ac68b81a36e86bca2b301808

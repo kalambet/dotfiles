@@ -150,7 +150,9 @@ def model(config: dict[str, object], harness: str, model_class: str) -> str:
     )
 
 
-def claude_tools(model_class: str, *, read_only: bool, shell: bool) -> str:
+def claude_tools(
+    model_class: str, *, read_only: bool, shell: bool | None, web: bool
+) -> str:
     tools = {
         "architect": [
             "Read",
@@ -165,9 +167,15 @@ def claude_tools(model_class: str, *, read_only: bool, shell: bool) -> str:
         "developer": ["Read", "Write", "Edit", "Bash", "Glob", "Grep", "Skill"],
         "researcher": ["Read", "Glob", "Grep", "WebSearch", "WebFetch"],
     }.get(model_class, ["Read", "Glob", "Grep", "Bash", "Skill"])
+    if web:
+        for tool in ("WebSearch", "WebFetch"):
+            if tool not in tools:
+                tools.append(tool)
+    if shell is True and "Bash" not in tools:
+        tools.append("Bash")
     if read_only:
         tools = [tool for tool in tools if tool not in {"Write", "Edit"}]
-    if not shell:
+    if shell is False:
         tools = [tool for tool in tools if tool != "Bash"]
     return ", ".join(tools)
 
@@ -187,13 +195,22 @@ def render_agents(config: dict[str, object], paths: RuntimePaths) -> list[FileTa
             metadata.get("model_class"), f"{source}: model_class"
         )
         read_only = require_bool(metadata.get("read_only"), f"{source}: read_only")
-        shell = require_bool(metadata.get("shell", True), f"{source}: shell")
+        shell_value = metadata.get("shell")
+        shell = (
+            None
+            if shell_value is None
+            else require_bool(shell_value, f"{source}: shell")
+        )
+        shell_enabled = shell is not False
+        web = require_bool(metadata.get("web", False), f"{source}: web")
         skills = require_strings(metadata.get("skills", []), f"{source}: skills")
 
         claude: dict[str, object] = {
             "name": name,
             "description": description,
-            "tools": claude_tools(model_class, read_only=read_only, shell=shell),
+            "tools": claude_tools(
+                model_class, read_only=read_only, shell=shell, web=web
+            ),
             "model": model(config, "claude", model_class),
         }
         if skills:
@@ -213,7 +230,7 @@ def render_agents(config: dict[str, object], paths: RuntimePaths) -> list[FileTa
         junie_tools = ["read", "search", "web"]
         if not read_only:
             junie_tools.insert(1, "write")
-        if shell:
+        if shell_enabled:
             junie_tools.append("shell")
         junie: dict[str, object] = {
             "name": name,
@@ -240,7 +257,7 @@ def render_agents(config: dict[str, object], paths: RuntimePaths) -> list[FileTa
             "model": model(config, "opencode", model_class),
             "permissions": {
                 "edit": "deny" if read_only else "allow",
-                "shell": "allow" if shell else "deny",
+                "shell": "allow" if shell_enabled else "deny",
             },
         }
         targets.append(

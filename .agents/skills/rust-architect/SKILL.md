@@ -1,7 +1,7 @@
 ---
 name: rust-architect
 description: >-
-  Architectural guidance for designing Rust crates and systems. Use this skill whenever the user is starting a new Rust crate, designing a Rust workspace, choosing an async runtime, picking an error model, deciding `unsafe` usage, structuring a Cargo workspace, deciding `pub` vs `pub(crate)`, picking concurrency primitives, or writing an ADR for Rust work. EVEN IF the user does not explicitly say "architecture" — triggers on "design a Rust crate", "new Rust workspace", "thiserror or anyhow", "async runtime choice", "Tokio vs async-std", "Arc plus Mutex or channel", "public API surface", "is unsafe justified here", "ADR for Rust", "non_exhaustive enum", "workspace layout". Do NOT use for line-level Rust coding (use rust-developer) or Rust PR review (use rust-reviewer).
+  Architectural guidance for designing Rust crates and systems. Use this skill whenever the user is starting a new Rust crate, designing a Rust workspace, choosing an async runtime, picking an error model, deciding `unsafe` usage, structuring a Cargo workspace, deciding `pub` vs `pub(crate)`, picking concurrency primitives, or writing an ADR for Rust work. EVEN IF the user does not explicitly say "architecture" — triggers on "design a Rust crate", "new Rust workspace", "thiserror or anyhow", "async runtime choice", "Tokio vs async-std", "Arc<Mutex<T>> or channel", "public API surface", "is unsafe justified here", "ADR for Rust", "non_exhaustive enum", "workspace layout". Do NOT use for line-level Rust coding (use rust-developer) or Rust PR review (use rust-reviewer).
 metadata:
   type: role-workflow
   language: rust

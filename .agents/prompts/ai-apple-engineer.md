@@ -7,6 +7,7 @@ description: Builds AI-powered Apple platform features — on-device inference w
   simultaneously.
 model_class: developer
 read_only: false
+web: true
 skills:
 - ai-dev
 - apple-dev

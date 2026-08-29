@@ -7,6 +7,7 @@ description: Designs and implements AI/ML systems — RAG pipelines, agent archi
   in Go or Swift.
 model_class: architect
 read_only: false
+shell: true
 skills:
 - ai-dev
 ---

@@ -7,6 +7,7 @@ description: Reviews AI/ML code for correctness, performance, security, and best
   error handling, and architectural anti-patterns.
 model_class: reviewer
 read_only: true
+shell: false
 skills:
 - ai-dev
 - ml-reviewer

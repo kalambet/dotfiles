@@ -79,10 +79,49 @@ run_generator first --check >/dev/null
 
 oracle="$test_root/first/home/.claude/agents/oracle.md"
 grep '^tools: Read, Grep, Glob, WebSearch, WebFetch, Skill$' "$oracle" >/dev/null
+grep '^tools: Read, Write, Edit, Bash, Glob, Grep, Skill, WebSearch, WebFetch$' \
+  "$test_root/first/home/.claude/agents/ai-apple-engineer.md" >/dev/null
+grep '^tools: Read, Grep, Glob, Write, Edit, WebSearch, WebFetch, Skill, Bash$' \
+  "$test_root/first/home/.claude/agents/ai-architect.md" >/dev/null
+grep '^tools: Read, Write, Edit, Bash, Glob, Grep, Skill$' \
+  "$test_root/first/home/.claude/agents/apple-engineer.md" >/dev/null
+for reviewer in apple-reviewer ml-reviewer full-reviewer; do
+  grep '^tools: Read, Glob, Grep, Skill$' \
+    "$test_root/first/home/.claude/agents/$reviewer.md" >/dev/null
+  if sed -n '2,/^---$/p' \
+    "$test_root/first/home/.junie/agents/$reviewer.md" | \
+    grep '^- shell$' >/dev/null; then
+    echo "$reviewer retained Junie shell access" >&2
+    exit 1
+  fi
+  grep -A3 '^permissions:$' \
+    "$test_root/first/home/.config/opencode/agents/$reviewer.md" | \
+    grep '^  shell: deny$' >/dev/null
+done
+grep '^tools: Read, Glob, Grep, Bash, Skill$' \
+  "$test_root/first/home/.claude/agents/python-reviewer.md" >/dev/null
 grep -A3 '^permissions:$' "$test_root/first/home/.config/opencode/agents/oracle.md" | \
   grep '^  shell: deny$' >/dev/null
 grep -A6 '^tools:$' "$test_root/first/home/.junie/agents/python-reviewer.md" | \
   grep '^\- shell$' >/dev/null
+
+grep -F 'Arc<Mutex<T>> or channel' \
+  "$test_root/first/agents/skills/rust-architect/SKILL.md" >/dev/null
+grep -F 'Arc<Mutex>' \
+  "$test_root/first/agents/skills/rust-developer/SKILL.md" >/dev/null
+grep -F 'Override: HARD FAIL <id> for reason <reason>' \
+  "$test_root/first/agents/skills/solidity-reviewer/SKILL.md" >/dev/null
+
+make_fixture invalid-web
+sed 's/^web: true$/web: invalid/' \
+  "$test_root/invalid-web/agents/prompts/ai-apple-engineer.md" \
+  > "$test_root/invalid-web/agents/prompts/ai-apple-engineer.md.new"
+mv "$test_root/invalid-web/agents/prompts/ai-apple-engineer.md.new" \
+  "$test_root/invalid-web/agents/prompts/ai-apple-engineer.md"
+if run_generator invalid-web --check >/dev/null 2>&1; then
+  echo 'non-boolean web capability was accepted' >&2
+  exit 1
+fi
 
 make_fixture unmanaged
 mkdir -p "$test_root/unmanaged/home/.claude/agents"

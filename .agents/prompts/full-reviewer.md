@@ -7,6 +7,7 @@ description: Comprehensive code review combining AI/ML and Apple platform expert
   AND concurrency safety.
 model_class: reviewer
 read_only: true
+shell: false
 skills:
 - ai-dev
 - apple-dev

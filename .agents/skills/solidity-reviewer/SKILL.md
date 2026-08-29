@@ -1,7 +1,7 @@
 ---
 name: solidity-reviewer
 description: >-
-  HARD FAIL tier PR review for Solidity contracts. Use whenever the user is reviewing a Solidity PR, asking for contract review, checking for reentrancy / upgrade safety / access control / audit-readiness, or verifying a Solidity diff against these conventions. EVEN IF the user does not ask for "Solidity review" — triggers on "review this contract", "is this Solidity correct", "check for reentrancy", "upgrade safety review", "audit-readiness", "security review", "Solidity diff", "bridge review", "contract PR review". This reviewer emits HARD FAIL on reentrancy, upgrade safety, tx.origin, access-control gaps, unchecked external calls. Operator override is logged in PR with `Override: HARD FAIL ID for reason reason`. Do NOT use for Solidity design (use solidity-architect) or implementation (use solidity-developer).
+  HARD FAIL tier PR review for Solidity contracts. Use whenever the user is reviewing a Solidity PR, asking for contract review, checking for reentrancy / upgrade safety / access control / audit-readiness, or verifying a Solidity diff against these conventions. EVEN IF the user does not ask for "Solidity review" — triggers on "review this contract", "is this Solidity correct", "check for reentrancy", "upgrade safety review", "audit-readiness", "security review", "Solidity diff", "bridge review", "contract PR review". This reviewer emits HARD FAIL on reentrancy, upgrade safety, tx.origin, access-control gaps, unchecked external calls. Operator override is logged in PR with `Override: HARD FAIL <id> for reason <reason>`. Do NOT use for Solidity design (use solidity-architect) or implementation (use solidity-developer).
 metadata:
   type: role-workflow
   language: solidity

@@ -1304,3 +1304,223 @@ the PR is merged.
   assigning loop variable `path` overwrote zsh's special `$path`/`$PATH` array.
   The corrected verification used `required_path`; this affected only the
   ephemeral command and no tracked file.
+
+## Restore Claude capabilities found in fourth review
+
+Planned: 2026-08-28. Regression research approved by the operator;
+implementation awaits explicit approval of this section.
+
+### Outcome
+
+Restore the exact intentional Claude capabilities lost from `origin/master`
+without broadening or narrowing unrelated roles:
+
+- return `WebSearch` and `WebFetch` to `ai-apple-engineer`;
+- remove Bash from `apple-reviewer`, `ml-reviewer`, and `full-reviewer`;
+- preserve Bash for the four language reviewers that had it on master;
+- restore literal retrieval syntax in three skill descriptions.
+
+Do not restore the old Claude capability catalogue, delete the deferred legacy
+file, or modify Junie/OpenCode schemas in this pass.
+
+### 1. Add an explicit web capability
+
+Modify `~/.agents/prompts/ai-apple-engineer.md`:
+
+```yaml
+model_class: developer
+read_only: false
+web: true
+```
+
+Modify `~/.agents/scripts/generate_adapters.py` so prompt metadata parses
+`web` with a strict boolean default of `false`:
+
+```python
+web = require_bool(metadata.get("web", False), f"{source}: web")
+```
+
+Extend `claude_tools()` with `web: bool`. After selecting the model-class bundle,
+append `WebSearch` and `WebFetch` only when requested and not already present:
+
+```python
+if web:
+    for tool in ("WebSearch", "WebFetch"):
+        if tool not in tools:
+            tools.append(tool)
+```
+
+Pass `web` from `render_agents()` into the Claude tool mapper. Do not add web
+metadata to Junie or OpenCode rendering: their known schema drift remains
+deferred, and the web change is specifically restoring Claude parity.
+
+### 2. Restore strict no-shell reviewer roles
+
+Add `shell: false` to these canonical prompts:
+
+- `~/.agents/prompts/apple-reviewer.md`
+- `~/.agents/prompts/ml-reviewer.md`
+- `~/.agents/prompts/full-reviewer.md`
+
+Do not change the meaning or implementation of `read_only`. In the current
+capability model:
+
+- `read_only: true` removes direct `Write` and `Edit` tools;
+- `shell: false` removes Bash.
+
+This distinction preserves Bash for `python-reviewer`, `rust-reviewer`,
+`solidity-reviewer`, and `typescript-reviewer`, matching `origin/master`.
+
+Operator annotation accepted 2026-08-29: `shell` is a portable semantic
+capability, so `shell: false` must propagate to every generated harness adapter.
+For the three affected reviewers this removes Bash in Claude, removes the shell
+tool in Junie, and emits shell denial in OpenCode. This does not claim the
+experimental Junie/OpenCode schemas are otherwise compatible.
+
+Operator amendment approved 2026-08-29: the full parity gate found that
+`ai-architect` also lost Bash, which the fourth review had mislabeled as a tool
+reordering. Make `shell` tri-state: omitted preserves the model-class bundle,
+explicit `true` adds shell, and explicit `false` removes shell. Set
+`shell: true` only on `ai-architect`; this restores Bash without adding it to the
+other architect roles. Junie/OpenCode already treat omitted and true as enabled,
+so their `ai-architect` outputs remain unchanged.
+
+Update `~/.agents/harness-instructions.md` in the role-maintenance section to
+state this two-axis contract and warn that `read_only` is not a security sandbox
+when shell remains enabled.
+
+### 3. Restore literal skill-description syntax
+
+Modify only the description text in:
+
+- `~/.agents/skills/rust-architect/SKILL.md`: restore
+  `Arc<Mutex<T>> or channel`;
+- `~/.agents/skills/rust-developer/SKILL.md`: restore `Arc<Mutex>`;
+- `~/.agents/skills/solidity-reviewer/SKILL.md`: restore
+  ``Override: HARD FAIL <id> for reason <reason>``.
+
+Keep the existing `>-` folded YAML representation, which safely handles the
+colon-space in the Solidity description. Do not revert the five valid YAML
+normalizations or change skill bodies.
+
+### 4. Strengthen behavioral parity tests
+
+Update `~/.agents/scripts/test-adapters.sh` with outcome assertions against
+generated Claude agents:
+
+- `ai-apple-engineer` contains both `WebSearch` and `WebFetch`;
+- a normal developer role without `web: true` does not gain web tools;
+- `apple-reviewer`, `ml-reviewer`, and `full-reviewer` omit Bash;
+- `python-reviewer` retains Bash;
+- the three restored literal description fragments survive PyYAML parsing and
+  validation.
+
+Prefer exact `tools:` assertions for the affected agents so the test detects
+both missing and accidentally added capabilities. Keep the existing full
+behavioral suite intact.
+
+Also add a negative fixture that changes `web: true` to a non-boolean value and
+observes generator refusal. This proves strict metadata validation rather than
+only the happy path.
+
+### 5. Regenerate and review ownership changes
+
+Run `sync-adapters.sh --apply`. Expected generated changes are limited to:
+
+- Claude `ai-apple-engineer`, `apple-reviewer`, `ml-reviewer`, and
+  `full-reviewer` agent frontmatter;
+- Junie and OpenCode `apple-reviewer`, `ml-reviewer`, and `full-reviewer`
+  frontmatter, reflecting the accepted portable no-shell capability;
+- generated agent files that embed the three corrected skill descriptions only
+  if their canonical role metadata references those descriptions (none are
+  expected under the current renderer);
+- `generated-adapters.yaml` digests for the four changed Claude agents.
+
+Canonical skill description edits do not themselves generate adapters. No other
+Junie or OpenCode generated file may change.
+
+Compare affected Claude `tools:` values directly to `origin/master`. `Skill` is
+an intentional branch addition, so parity means restoring lost web/no-shell
+semantics, not byte-identical full tool lines.
+
+### Verification
+
+Run:
+
+- all 34 skills through PyYAML/frontmatter validation;
+- generator `--check` and focused `--validate-skills`;
+- `verify-setup.sh` and `test-adapters.sh`;
+- Ruff and Python compilation;
+- POSIX shell syntax checks;
+- explicit master-versus-generated tool comparisons for all 21 legacy agents;
+- yadm bootstrap, pre-push, diff check, and staged secret-pattern scan.
+
+The comparison must show no new capability loss or gain beyond the intentional
+branch-wide `Skill` addition and harmless tool ordering. Record the absence of a
+configured Python type checker as a review limitation.
+
+### Files changed
+
+- `~/.agents/prompts/ai-apple-engineer.md`
+- `~/.agents/prompts/ai-architect.md`
+- `~/.agents/prompts/apple-reviewer.md`
+- `~/.agents/prompts/ml-reviewer.md`
+- `~/.agents/prompts/full-reviewer.md`
+- `~/.agents/scripts/generate_adapters.py`
+- `~/.agents/scripts/test-adapters.sh`
+- `~/.agents/skills/rust-architect/SKILL.md`
+- `~/.agents/skills/rust-developer/SKILL.md`
+- `~/.agents/skills/solidity-reviewer/SKILL.md`
+- `~/.agents/harness-instructions.md`
+- four generated Claude agent files and `~/.agents/generated-adapters.yaml`
+- durable `research.md` and `plan.md`
+- PR #1 description through an untracked temporary Markdown file
+
+### Delivery
+
+Commit and push the approved regression fixes to the existing branch, update PR
+#1 with the restored capability contract and tests, and leave it open and
+unmerged.
+
+### Checklist
+
+- [x] Add strict canonical `web` parsing and additive Claude web-tool mapping.
+- [x] Set `web: true` for `ai-apple-engineer` and prove both web tools return.
+- [x] Implement tri-state shell semantics, set `shell: true` for `ai-architect`,
+      and prove its Bash capability returns without affecting other architects.
+- [x] Set `shell: false` for the three affected reviewers and prove Bash is
+      removed only from those roles.
+- [x] Prove `python-reviewer` and the other language reviewers retain Bash.
+- [x] Restore the three literal skill-description fragments under valid folded
+      YAML.
+- [x] Document the `read_only`/`shell` distinction in the harness guide.
+- [x] Add positive capability assertions and a non-boolean `web` rejection test.
+- [x] Regenerate and confirm only the expected Claude agents, the three accepted
+      Junie/OpenCode reviewer adapters, and their ownership digests change.
+- [x] Run all validation, behavioral, lint, compile, shell, comparison, yadm,
+      and secret gates.
+- [x] Record exact evidence and mark this checklist complete issue by issue.
+- [x] Commit and push to PR #1, update its description, and leave it open and
+      unmerged.
+
+### Implementation evidence — 2026-08-29
+
+- `ai-apple-engineer` now has `WebSearch` and `WebFetch`; the ordinary
+  `apple-engineer` developer bundle did not gain them. A non-boolean `web`
+  fixture is rejected.
+- `apple-reviewer`, `ml-reviewer`, and `full-reviewer` now have no Bash in
+  Claude, no shell tool in Junie, and shell denial in OpenCode.
+- `python-reviewer` and the other language reviewers retain Bash.
+- The all-legacy-agent semantic comparison initially caught an additional
+  `ai-architect` Bash loss missed by the external review. After the approved
+  tri-state amendment, all master tools are present for every legacy agent;
+  the only allowed new tool is `Skill`.
+- All 34 skill frontmatter documents validate, and the exact
+  `Arc<Mutex<T>>`, `Arc<Mutex>`, and `<id>/<reason>` strings survive.
+- Generated changes are exactly five Claude agents, three Junie reviewers,
+  three OpenCode reviewers, and their ownership-manifest digests.
+- Generator check, focused skill validation, setup verification, behavioral
+  tests, Ruff, Python compilation, POSIX shell syntax, yadm bootstrap, pre-push,
+  and whitespace checks passed.
+- Python type-review sign-off remains unavailable because no type checker is
+  configured for this scripts-only repository.
