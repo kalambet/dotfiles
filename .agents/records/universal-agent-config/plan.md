@@ -1568,7 +1568,7 @@ fixtures, or delete the deferred orphaned legacy file.
       catalogue, or deferred legacy-file change entered the diff.
 - [x] Run setup, adapter-currentness, Markdown, whitespace, and secret checks.
 - [x] Record verification evidence and mark this checklist complete.
-- [ ] Commit and push to PR #1, update its Markdown description, and leave the
+- [x] Commit and push to PR #1, update its Markdown description, and leave the
       PR open and unmerged.
 
 ### Implementation evidence — 2026-08-29
@@ -1583,3 +1583,6 @@ fixtures, or delete the deferred orphaned legacy file.
   behavioral tests, and yadm whitespace checks passed. The first generator
   invocation used a stale `--config` spelling and was rerun successfully with
   the required positional configuration path.
+- Commit `41af20f` was pushed to `refactor/universal-agent-config`; PR #1's
+  Markdown description now includes the fifth-review limitation and the PR
+  remains open.
