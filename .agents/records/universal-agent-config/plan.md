@@ -1524,3 +1524,62 @@ unmerged.
   and whitespace checks passed.
 - Python type-review sign-off remains unavailable because no type checker is
   configured for this scripts-only repository.
+
+## Fifth-review leftover plan (2026-08-29)
+
+### Approach
+
+Clarify the existing harness capability contract without changing canonical
+metadata or generated adapters. Add one paragraph beside the `web` guidance in
+`~/.agents/harness-instructions.md`:
+
+```markdown
+`web` currently controls only Claude's generated tool list. The experimental
+Junie renderer grants web access uniformly, and the OpenCode renderer does not
+model a separate web capability; do not treat `web: false` as portable
+enforcement until those adapters are corrected and validated with their CLIs.
+```
+
+This makes the asymmetry explicit while preserving the previously approved
+decision not to install or repair Junie/OpenCode in this PR. Do not restore the
+Claude-only catalogue, alter reviewer shell permissions, add unused generator
+fixtures, or delete the deferred orphaned legacy file.
+
+### Verification
+
+- Confirm the clarification sits with the canonical capability-field guidance
+  and is consistent with the existing experimental-harness warning.
+- Run Markdown/diff whitespace checks and `verify-setup.sh`; adapter output is
+  expected to remain unchanged.
+- Update the durable plan/research records and PR description, then commit and
+  push the documentation cleanup to PR #1 without merging it.
+
+### Files changed
+
+- `~/.agents/harness-instructions.md`
+- durable `research.md` and `plan.md`
+- PR #1 description through the existing Markdown record
+
+### Checklist
+
+- [x] Add the Claude-only `web` mapping clarification and experimental adapter
+      warning to `harness-instructions.md`.
+- [x] Confirm no canonical metadata, generator, generated adapter, permission,
+      catalogue, or deferred legacy-file change entered the diff.
+- [x] Run setup, adapter-currentness, Markdown, whitespace, and secret checks.
+- [x] Record verification evidence and mark this checklist complete.
+- [ ] Commit and push to PR #1, update its Markdown description, and leave the
+      PR open and unmerged.
+
+### Implementation evidence — 2026-08-29
+
+- The guide now states that canonical `web` metadata affects only Claude's
+  generated tool list today and cannot be treated as portable enforcement for
+  the experimental Junie/OpenCode adapters.
+- The focused worktree diff contains only the guide and durable research/plan
+  records; canonical prompts, generator code, generated adapters, permissions,
+  catalogues, and the deferred orphan are unchanged.
+- Generator currentness, all 34 skill validations, setup verification, adapter
+  behavioral tests, and yadm whitespace checks passed. The first generator
+  invocation used a stale `--config` spelling and was rerun successfully with
+  the required positional configuration path.

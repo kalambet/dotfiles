@@ -616,3 +616,28 @@ incorrectly categorized its tool difference as ordering only. Other architect
 roles did not have Bash on master. The operator approved tri-state `shell`
 metadata: omitted preserves the bundle, explicit true adds shell, and explicit
 false removes it. `ai-architect` alone receives `shell: true`.
+
+## Fifth-review leftovers (2026-08-29)
+
+Claude's fifth pass reports no remaining regression against `origin/master`.
+The four residual observations have the following disposition:
+
+1. The split between reviewers with and without shell is inherited deliberately
+   from master and is already documented. `read_only: true` removes direct
+   Write/Edit tools; only `shell: false` removes shell. No change is required.
+2. The `web` capability is currently Claude-specific. Junie's experimental
+   renderer grants its generic web capability to every agent, while OpenCode's
+   renderer models no web axis. This real asymmetry needs one explicit sentence
+   in `harness-instructions.md`; it does not justify changing the unvalidated
+   Junie/OpenCode schemas in this PR.
+3. The removed Claude catalogue's composition guidance was not lost. The
+   portable `pr-review` skill explicitly requires the matching language-review
+   skill, and every language `*-team` skill defines the architect → developer →
+   reviewer sequence. Reintroducing a global duplicate would restore drift.
+4. `.config/agents/research-plan-implement.md` is confirmed orphaned, but its
+   deletion remains part of the operator-approved post-merge legacy cleanup.
+
+The suggested extra test for `shell: true` on a non-architect role would cover
+an unused configuration. Omitted developer behavior is already pinned by the
+exact generated `apple-engineer` tool assertion. Adding speculative fixtures is
+not necessary for this cleanup.

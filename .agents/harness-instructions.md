@@ -224,6 +224,11 @@ Official documentation:
    the model-class default, set `shell: true` to add shell access explicitly,
    and set `shell: false` to remove it. Set `web: true` only when the role
    requires current external documentation.
+   `web` currently controls only Claude's generated tool list. The experimental
+   Junie renderer grants web access uniformly, and the OpenCode renderer does
+   not model a separate web capability; do not treat `web: false` as portable
+   enforcement until those adapters are corrected and validated with their
+   CLIs.
 2. Update `adapters.yaml` or rendering functions only when the native mapping
    changes. Recheck official schemas first.
 3. Apply generation and review every affected native file plus the ownership
