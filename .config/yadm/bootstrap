@@ -1,0 +1,10 @@
+#!/bin/sh
+set -eu
+
+if ! command -v uv >/dev/null 2>&1; then
+  echo 'uv is required; install it with `brew install uv` or `brew bundle --file ~/Brewfile`.' >&2
+  exit 1
+fi
+
+"$HOME/.agents/scripts/sync-adapters.sh" --apply
+"$HOME/.agents/scripts/verify-setup.sh"

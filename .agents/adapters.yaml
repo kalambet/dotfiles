@@ -1,0 +1,41 @@
+version: 1
+ownership_manifest: ~/.agents/generated-adapters.yaml
+canonical:
+  instructions: ~/.agents/AGENTS.md
+  skills: ~/.agents/skills
+  prompts: ~/.agents/prompts
+  commands: ~/.agents/commands
+models:
+  claude:
+    architect: opus
+    developer: sonnet
+    reviewer: fable
+    researcher: sonnet
+  junie:
+    architect: default
+    developer: default
+    reviewer: default
+    researcher: default
+  opencode:
+    architect: default
+    developer: default
+    reviewer: default
+    researcher: default
+instruction_adapters:
+  claude: ~/.claude/CLAUDE.md
+  codex: ~/.codex/AGENTS.md
+  amp: ~/.config/AGENTS.md
+  junie: ~/.junie/AGENTS.md
+  opencode: ~/.config/opencode/AGENTS.md
+skill_adapters:
+  claude: ~/.claude/skills
+command_collision_directories:
+  claude: ~/.claude/commands
+agent_directories:
+  claude: ~/.claude/agents
+  junie: ~/.junie/agents
+  opencode: ~/.config/opencode/agents
+command_directories:
+  codex: ~/.codex/prompts
+  junie: ~/.junie/commands
+  opencode: ~/.config/opencode/commands
